@@ -1,15 +1,12 @@
 <?php
 
-    require "include/template1.inc.php";
+    require "include/template2.inc.php";
 
-    /*
-    $main = new Template("dtml/webarch/index");
-    $body = new Template("dtml/webarch/body");
+    $main = new Template("dtml/webarch/frame"); /* apre la template principale */
+    $body = new Template("dtml/webarch/body"); /* apre il body (sotto template) */
 
-    $main->setContent("body", $body->get());
+
+    $main->setContent("body", $body->get()); /* setta il body nella template principale */
     $main->close();
-    */
-
-    echo "<h1>Prova</h1>";
 
 ?>
