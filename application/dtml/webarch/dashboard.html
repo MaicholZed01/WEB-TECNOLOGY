@@ -1,0 +1,131 @@
+<!-- BEGIN PAGE CONTENT (DASHBOARD) -->
+<div class="page-content">
+	<div id="portlet-config" class="modal hide">
+		<div class="modal-header">
+			<button data-dismiss="modal" class="close" type="button"></button>
+			<h3>Widget Settings</h3>
+		</div>
+		<div class="modal-body">Widget settings form goes here</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div class="content">
+		<div class="page-title">
+			<h3>Dashboard</h3>
+		</div>
+
+		<div id="container">
+			<!-- ➊ STATISTIC TILES -->
+			<div class="row spacing-bottom 2col">
+				<div class="col-md-3 col-sm-6 spacing-bottom-sm">
+					<div class="tiles blue added-margin">
+						<div class="tiles-body">
+							<div class="tiles-title">TODAY’S SERVER LOAD</div>
+							<div class="heading"><span class="animate-number" data-value="26.8" data-animation-duration="1200">0</span>%</div>
+							<div class="progress transparent progress-small no-radius">
+								<div class="progress-bar progress-bar-white animate-progress-bar" data-percentage="26.8%"></div>
+							</div>
+							<div class="description"><i class="icon-custom-up"></i><span class="text-white mini-description">&nbsp; 4% higher <span class="blend">than last month</span></span></div>
+						</div>
+					</div>
+				</div>
+				<!-- (ripeti le altre tre tile – verde, rossa, viola – con lo stesso markup) -->
+			</div>
+
+			<!-- ➋ GRAFICO GEO-LOCATION + STATISTICHE VISITE -->
+			<div class="row tiles-container tiles white spacing-bottom">
+				<div class="tile-more-content col-md-4 col-sm-4 no-padding">
+					<div class="tiles green">
+						<div class="tiles-body">
+							<div class="heading">Statistical</div>
+							<p>Status&nbsp;:&nbsp;live</p>
+						</div>
+						<div class="tile-footer">
+							<div class="iconplaceholder"><i class="icon-map-marker"></i></div>258 Countries, 4835 Cities
+						</div>
+					</div>
+					<div class="tiles-body">
+						<!-- elenco progress visitatori -->
+						<ul class="progress-list">
+							<li>
+								<div class="details-wrapper">
+									<div class="name">Foreign Visits</div>
+									<div class="description">Our overseas visits</div>
+								</div>
+								<div class="details-status pull-right"><span class="animate-number" data-value="89" data-animation-duration="800">0</span>%</div>
+								<div class="progress progress-small no-radius">
+									<div class="progress-bar progress-bar-success animate-progress-bar" data-percentage="89%"></div>
+								</div>
+							</li>
+							<!-- altri due progress ... -->
+						</ul>
+					</div>
+				</div>
+
+				<div class="tiles white col-md-8 col-sm-8 no-padding">
+					<div class="tiles-chart">
+						<div class="tiles-body">
+							<div class="tiles-title">GEO-LOCATIONS</div>
+							<div class="heading">8,545,654 <i class="icon-map-marker"></i></div>
+						</div>
+						<div id="world-map" style="height:405px"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- ➌ NOTIFICHE + WEATHER WIDGET -->
+			<div class="row">
+				<div class="col-md-8 col-sm-8">
+					<div class="tiles white">
+						<div class="tiles-body">
+							<div class="tiles-title">NOTIFICATIONS</div><br>
+							<div class="notification-messages info">
+								<div class="user-profile">
+									<img src="/tec-web/application/dtml/webarch/assets/img/profiles/c.jpg" width="35" height="35" alt="">
+								</div>
+								<div class="message-wrapper">
+									<div class="heading">David Nester - Commented on your wall</div>
+									<div class="description">Meeting postponed to tomorrow</div>
+								</div>
+								<div class="date pull-right">Just now</div>
+							</div>
+							<!-- (altre notifiche danger / success) -->
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-4 col-sm-4 no-padding">
+					<div class="tiles red weather-widget">
+						<div class="tiles-body">
+							<div class="tiles-title">TODAY’S WEATHER</div>
+							<div class="heading">
+								<div class="pull-left">Tuesday</div>
+								<div class="pull-right">55</div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="big-icon">
+								<canvas id="partly-cloudy-day" width="120" height="120"></canvas>
+							</div>
+						</div>
+						<div class="tile-footer">
+							<div class="pull-left">
+								<canvas id="wind" width="32" height="32"></canvas>
+								<span class="text-white small-text-description">Windy</span>
+							</div>
+							<div class="pull-right">
+								<canvas id="rain" width="32" height="32"></canvas>
+								<span class="text-white small-text-description">Humidity</span>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- (altri widget: server load, todo list, blog card, ecc. possono restare invariati con percorsi img aggiornati) -->
+			<!-- assicurati di sostituire ogni img src="dtml/..." con il nuovo prefisso assoluto -->
+		</div>
+	</div>
+</div>
+<!-- END PAGE CONTENT -->
