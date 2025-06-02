@@ -1,172 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
+  <meta charset="utf-8">
+  <title>Centro di Fisioterapia – Home</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-     <title>Health - Medical Website Template</title>
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-     <meta name="description" content="">
-     <meta name="keywords" content="">
-     <meta name="author" content="Tooplate">
-     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/bootstrap.min.css">
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/font-awesome.min.css">
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/animate.css">
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/owl.carousel.css">
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/owl.theme.default.min.css">
-     <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/tooplate-style.css">
-
+  <!-- CSS -->
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/animate.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/owl.carousel.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/css/tooplate-style.css">
 </head>
+
 <body id="top" data-spy="scroll" data-target=".navbar-collapse" data-offset="50">
 
-     <!-- PRE LOADER -->
-     <section class="preloader">
-          <div class="spinner">
-               <span class="spinner-rotate"></span>
+  <!-- PRE LOADER -->
+  <section class="preloader">
+    <div class="spinner"><span class="spinner-rotate"></span></div>
+  </section>
+
+  <!-- HEADER CONTATTI RAPIDI -->
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-sm-5"><p>Benvenuti al Centro di Fisioterapia</p></div>
+        <div class="col-md-8 col-sm-7 text-align-right">
+          <span class="phone-icon"><i class="fa fa-phone"></i> <[telefono]></span>
+          <span class="date-icon"><i class="fa fa-calendar-plus-o"></i> <[orari]></span>
+          <span class="email-icon"><i class="fa fa-envelope-o"></i> <a href="mailto:<[email]>"><[email]></a></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MENU PRINCIPALE -->
+  <section class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+
+      <div class="navbar-header">
+        <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon icon-bar"></span><span class="icon icon-bar"></span><span class="icon icon-bar"></span>
+        </button>
+        <a href="index.php" class="navbar-brand"><i class="fa fa-h-square"></i> Fisio&nbsp;Center</a>
+      </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="index.php?page=index" class="smoothScroll">Home</a></li>
+          <li><a href="index.php?page=chisiamo" class="smoothScroll">Chi&nbsp;Siamo</a></li>
+          <li><a href="index.php?page=fisioterapisti" class="smoothScroll">Fisioterapisti</a></li>
+          <li><a href="index.php?page=avvisi" class="smoothScroll">News</a></li>
+          <li><a href="index.php?page=contatti" class="smoothScroll">Contatti</a></li>
+          <li><a href="index.php?page=form_prenotazione" class="smoothScroll">Prenota</a></li>
+          <li class="appointment-btn"><a href="index.php?page=login">Login</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CORPO DINAMICO -->
+  <[body]>
+
+  <!-- FOOTER -->
+  <footer data-stellar-background-ratio="5">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-thumb">
+            <h4 class="wow fadeInUp" data-wow-delay="0.4s">Contatti</h4>
+            <p>Via <[via]>, <[città]> – <[provincia]></p>
+            <div class="contact-info">
+              <p><i class="fa fa-phone"></i> <[telefono]></p>
+              <p><i class="fa fa-envelope-o"></i> <a href="mailto:<[email]>"><[email]></a></p>
+            </div>
           </div>
-     </section>
+        </div>
 
-     <!-- HEADER -->
-     <header>
-          <div class="container">
-               <div class="row">
-                    <div class="col-md-4 col-sm-5">
-                         <p>Welcome to a Professional Health Care</p>
-                    </div>
-                         
-                    <div class="col-md-8 col-sm-7 text-align-right">
-                         <span class="phone-icon"><i class="fa fa-phone"></i> 010-060-0160</span>
-                         <span class="date-icon"><i class="fa fa-calendar-plus-o"></i> 6:00 AM - 10:00 PM (Mon-Fri)</span>
-                         <span class="email-icon"><i class="fa fa-envelope-o"></i> <a href="#">info@company.com</a></span>
-                    </div>
-               </div>
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-thumb">
+            <h4 class="wow fadeInUp" data-wow-delay="0.4s">Ultime news</h4>
+            <div id="footer-news"><[footer_news]></div>
           </div>
-     </header>
+        </div>
 
-     <!-- MENU -->
-     <section class="navbar navbar-default navbar-static-top" role="navigation">
-          <div class="container">
-
-               <div class="navbar-header">
-                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                    </button>
-
-                    <a href="#" class="navbar-brand"><i class="fa fa-h-square"></i>ealth Center</a>
-               </div>
-
-               <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                         <li><a href="index.php" class="smoothScroll">Home</a></li>
-                         <li><a href="index.php?page=chisiamo" class="smoothScroll">About Us</a></li>
-                         <li><a href="index.php?page=dottori" class="smoothScroll">Doctors</a></li>
-                         <li><a href="index.php?page=avvisi" class="smoothScroll">News</a></li>
-                         <li><a href="index.php?page=contatti" class="smoothScroll">Contact</a></li>                         
-                         <li><a href="index.php?page=form_prenotazione" class="smoothScroll">Make an appointment</a></li>
-                         <li class="appointment-btn"><a href="index.php?page=login">Login</a></li> 
-                    </ul>
-               </div>
-
+        <div class="col-md-4 col-sm-4">
+          <div class="footer-thumb">
+            <div class="opening-hours">
+              <h4 class="wow fadeInUp" data-wow-delay="0.4s">Orari</h4>
+              <p>Lunedì-Venerdì <span>06:00-22:00</span></p>
+              <p>Sabato <span>09:00-20:00</span></p>
+              <p>Domenica <span>Chiuso</span></p>
+            </div>
+            <ul class="social-icon">
+              <li><a href="#" class="fa fa-facebook-square"></a></li>
+              <li><a href="#" class="fa fa-twitter"></a></li>
+              <li><a href="#" class="fa fa-instagram"></a></li>
+            </ul>
           </div>
-     </section>
+        </div>
 
-     <[body]>
-
-     <!-- FOOTER -->
-     <footer data-stellar-background-ratio="5">
-          <div class="container">
-               <div class="row">
-
-                    <div class="col-md-4 col-sm-4">
-                         <div class="footer-thumb"> 
-                              <h4 class="wow fadeInUp" data-wow-delay="0.4s">Contact Info</h4>
-                              <p>Fusce at libero iaculis, venenatis augue quis, pharetra lorem. Curabitur ut dolor eu elit consequat ultricies.</p>
-                              <div class="contact-info">
-                                   <p><i class="fa fa-phone"></i> 010-070-0170</p>
-                                   <p><i class="fa fa-envelope-o"></i> <a href="#">info@company.com</a></p>
-                              </div>
-                         </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-4"> 
-                         <div class="footer-thumb"> 
-                              <h4 class="wow fadeInUp" data-wow-delay="0.4s">Latest News</h4>
-                              <div class="latest-stories">
-                                   <div class="stories-image">
-                                        <a href="#"><img src="/tec-web/application/dtml/2098_health/images/news-image.jpg" class="img-responsive" alt=""></a>
-                                   </div>
-                                   <div class="stories-info">
-                                        <a href="#"><h5>Amazing Technology</h5></a>
-                                        <span>March 08, 2018</span>
-                                   </div>
-                              </div>
-                              <div class="latest-stories">
-                                   <div class="stories-image">
-                                        <a href="#"><img src="/tec-web/application/dtml/2098_health/images/news-image.jpg" class="img-responsive" alt=""></a>
-                                   </div>
-                                   <div class="stories-info">
-                                        <a href="#"><h5>New Healing Process</h5></a>
-                                        <span>February 20, 2018</span>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-4"> 
-                         <div class="footer-thumb">
-                              <div class="opening-hours">
-                                   <h4 class="wow fadeInUp" data-wow-delay="0.4s">Opening Hours</h4>
-                                   <p>Monday - Friday <span>06:00 AM - 10:00 PM</span></p>
-                                   <p>Saturday <span>09:00 AM - 08:00 PM</span></p>
-                                   <p>Sunday <span>Closed</span></p>
-                              </div> 
-
-                              <ul class="social-icon">
-                                   <li><a href="#" class="fa fa-facebook-square" attr="facebook icon"></a></li>
-                                   <li><a href="#" class="fa fa-twitter"></a></li>
-                                   <li><a href="#" class="fa fa-instagram"></a></li>
-                              </ul>
-                         </div>
-                    </div>
-
-                    <div class="col-md-12 col-sm-12 border-top">
-                         <div class="col-md-4 col-sm-6">
-                              <div class="copyright-text"> 
-                                   <p>Copyright &copy; 2018 Your Company 
-                                   | Design: <a rel="nofollow" href="https://www.facebook.com/tooplate" target="_parent">Tooplate</a></p>
-                              </div>
-                         </div>
-                         <div class="col-md-6 col-sm-6">
-                              <div class="footer-link"> 
-                                   <a href="#">Laboratory Tests</a>
-                                   <a href="#">Departments</a>
-                                   <a href="#">Insurance Policy</a>
-                                   <a href="#">Careers</a>
-                              </div>
-                         </div>
-                         <div class="col-md-2 col-sm-2 text-align-center">
-                              <div class="angle-up-btn"> 
-                                  <a href="#top" class="smoothScroll wow fadeInUp" data-wow-delay="1.2s"><i class="fa fa-angle-up"></i></a>
-                              </div>
-                         </div>   
-                    </div>
-                    
-               </div>
+        <div class="col-md-12 col-sm-12 border-top">
+          <div class="col-md-6 col-sm-6">
+            <div class="copyright-text">
+              <p>&copy; <span id="anno"></span> Centro di Fisioterapia – Design by <a href="https://www.tooplate.com" target="_blank">Tooplate</a></p>
+            </div>
           </div>
-     </footer>
+          <div class="col-md-6 col-sm-6">
+            <div class="footer-link">
+              <a href="index.php?page=privacy">Privacy</a>
+              <a href="index.php?page=condizioni">Condizioni</a>
+              <a href="index.php?page=carriere">Lavora&nbsp;con&nbsp;noi</a>
+            </div>
+          </div>
+        </div>
 
-     <!-- SCRIPTS -->
-     <script src="/tec-web/application/dtml/2098_health/js/jquery.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/bootstrap.min.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/jquery.sticky.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/jquery.stellar.min.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/wow.min.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/smoothscroll.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/owl.carousel.min.js"></script>
-     <script src="/tec-web/application/dtml/2098_health/js/custom.js"></script>
+      </div>
+    </div>
+  </footer>
 
+  <!-- JS -->
+  <script src="/tec-web/application/dtml/2098_health/js/jquery.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/bootstrap.min.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/jquery.sticky.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/jquery.stellar.min.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/wow.min.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/smoothscroll.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/owl.carousel.min.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/js/custom.js"></script>
+  <script>
+    /* anno footer dinamico */
+    document.getElementById('anno').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

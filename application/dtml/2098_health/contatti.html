@@ -1,0 +1,59 @@
+<!-- CONTATTI -->
+<section id="contact" data-stellar-background-ratio="1">
+  <div class="container">
+    <div class="row">
+
+      <!-- MAPPA -->
+      <div class="col-md-6 col-sm-6">
+        <div class="contact-map">
+          <iframe
+            src="<[google_map_iframe]>"
+            width="100%" height="340" frameborder="0" style="border:0" allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+      <!-- FORM & INFO -->
+      <div class="col-md-6 col-sm-6">
+        <form id="contact-form" role="form"
+              class="wow fadeInUp" data-wow-delay="0.2s"
+              action="index.php?page=process_contatto" method="post">
+
+          <div class="section-title">
+            <h2>Contattaci</h2>
+          </div>
+
+          <!-- MESSAGGIO SUCCESSO/ERRORE -->
+          <div><[messaggio_form]></div>
+
+          <!-- CAMPi -->
+          <div class="row">
+            <div class="col-md-6 col-sm-6">
+              <input type="text" class="form-control" name="nome" placeholder="Nome" required>
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <input type="email" class="form-control" name="email" placeholder="E-mail" required>
+            </div>
+            <div class="col-md-12 col-sm-12">
+              <textarea class="form-control" rows="6" name="messaggio" placeholder="Messaggio" required></textarea>
+            </div>
+            <div class="col-md-4 col-sm-12">
+              <button type="submit" class="form-control" id="cf-submit">Invia</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- INFO CONTATTI -->
+        <div class="contact-info wow fadeInUp" data-wow-delay="0.4s">
+          <div class="section-title">
+            <h2>Dove siamo</h2>
+          </div>
+          <p><i class="fa fa-map-marker"></i> <[indirizzo]>—<[cap]> <[città]> (<[provincia]>)</p>
+          <p><i class="fa fa-phone"></i> <[telefono]></p>
+          <p><i class="fa fa-envelope-o"></i> <a href="mailto:<[email]>"><[email]></a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

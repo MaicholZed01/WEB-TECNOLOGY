@@ -19,7 +19,7 @@
     require __DIR__.'/include/template2.inc.php';
     //session_start();
 
-    $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'form_prenotazione', 'news-detail', 'dottori'];
+    $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'form_prenotazione', 'news-detail', 'fisioterapisti'];
     $privatePages = ['dashboard','appuntamenti','disponibilita','servizi',
                     'media','certificazioni','messaggi','notifiche','profilo','logout', 'login'];
 

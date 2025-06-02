@@ -1,7 +1,7 @@
 <?php
 
     $host = "localhost";
-    $user = "lazzarini21";
+    $user = "root";
     $password = "";
     $database = "my_lazzarini21";
 
@@ -11,6 +11,6 @@
         die("Connection failed: " . $conn->connect_error . "<br/>");
     }
 
-    /* connection to mysql succesful
+    /* connection to mysql succesful */
 
 ?>
