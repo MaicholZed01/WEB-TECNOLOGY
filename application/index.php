@@ -3,8 +3,8 @@
     require __DIR__.'/include/template2.inc.php';
     //session_start();
 
-    $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'form_prenotazione', 'news-detail', 'fisioterapisti'];
-    $privatePages = ['dashboard','appuntamenti','disponibilita','servizi',
+    $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'];
+    $privatePages = ['dashboard','appuntamenti','disponibilita','servizi', 'richieste',
                     'media','certificazioni','messaggi','notifiche','profilo', 'login'];
 
     try {            

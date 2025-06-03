@@ -1,0 +1,67 @@
+<!-- RICHIESTE -->
+<section id="richieste">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Richieste</h3>
+      </div>
+
+      <!-- MESSAGGIO DI ESITO (es. “Richiesta confermata” o “Richiesta rifiutata”) -->
+      <div><[messaggio_form]></div>
+
+      <!-- TABELLA RICHIESTE IN ATTESA DI CONFERMA -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Data Richiesta</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Sesso</th>
+                    <th>Data di Nascita</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_richieste]>
+                  <!--
+                    Esempio di riga generata dal controller:
+
+                    <tr>
+                      <td>2025-06-02 14:35</td>
+                      <td>Giulia</td>
+                      <td>Bianchi</td>
+                      <td>giulia.bianchi@example.com</td>
+                      <td>333-1234567</td>
+                      <td>Femmina</td>
+                      <td>1990-03-15</td>
+                      <td>
+                        <a href="index.php?page=richieste&action=view&id=42"
+                           class="btn btn-primary btn-xs">Visualizza</a>
+                        <a href="index.php?page=richieste&action=conferma&id=42"
+                           class="btn btn-success btn-xs">Conferma</a>
+                        <a href="index.php?page=richieste&action=rifiuta&id=42"
+                           class="btn btn-danger btn-xs"
+                           onclick="return confirm('Rifiutare questa richiesta?');">
+                          Rifiuta
+                        </a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

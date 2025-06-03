@@ -145,6 +145,41 @@
 
       <!-- ➌ SEZIONI AGGIUNTIVE (facoltative) -->
       <!-- Puoi aggiungere altri widget o statistiche secondo necessità -->
+        <!-- PREVIEW: PRIME 5 RICHIESTE -->
+      <div class="row spacing-bottom">
+        <div class="col-md-6">
+          <div class="panel">
+            <div class="panel-heading">
+              <h4>Richieste in Arrivo</h4>
+            </div>
+            <div class="panel-body">
+              <table class="table table-condensed">
+                <thead>
+                  <tr>
+                    <th>Data Richiesta</th>
+                    <th>Cliente</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[preview_richieste]>
+                  <!--
+                    Esempio riga:
+                    <tr>
+                      <td>2025-06-02 14:35</td>
+                      <td>Giulia Bianchi</td>
+                      <td>
+                        <a href="index.php?page=richieste&action=view&id=42" class="btn btn-xs btn-primary">Apri</a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+              <a href="index.php?page=richieste" class="btn btn-sm btn-default">Vedi tutte</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>
