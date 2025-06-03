@@ -5,7 +5,7 @@
 
     $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'form_prenotazione', 'news-detail', 'fisioterapisti'];
     $privatePages = ['dashboard','appuntamenti','disponibilita','servizi',
-                    'media','certificazioni','messaggi','notifiche','profilo','logout', 'login'];
+                    'media','certificazioni','messaggi','notifiche','profilo', 'login'];
 
     try {            
         $page = $_GET['page'] ?? 'index';
@@ -17,7 +17,11 @@
         }*/
 
         /* seleziona il template base */
-        if (in_array($page, $privatePages)) {
+        /* Se page = login, scegli un layout minimale   */
+        if ($page === 'login') {
+            $base = 'dtml/webarch/login';        // contiene già il modulo
+            $body = null;                        // nessun sotto-template
+        } else if (in_array($page, $privatePages)) {
             $base = 'dtml/webarch/frame';
             $body = "dtml/webarch/$page";      // es. dashboard.html
         } else {
@@ -35,10 +39,13 @@
         $base = 'dtml/2098_health/frame';
         $body = 'dtml/2098_health/500'; // fallback to 404 page
     }
+
     /* rendering */
+    /* Se esiste un sotto-template lo carico, altrimenti solo frame */
     $main = new Template($base);
-    $bodyTpl = new Template($body);
-    $main->setContent('body', $bodyTpl->get());
+    if ($body && file_exists(__DIR__."/$body.html")) {
+        $main->setContent('body', (new Template($body))->get());
+    }
     $main->close();
 
 ?>

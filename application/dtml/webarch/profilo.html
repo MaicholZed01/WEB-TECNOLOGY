@@ -1,0 +1,153 @@
+<!-- PROFILO -->
+<section id="profilo">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Il Mio Profilo</h3>
+      </div>
+
+      <!-- MESSAGGIO DI ESITO GENERALE -->
+      <div><[messaggio_form]></div>
+
+      <div class="row">
+
+        <!-- FORM AGGIORNA DATI PERSONALI -->
+        <div class="col-md-6">
+          <div class="panel">
+            <div class="panel-body">
+              <h4>Dati Anagrafici</h4>
+              <form id="form-profilo-anagrafico" class="form-horizontal"
+                    action="index.php?page=profilo&action=update_info" method="post" enctype="multipart/form-data">
+
+                <!-- NOME -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Nome*</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="nome"
+                           value="<[old_nome]>" required>
+                  </div>
+                </div>
+
+                <!-- COGNOME -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Cognome*</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="cognome"
+                           value="<[old_cognome]>" required>
+                  </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">E-mail*</label>
+                  <div class="col-sm-9">
+                    <input type="email" class="form-control" name="email"
+                           value="<[old_email]>" required>
+                  </div>
+                </div>
+
+                <!-- TELEFONO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Telefono</label>
+                  <div class="col-sm-9">
+                    <input type="tel" class="form-control" name="telefono"
+                           value="<[old_telefono]>">
+                  </div>
+                </div>
+
+                <!-- BIO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Bio</label>
+                  <div class="col-sm-9">
+                    <textarea class="form-control" rows="4" name="bio"><[old_bio]></textarea>
+                  </div>
+                </div>
+
+                <!-- TARIFFA ORARIA -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Tariffa Oraria (€)</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="tariffa_oraria"
+                           value="<[old_tariffa_oraria]>">
+                  </div>
+                </div>
+
+                <!-- FOTO PROFILO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Foto Profilo</label>
+                  <div class="col-sm-9">
+                    <img src="<[foto_profilo]>" alt="Foto Profilo" class="img-thumbnail" style="max-width:120px; margin-bottom:10px;">
+                    <input type="file" class="form-control" name="url_foto_profilo">
+                    <p class="help-block">Scegli un’immagine JPG o PNG (max 2MB).</p>
+                  </div>
+                </div>
+
+                <!-- HIDDEN ID FISIOTERAPISTA -->
+                <input type="hidden" name="fisioterapista_id" value="<[old_fisioterapista_id]>">
+
+                <!-- PULSANTE INVIO -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM CAMBIA PASSWORD -->
+        <div class="col-md-6">
+          <div class="panel">
+            <div class="panel-body">
+              <h4>Cambia Password</h4>
+              <form id="form-profilo-password" class="form-horizontal"
+                    action="index.php?page=profilo&action=change_password" method="post">
+
+                <!-- MESSAGGIO ESITO PASSWORD -->
+                <div><[messaggio_password]></div>
+
+                <!-- PASSWORD ATTUALE -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Password Attuale*</label>
+                  <div class="col-sm-9">
+                    <input type="password" class="form-control" name="old_password" required>
+                  </div>
+                </div>
+
+                <!-- NUOVA PASSWORD -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Nuova Password*</label>
+                  <div class="col-sm-9">
+                    <input type="password" class="form-control" name="new_password" required>
+                  </div>
+                </div>
+
+                <!-- CONFERMA NUOVA PASSWORD -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Conferma Password*</label>
+                  <div class="col-sm-9">
+                    <input type="password" class="form-control" name="confirm_password" required>
+                  </div>
+                </div>
+
+                <!-- PULSANTE INVIO -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">Cambia Password</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /row -->
+
+    </div> <!-- /content -->
+  </div> <!-- /page-content -->
+</section>

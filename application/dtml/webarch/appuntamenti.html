@@ -1,0 +1,102 @@
+<!-- APPUNTAMENTI -->
+<section id="appuntamenti">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Appuntamenti</h3>
+      </div>
+
+      <!-- FILTRI APPUNTAMENTI -->
+      <div class="row spacing-bottom">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <form id="filtri-appuntamenti" class="form-horizontal" method="get" action="index.php?page=appuntamenti">
+                <!-- MESSAGGIO ESITO OPERAZIONE -->
+                <div><[messaggio_form]></div>
+
+                <!-- DATA -->
+                <div class="form-group">
+                  <label for="filter_data" class="col-sm-3 control-label">Data:</label>
+                  <div class="col-sm-9">
+                    <input type="date" class="form-control" id="filter_data" name="filter_data" value="<[filter_data]>" />
+                  </div>
+                </div>
+
+                <!-- STATO -->
+                <div class="form-group">
+                  <label for="filter_stato" class="col-sm-3 control-label">Stato:</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" id="filter_stato" name="filter_stato">
+                      <option value="" <[sel_tutti]> >Tutti</option>
+                      <option value="Prenotato" <[sel_prenotato]> >Prenotato</option>
+                      <option value="Confermato" <[sel_confermato]> >Confermato</option>
+                      <option value="Completato" <[sel_completato]> >Completato</option>
+                      <option value="Annullato" <[sel_annullato]> >Annullato</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- PULSANTI -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">
+                      Filtra
+                    </button>
+                    &nbsp;
+                    <a href="index.php?page=appuntamenti" class="btn btn-default">
+                      Annulla
+                    </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELLA APPUNTAMENTI -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Ora</th>
+                    <th>Cliente</th>
+                    <th>Servizio</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_appuntamenti]>
+                  <!--
+                    Esempio riga generata dal controller:
+                    <tr>
+                      <td>01/06/2025</td>
+                      <td>10:00</td>
+                      <td>Mario Rossi</td>
+                      <td>Fisioterapia sportiva</td>
+                      <td>Confermato</td>
+                      <td>
+                        <a href="index.php?page=appuntamenti&action=conferma&id=123" class="btn btn-success btn-xs">Conferma</a>
+                        <a href="index.php?page=appuntamenti&action=completa&id=123" class="btn btn-primary btn-xs">Completa</a>
+                        <a href="index.php?page=appuntamenti&action=annulla&id=123" class="btn btn-danger btn-xs">Annulla</a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

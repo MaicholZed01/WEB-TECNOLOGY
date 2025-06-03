@@ -1,0 +1,114 @@
+<!-- MEDIA -->
+<section id="media">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Media</h3>
+      </div>
+
+      <!-- FORM UPLOAD MEDIA -->
+      <div class="row spacing-bottom">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <form id="form-media" class="form-horizontal"
+                    action="index.php?page=media&action=upload" method="post" enctype="multipart/form-data">
+
+                <!-- MESSAGGIO ESITO UPLOAD -->
+                <div><[messaggio_form]></div>
+
+                <!-- SELEZIONE TIPO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Tipo*</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" name="tipo" required>
+                      <option value="">-- Seleziona Tipo --</option>
+                      <option value="Immagine" <[sel_immagine]> >Immagine</option>
+                      <option value="Video"     <[sel_video]>     >Video</option>
+                      <option value="Documento" <[sel_documento]> >Documento</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- SELEZIONE FILE -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">File*</label>
+                  <div class="col-sm-9">
+                    <input type="file" class="form-control" name="file_media" required>
+                    <p class="help-block">Immagine, video o documento (max 5MB).</p>
+                  </div>
+                </div>
+
+                <!-- DESCRIZIONE -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Descrizione</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="descrizione"
+                           value="<[old_descrizione]>">
+                  </div>
+                </div>
+
+                <!-- PULSANTE UPLOAD -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">Carica</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELLA MEDIA CARICATI -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Anteprima</th>
+                    <th>Tipo</th>
+                    <th>Descrizione</th>
+                    <th>Data Caricamento</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_media]>
+                  <!--
+                    Esempio riga generata dal controller:
+
+                    <tr>
+                      <td>
+                        <img src="/tec-web/upload/media/img123.jpg"
+                             class="img-responsive" style="max-height:60px;" alt="Anteprima">
+                      </td>
+                      <td>Immagine</td>
+                      <td>Foto paziente in esercizio</td>
+                      <td>2025-06-01 14:22</td>
+                      <td>
+                        <a href="index.php?page=media&action=delete&id=15"
+                           class="btn btn-danger btn-xs"
+                           onclick="return confirm('Eliminare questo file?');">
+                          Elimina
+                        </a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

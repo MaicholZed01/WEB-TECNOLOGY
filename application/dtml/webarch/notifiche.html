@@ -1,0 +1,66 @@
+<!-- NOTIFICHE -->
+<section id="notifiche">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Notifiche</h3>
+      </div>
+
+      <!-- MESSAGGIO GENERALE -->
+      <div><[messaggio_form]></div>
+
+      <!-- ELENCO NOTIFICHE -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <ul class="list-group" id="lista-notifiche">
+                <[lista_notifiche]>
+                <!--
+                  Esempio di singola notifica generata dal controller:
+                  <li class="list-group-item clearfix <[classe_stato]>">
+                    <div class="pull-left">
+                      <i class="fa <[icona]>" aria-hidden="true"></i>
+                      <span class="notif-title"><[titolo_notifica]></span>
+                      <p class="notif-desc"><[descrizione_notifica]></p>
+                    </div>
+                    <div class="pull-right text-muted">
+                      <small><[data_notifica]></small><br>
+                      <a href="index.php?page=notifiche&action=leggi&id=<[id_notifica]>"
+                         class="btn btn-xs btn-default">Segna come lette</a>
+                    </div>
+                  </li>
+                -->
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGINAZIONE NOTIFICHE (se serve) -->
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <[paginazione_notifiche]>
+          <!--
+            Esempio markup paginazione:
+            <ul class="pagination">
+              <li class="<[prev_disabled]>">
+                <a href="index.php?page=notifiche&p=<[prev_page]>">&laquo;</a>
+              </li>
+              <li class="<[page1_active]>"><a href="index.php?page=notifiche&p=1">1</a></li>
+              <li class="<[page2_active]>"><a href="index.php?page=notifiche&p=2">2</a></li>
+              <li class="<[next_disabled]>">
+                <a href="index.php?page=notifiche&p=<[next_page]>">&raquo;</a>
+              </li>
+            </ul>
+          -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
