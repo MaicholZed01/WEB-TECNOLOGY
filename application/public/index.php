@@ -21,3 +21,4 @@ foreach($servs as $s) {
 $tpl->setContent('servizio_options', $options);
 
 $tpl->parse();
+?>

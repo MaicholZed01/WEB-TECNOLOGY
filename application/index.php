@@ -1,47 +1,41 @@
 <?php
 // application/index.php
 
+// 1. Includo connessione, template e logica
 require __DIR__ . '/include/dbms.inc.php';
 require __DIR__ . '/include/template2.inc.php';
 require __DIR__ . '/logic/Fisioterapisti.php';
-require __DIR__ . '/logic/Servizi.php';
-require __DIR__ . '/logic/FasceDisponibilita.php';
-require __DIR__ . '/logic/Richieste.php';
-require __DIR__ . '/logic/Appuntamenti.php';
 
-// Includo la logica di prenotazione
-require __DIR__ . '/public/prenotazioni.php';
+// Includo login e prenotazione (funzioni globali)
+require __DIR__ . '/private/login.php';
+require __DIR__ . '/public/prenotazioni.php';  // se serve gestire prenotazioni
 
-// Le pagine accessibili senza login
-$publicPages  = [
-    'index', 'avvisi', 'chisiamo', 'contatti',
-    'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'
-];
-// Le pagine dell’area privata (se in futuro reintroduci la sessione)
-$privatePages = [
-    'dashboard', 'appuntamenti', 'disponibilita',
-    'servizi', 'richieste', 'media',
-    'certificazioni', 'messaggi', 'notifiche',
-    'profilo', 'login'
-];
+session_start();
+
+// Definizione delle pagine
+$publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti',
+                 'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'];
+$privatePages = ['dashboard', 'appuntamenti', 'disponibilita',
+                 'servizi', 'richieste', 'media',
+                 'certificazioni', 'messaggi', 'notifiche',
+                 'profilo', 'login'];
 
 try {
     $page = $_GET['page'] ?? 'index';
+	
+    // Gestione logout (senza sessione)
+if ($page === 'logout') {
+    require __DIR__ . '/private/logout.php';
+}
 
     // ──────────────────────────────────────────────────────────────
-    // 1) Gestione del form di prenotazione DELEGATA A prenotazioni.php
+    // 1) Gestione del form di prenotazione (delegata a prenotazioni.php)
     // ──────────────────────────────────────────────────────────────
-    // Preparo le variabili che la funzione popolerà
     $showForm = false;
     $bodyHtml = '';
     $message  = '';
-
-    // Chiamo la funzione che gestisce GET/POST su form_prenotazione
     handlePrenotazioneForm($showForm, $bodyHtml, $message);
-
-    // Se handlePrenotazioneForm ha deciso di mostrare il form:
     if ($showForm) {
-        // Usa il layout pubblico e inietta $bodyHtml
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
         $main->setContent('body', $bodyHtml);
@@ -50,20 +44,36 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 2) Se NON sto mostrando form_prenotazione, proseguo col routing “standard”
+    // 2) Gestione del login (GET o POST su process_login)
     // ──────────────────────────────────────────────────────────────
+    $errorLogin = null;
+    if ($page === 'process_login') {
+        $errorLogin = handleLogin();
+    }
+    if ($page === 'login' || $page === 'process_login') {
+        $base = 'dtml/webarch/login';
+        $main = new Template($base);
+        // Inietto messaggio di errore (se non null)
+        $main->setContent('error_login', $errorLogin ?? '');
+        $main->close();
+        exit;
+    }
 
-    // Se avrai in futuro sessioni per area privata, potresti sbloccare questo:
+    // ──────────────────────────────────────────────────────────────
+    // 3) Area privata protetta (se vuoi abilitare)
+    // ──────────────────────────────────────────────────────────────
     /*
-    if (in_array($page, $privatePages) && empty($_SESSION['user_id'])) {
+    if (in_array($page, $privatePages) && empty($_SESSION['fisio'])) {
         header('Location: index.php?page=login');
         exit;
     }
     */
 
-    // seleziona il template base
+    // ──────────────────────────────────────────────────────────────
+    // 4) Routing “standard” per tutte le altre pagine
+    // ──────────────────────────────────────────────────────────────
     if ($page === 'login') {
-        $base = 'dtml/webarch/login';  // layout minimale
+        $base = 'dtml/webarch/login';
         $body = null;
     } elseif (in_array($page, $privatePages)) {
         $base = 'dtml/webarch/frame';
@@ -73,7 +83,7 @@ try {
         $body = "dtml/2098_health/$page";
     }
 
-    // fallback 404 se il file .html manca
+    // fallback 404 se manca il file
     if ($body && !file_exists(__DIR__ . "/$body.html")) {
         $body = 'dtml/2098_health/404';
     }
@@ -84,7 +94,7 @@ try {
 }
 
 // ──────────────────────────────────────────────────────────────
-// 3) Rendering generale per tutte le altre pagine
+// 5) Rendering generale per tutte le altre pagine
 // ──────────────────────────────────────────────────────────────
 $main = new Template($base);
 if ($body && file_exists(__DIR__ . "/$body.html")) {

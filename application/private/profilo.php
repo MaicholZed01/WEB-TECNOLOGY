@@ -21,3 +21,4 @@ foreach(['nome','cognome','telefono','bio','tariffa_oraria','anni_esperienza'] a
     $tpl->setContent($f, $r[$f]);
 }
 $tpl->parse();
+?>

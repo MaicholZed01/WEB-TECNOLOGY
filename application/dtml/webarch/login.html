@@ -3,19 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <title>Area Riservata – Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- CORE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/pace/pace-theme-flash.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/boostrapv3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/boostrapv3/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/animate.min.css">
-
-  <!-- TEMPLATE CSS -->
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/responsive.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/custom-icon-set.css">
 </head>
 
 <body class="error-body no-top">
@@ -26,14 +19,6 @@
       <div class="col-md-5 col-md-offset-1">
         <h2>Accedi all’area riservata</h2>
         <p>Inserisci le tue credenziali per gestire appuntamenti, disponibilità e profilo.</p>
-        <br>
-        <!-- Pulsanti social–placeholder (opzionali) -->
-        <!--
-        <button class="btn btn-block btn-info col-md-8" type="button">
-          <div class="pull-left"><i class="icon-facebook"></i></div>
-          <span class="bold">Login&nbsp;Facebook</span>
-        </button>
-        -->
       </div>
 
       <!-- FORM LOGIN -->
@@ -42,7 +27,7 @@
               action="index.php?page=process_login" method="post">
 
           <!-- ALERT ESITO -->
-          <div><[msg_login]></div>
+          <div><[error_login]></div>
 
           <div class="row">
             <div class="form-group col-md-10">
@@ -81,10 +66,7 @@
   </div>
 
   <!-- JS -->
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-1.8.3.min.js"></script>
+  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
   <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/pace/pace.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-validation/js/jquery.validate.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/js/login.js"></script>
 </body>
 </html>

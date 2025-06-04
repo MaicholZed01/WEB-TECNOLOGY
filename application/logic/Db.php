@@ -6,3 +6,4 @@ class LogicDb {
         return Db::getConnection();
     }
 }
+?>

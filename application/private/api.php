@@ -35,3 +35,4 @@ switch($op) {
   default:
     echo json_encode(['error'=>'Operazione non valida']);
 }
+?>

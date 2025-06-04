@@ -1,12 +1,14 @@
 <?php
 // application/logic/Richieste.php
-require_once 'Db.php';
+
+require_once __DIR__ . '/../include/dbms.inc.php';
+
 class Richieste {
     public static function create($data) {
-        $c = LogicDb::conn();
+        $c = Db::getConnection();
         $q = "
           INSERT INTO richieste
-            (nome,cognome,email,telefono,data_nascita,sesso,indirizzo_id)
+            (nome, cognome, email, telefono, data_nascita, sesso, indirizzo_id)
           VALUES (
             '{$data['nome']}',
             '{$data['cognome']}',
@@ -15,8 +17,10 @@ class Richieste {
             '{$data['data_nascita']}',
             '{$data['sesso']}',
             NULL
-          )";
+          )
+        ";
         if (!$c->query($q)) return false;
         return $c->insert_id;
     }
 }
+?>

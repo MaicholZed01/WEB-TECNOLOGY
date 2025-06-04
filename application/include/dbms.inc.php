@@ -1,16 +1,23 @@
-<?php
+<?php    
+    class Db {
+    private static $instance = null;
+    private $conn;
 
-    $host = "localhost";
-    $user = "root";
-    $password = "";
-    $database = "my_lazzarini21";
-
-    $conn = new mysqli($host, $user, $password, $database);
-        // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error . "<br/>");
+    private function __construct() {
+        // Sostituisci con le tue credenziali Altervista
+        $this->conn = new mysqli('localhost', 'lazzarini21', '', 'my_lazzarini21');
+        if ($this->conn->connect_error) {
+            die('Connection error: ' . $this->conn->connect_error);
+        }
+        $this->conn->set_charset('utf8mb4');
     }
 
-    /* connection to mysql succesful */
+    public static function getConnection() {
+        if (self::$instance === null) {
+            self::$instance = new Db();
+        }
+        return self::$instance->conn;
+    }
+}
 
 ?>
