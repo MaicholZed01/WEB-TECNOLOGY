@@ -2,36 +2,102 @@
 <section id="recensioni">
   <div class="page-content">
     <div class="content">
-        <!-- TITOLO PAGINA -->
-        <div class="page-title">
-            <h3>Aggiungi Recensione</h3>
-        </div>      
 
-      <!-- MESSAGGIO DI ESITO (es. “Recensione inserita con successo”) -->
-      <div><[messaggio_form]></div>
-
-      <!-- FORM AGGIUNGI RECENSIONE -->
-      <div class="row">
-        <div class="col-md-8">
+      <!-- CONTAINER PER HEADER E FORM -->
+      <div class="row spacing-bottom">
+        <div class="col-md-8 col-md-offset-2">
           <div class="panel">
             <div class="panel-body">
-                
-              <form id="form-recensioni" class="form-horizontal"
-                    action="index.php?page=recensioni&action=save" method="post">
-                
-                <!-- SELEZIONE APPUNTAMENTO -->
+
+              <!-- TITOLO SEPARATO DALLA FORM -->
+              <div class="form-group">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9">
+                  <h3 class="mb-4" style="margin-bottom: 20px;">Aggiungi Recensione</h3>
+                </div>
+              </div>
+              <hr>
+
+              <!-- MESSAGGIO DI ESITO -->
+              <div>
+                <[messaggio_form]>
+              </div>
+
+              <!-- FORM AGGIUNGI RECENSIONE -->
+              <form
+                id="form-recensioni"
+                class="form-horizontal"
+                action="index.php?page=recensioni&action=save"
+                method="post"
+              >
+
+                <!-- NOME CLIENTE -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Appuntamento*</label>
+                  <label class="col-sm-3 control-label" for="nome_cliente">
+                    Nome Cliente*
+                  </label>
                   <div class="col-sm-9">
-                    <input type="number" name="appuntamento" class="form-control" step="1" required>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nome_cliente"
+                      name="nome_cliente"
+                      value="<[old_nome_cliente]>"
+                      required
+                    >
+                  </div>
+                </div>
+
+                <!-- COGNOME CLIENTE -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label" for="cognome_cliente">
+                    Cognome Cliente*
+                  </label>
+                  <div class="col-sm-9">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="cognome_cliente"
+                      name="cognome_cliente"
+                      value="<[old_cognome_cliente]>"
+                      required
+                    >
+                  </div>
+                </div>
+
+                <!-- SELEZIONE APPUNTAMENTO ID -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label" for="appuntamento_id">
+                    Appuntamento ID*
+                  </label>
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="appuntamento_id"
+                      name="appuntamento_id"
+                      value="<[old_appuntamento_id]>"
+                      min="1"
+                      required
+                    >
+                    <p class="help-block">
+                      Inserisci solo numeri interi positivi.
+                    </p>
                   </div>
                 </div>
 
                 <!-- VALUTAZIONE -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Valutazione (1-5)*</label>
+                  <label class="col-sm-3 control-label" for="valutazione">
+                    Valutazione (1-5)*
+                  </label>
                   <div class="col-sm-9">
-                    <select class="form-control" name="valutazione" required>
+                    <select
+                      class="form-control"
+                      id="valutazione"
+                      name="valutazione"
+                      required
+                    >
                       <option value="">-- Seleziona Valutazione --</option>
                       <option value="1" <[sel_val_1]> >1</option>
                       <option value="2" <[sel_val_2]> >2</option>
@@ -44,24 +110,36 @@
 
                 <!-- COMMENTO -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Commento</label>
+                  <label class="col-sm-3 control-label" for="commento">
+                    Commento
+                  </label>
                   <div class="col-sm-9">
-                    <textarea class="form-control" rows="4" name="commento"><[old_commento]></textarea>
+                    <textarea
+                      class="form-control"
+                      id="commento"
+                      name="commento"
+                      rows="4"
+                    ><[old_commento]></textarea>
                   </div>
                 </div>
 
                 <!-- PULSANTE INVIO -->
                 <div class="form-group">
                   <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit" class="btn btn-primary">Salva Recensione</button>
+                    <button type="submit" class="btn btn-primary">
+                      Salva Recensione
+                    </button>
                   </div>
                 </div>
 
               </form>
+              <!-- /FORM -->
+
             </div>
           </div>
         </div>
       </div>
+      <!-- /CONTAINER -->
 
     </div>
   </div>

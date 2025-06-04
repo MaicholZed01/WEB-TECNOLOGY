@@ -1,68 +1,100 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Area Riservata – Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- CORE CSS -->
+  <!-- CORE CSS (stessi file usati da Webarch) -->
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/extra1.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/extra2.css">
+
+  <!-- STILI AGGIUNTIVI -->
+  <style>
+    /* Colore di background coerente con il tema Webarch (grigio chiaro) */
+    body {
+      background: #f6f8f9;          /* stesso colore di fondo delle altre pagine */
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Card / login box */
+    .login-card {
+      max-width: 420px;
+      width: 100%;
+      border-radius: .5rem;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+    }
+    .login-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+    /* Pulsante home in alto a sinistra */
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+  </style>
 </head>
 
-<body class="error-body no-top">
-  <div class="container">
-    <div class="row login-container column-seperation">
+<body>
+  <!-- TASTO HOME -->
+  <a href="index.php" class="btn btn-light border home-btn">
+    <i class="fa fa-home"></i> Home
+  </a>
 
-      <!-- TESTO DI PRESENTAZIONE -->
-      <div class="col-md-5 col-md-offset-1">
-        <h2>Accedi all’area riservata</h2>
-        <p>Inserisci le tue credenziali per gestire appuntamenti, disponibilità e profilo.</p>
+  <!-- LOGIN CARD -->
+  <div class="login-card p-4 text-center">
+    <h2>Area Riservata</h2>
+
+    <form id="login-form" action="index.php?page=process_login" method="post" class="text-start">
+
+      <!-- MESSAGGIO DI ERRORE / SUCCESSO -->
+      <div class="mb-3"><[error_login]></div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control"
+          placeholder="name@example.com"
+          required
+        >
       </div>
 
-      <!-- FORM LOGIN -->
-      <div class="col-md-5">
-        <form id="login-form" class="login-form"
-              action="index.php?page=process_login" method="post">
-
-          <!-- ALERT ESITO -->
-          <div><[error_login]></div>
-
-          <div class="row">
-            <div class="form-group col-md-10">
-              <label class="form-label">E-mail</label>
-              <input type="email" class="form-control" name="email" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-md-10">
-              <label class="form-label">Password</label>
-              <input type="password" class="form-control" name="password" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="control-group col-md-10">
-              <div class="checkbox check-success">
-                <input type="checkbox" id="remember" name="remember" value="1">
-                <label for="remember">Ricordami</label>
-                <span class="pull-right"><a href="#">Password dimenticata?</a></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-10">
-              <button class="btn btn-primary btn-cons pull-right" type="submit">Login</button>
-            </div>
-          </div>
-
-        </form>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-control"
+          placeholder="••••••••"
+          required
+        >
       </div>
 
-    </div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
+          <label class="form-check-label" for="remember">Ricordami</label>
+        </div>
+        <a href="#" class="small">Password dimenticata?</a>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+    </form>
   </div>
 
   <!-- JS -->
