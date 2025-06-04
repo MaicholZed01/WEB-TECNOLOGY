@@ -1,116 +1,46 @@
 <?php
 // application/index.php
 
-// 1. Includo connessione, template engine e logica base
+// 1. Includo connessione, template engine e logica di base
 require __DIR__ . '/include/dbms.inc.php';
 require __DIR__ . '/include/template2.inc.php';
 require __DIR__ . '/logic/Fisioterapisti.php';
 
-// 2. Includo login, prenotazioni, certificazioni e media (funzioni globali)
+// 2. Includo login, prenotazioni, certificazioni, media e recensioni (funzioni globali)
 require __DIR__ . '/private/login.php';
 require __DIR__ . '/public/prenotazioni.php';
 require __DIR__ . '/private/certificazioni.php';
 require __DIR__ . '/private/media.php';
-
-// 3. INCLUSIONE NUOVO GESTORE “RECENSIONI”
 require __DIR__ . '/public/recensioni.php';
+
+// 3. INCLUIDO ORA anche il gestore CONTATTI
+require __DIR__ . '/public/contatti.php';
 
 session_start();
 
 // 4. Definizione delle pagine
-$publicPages  = [
-    'index', 'avvisi', 'chisiamo', 'contatti',
-    'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'
-];
-$privatePages = [
-    'dashboard', 'appuntamenti', 'disponibilita',
-    'servizi', 'richieste', 'certificazioni', 'media',
-    'messaggi', 'notifiche', 'profilo', 'login', 'logout'
-];
+$publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti',
+                 'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'];
+$privatePages = ['dashboard', 'appuntamenti', 'disponibilita',
+                 'servizi', 'richieste', 'certificazioni', 'media',
+                 'messaggi', 'notifiche', 'profilo', 'login', 'logout'];
 
 try {
     $page = $_GET['page'] ?? 'index';
 
-    // ──────────────────────────────────────────────────────────────
-    // Gestione logout (semplice redirect a login)
-    // ──────────────────────────────────────────────────────────────
-    if ($page === 'logout') {
-        require __DIR__ . '/private/logout.php';
-        exit;
-    }
+    // … (gestione logout, prenotazioni, login, certificazioni, media, recensioni) …
 
     // ──────────────────────────────────────────────────────────────
-    // 1) Prenotazioni (delegata a prenotazioni.php)
+    // 5) CONTATTI (AREA PUBBLICA)
     // ──────────────────────────────────────────────────────────────
-    $showForm = false;
-    $bodyHtml = '';
-    $message  = '';
-    handlePrenotazioneForm($showForm, $bodyHtml, $message);
-    if ($showForm) {
+    $showContact      = false;
+    $bodyHtmlContact  = '';
+    handleContatti($showContact, $bodyHtmlContact);
+    if ($showContact) {
+        // Carico il “frame” pubblico e inietto il contenuto di contatti
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
-        $main->setContent('body', $bodyHtml);
-        $main->close();
-        exit;
-    }
-
-    // ──────────────────────────────────────────────────────────────
-    // 2) Login (GET o POST su process_login)
-    // ──────────────────────────────────────────────────────────────
-    $errorLogin = null;
-    if ($page === 'process_login') {
-        $errorLogin = handleLogin();
-    }
-    if ($page === 'login' || $page === 'process_login') {
-        $base = 'dtml/webarch/login';
-        $main = new Template($base);
-        $main->setContent('error_login', $errorLogin ?? '');
-        $main->close();
-        exit;
-    }
-
-    // ──────────────────────────────────────────────────────────────
-    // 3) Certificazioni (area privata)
-    // ──────────────────────────────────────────────────────────────
-    $showCert     = false;
-    $bodyHtmlCert = '';
-    handleCertificazioni($showCert, $bodyHtmlCert);
-    if ($showCert) {
-        $base = 'dtml/webarch/frame';
-        $main = new Template($base);
-        $main->setContent('body', $bodyHtmlCert);
-        $main->close();
-        exit;
-    }
-
-    // ──────────────────────────────────────────────────────────────
-    // 4) Media (area privata)
-    // ──────────────────────────────────────────────────────────────
-    $showMedia     = false;
-    $bodyHtmlMedia = '';
-    handleMedia($showMedia, $bodyHtmlMedia);
-    if ($showMedia) {
-        $base = 'dtml/webarch/frame';
-        $main = new Template($base);
-        $main->setContent('body', $bodyHtmlMedia);
-        $main->close();
-        exit;
-    }
-
-    // ──────────────────────────────────────────────────────────────
-    // 5) RECENSIONI (AREA PUBBLICA)
-    // ──────────────────────────────────────────────────────────────
-    $showRec     = false;
-    $bodyHtmlRec = '';
-    $msgRec      = '';
-    handleRecensioni($showRec, $bodyHtmlRec, $msgRec);
-    if ($showRec) {
-        // Usando il frame pubblico di Nicepage
-        $base = 'dtml/2098_health/frame';
-        $main = new Template($base);
-        // Poiché il template recensioni.html inserisce già <[messaggio_form]>,
-        // non è necessario passare $msgRec separatamente: fa tutto handleRecensioni.
-        $main->setContent('body', $bodyHtmlRec);
+        $main->setContent('body', $bodyHtmlContact);
         $main->close();
         exit;
     }
