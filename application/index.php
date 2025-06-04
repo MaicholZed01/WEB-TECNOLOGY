@@ -18,6 +18,9 @@ require __DIR__ . '/public/contatti.php';
 require __DIR__ . '/public/fisioterapisti.php';
 require __DIR__ . '/public/dettagli_fisioterapista.php';
 
+require __DIR__ . '/public/avvisi.php';
+require __DIR__ . '/public/footer_news.php';
+
 session_start();
 
 // 4. Definizione delle pagine
@@ -150,6 +153,26 @@ try {
         $main->close();
         exit;
     }
+    
+    // ──────────────────────────────────────────────────────────────
+//  AVVISI / NEWS (AREA PUBBLICA)
+// ──────────────────────────────────────────────────────────────
+$showAvvisi     = false;
+$bodyHtmlAvvisi = '';
+handleAvvisi($showAvvisi, $bodyHtmlAvvisi);
+if ($showAvvisi) {
+    // Se siamo in avvisi, usiamo il frame pubblico e iniettiamo avvisi
+    $base = 'dtml/2098_health/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyHtmlAvvisi);
+
+    // Prima di chiudere, inietto le ultime news nel footer:
+    $footerHtml = getFooterNews(3);
+    $main->setContent('footer_news', $footerHtml);
+
+    $main->close();
+    exit;
+}
 
     // ──────────────────────────────────────────────────────────────
     // 9) (Opzionale) Protezione area privata
@@ -192,5 +215,9 @@ $main = new Template($base);
 if (!empty($body) && file_exists(__DIR__ . "/$body.html")) {
     $main->setContent('body', (new Template($body))->get());
 }
+
+$footerHtml = getFooterNews(3);
+$main->setContent('footer_news', $footerHtml);
+
 $main->close();
 ?>
