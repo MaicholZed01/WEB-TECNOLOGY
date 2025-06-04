@@ -1,18 +1,16 @@
+<!-- CERTIFICAZIONI UI TEMPLATE -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <title>Certificazioni – Area Privata</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <!-- CORE CSS -->
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
 </head>
 <body>
-
-  <!-- (Eventuale navbar/header dell’area privata) -->
 
   <section id="certificazioni">
     <div class="page-content">
@@ -33,7 +31,8 @@
 
                   <!-- MESSAGGIO ESITO OPERAZIONE -->
                   <div><[messaggio_form]></div>
-					
+                  <div><[debug_comment]></div>
+
                   <!-- NOME CERTIFICAZIONE -->
                   <div class="form-group">
                     <label class="col-sm-3 control-label">Nome*</label>
@@ -70,11 +69,12 @@
                     </div>
                   </div>
 
-                  <!-- URL DOCUMENTO -->
+                  <!-- URL DOCUMENTO (ora type="text" per renderlo davvero facoltativo) -->
                   <div class="form-group">
                     <label class="col-sm-3 control-label">URL Documento</label>
                     <div class="col-sm-9">
-                      <input type="url" class="form-control" name="url_documento"
+                      <input type="text" class="form-control" name="url_documento"
+                             placeholder="es: uploads/certificati/lucia_diploma.pdf"
                              value="<[old_url_documento]>">
                     </div>
                   </div>

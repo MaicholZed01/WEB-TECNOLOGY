@@ -37,11 +37,11 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 1) Gestione del form di prenotazione (delegata a prenotazioni.php)
+    // 1) Prenotazioni (delegata a prenotazioni.php)
     // ──────────────────────────────────────────────────────────────
-    $showForm    = false;
-    $bodyHtml    = '';
-    $message     = '';
+    $showForm = false;
+    $bodyHtml = '';
+    $message  = '';
     handlePrenotazioneForm($showForm, $bodyHtml, $message);
     if ($showForm) {
         $base = 'dtml/2098_health/frame';
@@ -52,7 +52,7 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 2) Gestione del login (GET o POST su process_login)
+    // 2) Login (GET o POST su process_login)
     // ──────────────────────────────────────────────────────────────
     $errorLogin = null;
     if ($page === 'process_login') {
@@ -67,13 +67,12 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 3) Gestione delle Certificazioni (area privata)
+    // 3) Certificazioni (area privata)
     // ──────────────────────────────────────────────────────────────
     $showCert     = false;
     $bodyHtmlCert = '';
     handleCertificazioni($showCert, $bodyHtmlCert);
     if ($showCert) {
-        // Se handleCertificazioni imposta $showCert=true, mostro il frame privato
         $base = 'dtml/webarch/frame';
         $main = new Template($base);
         $main->setContent('body', $bodyHtmlCert);

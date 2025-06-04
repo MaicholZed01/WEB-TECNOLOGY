@@ -1,130 +1,130 @@
-<!-- MESSAGGI -->
-<section id="messaggi">
-  <div class="page-content">
-    <div class="content">
-
-      <!-- TITOLO PAGINA -->
-      <div class="page-title">
-        <h3>Messaggi</h3>
-      </div>
-
-      <!-- MESSAGGIO DI ESITO (ad esempio invio o cancellazione) -->
-      <div><[messaggio_form]></div>
-
-      <!-- TABELLA CONVERSAZIONI -->
-      <div class="row spacing-bottom">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-
-              <table class="table table-bordered table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Cliente</th>
-                    <th>Oggetto</th>
-                    <th>Ultimo Messaggio</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[lista_messaggi]>
-                  <!--
-                    Esempio di riga generata dal controller:
-                    <tr>
-                      <td>03/06/2025 14:20</td>
-                      <td>Giulia Bianchi</td>
-                      <td>Prenotazione Appuntamento</td>
-                      <td>Buongiorno, vorrei confermare la data...</td>
-                      <td>
-                        <a href="index.php?page=messaggi&action=view&id=27"
-                           class="btn btn-primary btn-xs">
-                          Apri
-                        </a>
-                        <a href="index.php?page=messaggi&action=delete&id=27"
-                           class="btn btn-danger btn-xs"
-                           onclick="return confirm('Eliminare questa conversazione?');">
-                          Elimina
-                        </a>
-                      </td>
-                    </tr>
-                  -->
-                </tbody>
-              </table>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AREA DI LETTURA E RISPOSTA SU SINGOLO THREAD -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-
-              <!-- Selezionare una conversazione per visualizzare i dettagli -->
-              <div><[messaggio_seleziona_thread]></div>
-
-              <!-- SOLO SE È PASSATO action=view E ID VALIDO -->
-              <div id="dettaglio-thread">
-                <[dettaglio_thread]>
-                <!--
-                  Esempio di markup generato dal controller:
-                  <div class="thread-header">
-                    <h4>Conversazione con: Giulia Bianchi</h4>
-                    <p><small>Oggetto: Prenotazione Appuntamento</small></p>
-                  </div>
-                  <hr>
-                  <div class="messages-list">
-                    <div class="message from-cliente">
-                      <div class="message-meta">
-                        <strong>Giulia Bianchi</strong>
-                        <span class="text-muted">03/06/2025 14:20</span>
-                      </div>
-                      <div class="message-body">
-                        Buongiorno, vorrei confermare la data dell’appuntamento del 05/06…
-                      </div>
-                    </div>
-                    <div class="message from-fisio">
-                      <div class="message-meta">
-                        <strong>Io</strong>
-                        <span class="text-muted">03/06/2025 14:45</span>
-                      </div>
-                      <div class="message-body">
-                        Ciao Giulia, confermo il tuo appuntamento per il 05/06 alle 10:00.
-                      </div>
-                    </div>
-                    <!-- Altri messaggi… -->
-                  </div>
-                  <hr>
-                  <!-- FORM PER INVIO RISPOSTA -->
-                  <form id="form-risposta" class="form-horizontal"
-                        action="index.php?page=messaggi&action=send&id=< [id_thread] >" method="post">
-
-                    <!-- LABEL RISPOSTA E AREA TESTO -->
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Risposta*</label>
-                      <div class="col-sm-9">
-                        <textarea class="form-control" rows="4" name="testo" required></textarea>
-                      </div>
-                    </div>
-
-                    <!-- PULSANTE INVIO -->
-                    <div class="form-group">
-                      <div class="col-sm-offset-3 col-sm-9">
-                        <button type="submit" class="btn btn-primary">Invia Risposta</button>
-                      </div>
-                    </div>
-
-                  </form>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+<!-- MESSAGGI -->
+<section id="messaggi">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Messaggi</h3>
+      </div>
+
+      <!-- MESSAGGIO DI ESITO (ad esempio invio o cancellazione) -->
+      <div><[messaggio_form]></div>
+
+      <!-- TABELLA CONVERSAZIONI -->
+      <div class="row spacing-bottom">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Oggetto</th>
+                    <th>Ultimo Messaggio</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_messaggi]>
+                  <!--
+                    Esempio di riga generata dal controller:
+                    <tr>
+                      <td>03/06/2025 14:20</td>
+                      <td>Giulia Bianchi</td>
+                      <td>Prenotazione Appuntamento</td>
+                      <td>Buongiorno, vorrei confermare la data...</td>
+                      <td>
+                        <a href="index.php?page=messaggi&action=view&id=27"
+                           class="btn btn-primary btn-xs">
+                          Apri
+                        </a>
+                        <a href="index.php?page=messaggi&action=delete&id=27"
+                           class="btn btn-danger btn-xs"
+                           onclick="return confirm('Eliminare questa conversazione?');">
+                          Elimina
+                        </a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AREA DI LETTURA E RISPOSTA SU SINGOLO THREAD -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <!-- Selezionare una conversazione per visualizzare i dettagli -->
+              <div><[messaggio_seleziona_thread]></div>
+
+              <!-- SOLO SE È PASSATO action=view E ID VALIDO -->
+              <div id="dettaglio-thread">
+                <[dettaglio_thread]>
+                <!--
+                  Esempio di markup generato dal controller:
+                  <div class="thread-header">
+                    <h4>Conversazione con: Giulia Bianchi</h4>
+                    <p><small>Oggetto: Prenotazione Appuntamento</small></p>
+                  </div>
+                  <hr>
+                  <div class="messages-list">
+                    <div class="message from-cliente">
+                      <div class="message-meta">
+                        <strong>Giulia Bianchi</strong>
+                        <span class="text-muted">03/06/2025 14:20</span>
+                      </div>
+                      <div class="message-body">
+                        Buongiorno, vorrei confermare la data dell’appuntamento del 05/06…
+                      </div>
+                    </div>
+                    <div class="message from-fisio">
+                      <div class="message-meta">
+                        <strong>Io</strong>
+                        <span class="text-muted">03/06/2025 14:45</span>
+                      </div>
+                      <div class="message-body">
+                        Ciao Giulia, confermo il tuo appuntamento per il 05/06 alle 10:00.
+                      </div>
+                    </div>
+                    <!-- Altri messaggi… -->
+                  </div>
+                  <hr>
+                  <!-- FORM PER INVIO RISPOSTA -->
+                  <form id="form-risposta" class="form-horizontal"
+                        action="index.php?page=messaggi&action=send&id=< [id_thread] >" method="post">
+
+                    <!-- LABEL RISPOSTA E AREA TESTO -->
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Risposta*</label>
+                      <div class="col-sm-9">
+                        <textarea class="form-control" rows="4" name="testo" required></textarea>
+                      </div>
+                    </div>
+
+                    <!-- PULSANTE INVIO -->
+                    <div class="form-group">
+                      <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-primary">Invia Risposta</button>
+                      </div>
+                    </div>
+
+                  </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

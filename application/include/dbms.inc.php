@@ -5,7 +5,7 @@
 
     private function __construct() {
         // Sostituisci con le tue credenziali Altervista
-        $this->conn = new mysqli('localhost', 'root', '', 'my_lazzarini21');
+        $this->conn = new mysqli('localhost', 'lazzarini21', '', 'my_lazzarini21');
         if ($this->conn->connect_error) {
             die('Connection error: ' . $this->conn->connect_error);
         }

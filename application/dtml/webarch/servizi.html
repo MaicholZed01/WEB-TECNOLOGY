@@ -1,119 +1,119 @@
-<!-- SERVIZI PERSONALI -->
-<section id="servizi">
-  <div class="page-content">
-    <div class="content">
-
-      <!-- TITOLO PAGINA -->
-      <div class="page-title">
-        <h3>Servizi</h3>
-      </div>
-
-      <!-- FORM AGGIUNGI / MODIFICA SERVIZIO -->
-      <div class="row spacing-bottom">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-
-              <form id="form-servizi" class="form-horizontal"
-                    action="index.php?page=servizi&action=save" method="post">
-
-                <!-- MESSAGGIO ESITO -->
-                <div><[messaggio_form]></div>
-
-                <!-- SELEZIONE SERVIZIO -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Servizio*</label>
-                  <div class="col-sm-9">
-                    <select class="form-control" name="servizio_id" required>
-                      <option value="">-- Seleziona Servizio --</option>
-                      <[lista_servizi_master]>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- PREZZO PERSONALIZZATO -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Prezzo Personalizzato</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control"
-                           name="prezzo_personalizzato"
-                           value="<[old_prezzo]>">
-                  </div>
-                </div>
-
-                <!-- ATTIVO -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Attivo</label>
-                  <div class="col-sm-9">
-                    <input type="checkbox" name="attivo" value="1" <[old_attivo]>>
-                  </div>
-                </div>
-
-                <!-- HIDDEN ID PER MODIFICA -->
-                <input type="hidden" name="id_servizio_fisio" value="<[old_id]>">
-
-                <!-- PULSANTI -->
-                <div class="form-group">
-                  <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit" class="btn btn-primary">
-                      <[label_submit]>  <!-- “Aggiungi” o “Modifica” -->
-                    </button>
-                    &nbsp;
-                    <a href="index.php?page=servizi" class="btn btn-default">
-                      Annulla
-                    </a>
-                  </div>
-                </div>
-
-              </form>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TABELLA SERVIZI PERSONALI -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-              <table class="table table-bordered table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Servizio</th>
-                    <th>Prezzo Base</th>
-                    <th>Prezzo Personalizzato</th>
-                    <th>Attivo</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[lista_servizi_fisio]>
-                  <!--
-                    Esempio di riga generata dal controller:
-                    <tr>
-                      <td>Fisioterapia Sportiva</td>
-                      <td>€ 50,00</td>
-                      <td>€ 45,00</td>
-                      <td>Sì</td>
-                      <td>
-                        <a href="index.php?page=servizi&action=edit&id=7"
-                           class="btn btn-warning btn-xs">Modifica</a>
-                        <a href="index.php?page=servizi&action=delete&id=7"
-                           class="btn btn-danger btn-xs"
-                           onclick="return confirm('Eliminare il servizio?');">
-                          Elimina
-                        </a>
-                      </td>
-                    </tr>
-                  -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+<!-- SERVIZI PERSONALI -->
+<section id="servizi">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Servizi</h3>
+      </div>
+
+      <!-- FORM AGGIUNGI / MODIFICA SERVIZIO -->
+      <div class="row spacing-bottom">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <form id="form-servizi" class="form-horizontal"
+                    action="index.php?page=servizi&action=save" method="post">
+
+                <!-- MESSAGGIO ESITO -->
+                <div><[messaggio_form]></div>
+
+                <!-- SELEZIONE SERVIZIO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Servizio*</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" name="servizio_id" required>
+                      <option value="">-- Seleziona Servizio --</option>
+                      <[lista_servizi_master]>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- PREZZO PERSONALIZZATO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Prezzo Personalizzato</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control"
+                           name="prezzo_personalizzato"
+                           value="<[old_prezzo]>">
+                  </div>
+                </div>
+
+                <!-- ATTIVO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Attivo</label>
+                  <div class="col-sm-9">
+                    <input type="checkbox" name="attivo" value="1" <[old_attivo]>>
+                  </div>
+                </div>
+
+                <!-- HIDDEN ID PER MODIFICA -->
+                <input type="hidden" name="id_servizio_fisio" value="<[old_id]>">
+
+                <!-- PULSANTI -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">
+                      <[label_submit]>  <!-- “Aggiungi” o “Modifica” -->
+                    </button>
+                    &nbsp;
+                    <a href="index.php?page=servizi" class="btn btn-default">
+                      Annulla
+                    </a>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELLA SERVIZI PERSONALI -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Servizio</th>
+                    <th>Prezzo Base</th>
+                    <th>Prezzo Personalizzato</th>
+                    <th>Attivo</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_servizi_fisio]>
+                  <!--
+                    Esempio di riga generata dal controller:
+                    <tr>
+                      <td>Fisioterapia Sportiva</td>
+                      <td>€ 50,00</td>
+                      <td>€ 45,00</td>
+                      <td>Sì</td>
+                      <td>
+                        <a href="index.php?page=servizi&action=edit&id=7"
+                           class="btn btn-warning btn-xs">Modifica</a>
+                        <a href="index.php?page=servizi&action=delete&id=7"
+                           class="btn btn-danger btn-xs"
+                           onclick="return confirm('Eliminare il servizio?');">
+                          Elimina
+                        </a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

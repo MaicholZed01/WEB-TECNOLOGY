@@ -1,97 +1,97 @@
-<!-- PRENOTAZIONE -->
-<section id="appointment" data-stellar-background-ratio="3">
-  <div class="container">
-    <div class="row">
-
-      <div class="col-md-6 col-sm-6">
-        <img src="/tec-web/application/dtml/2098_health/images/appointment-image.jpg" class="img-responsive" alt="Prenota">
-      </div>
-
-      <div class="col-md-6 col-sm-6">
-        <form id="appointment-form" class="appnt-form"
-              action="index.php?page=form_prenotazione" method="post">
-
-          <!-- TITOLO -->
-          <div class="section-title wow fadeInUp" data-wow-delay="0.4s">
-            <h2>Prenota un appuntamento</h2>
-          </div>
-
-          <!-- MESSAGGIO DI ERRORE / SUCCESSO -->
-          <div class="wow fadeInUp" data-wow-delay="0.6s">
-            <[messaggio_form]>
-          </div>
-
-          <!-- DATI ANAGRAFICI -->
-          <div class="wow fadeInUp" data-wow-delay="0.8s">
-            <div class="row">
-              <div class="col-md-6 col-sm-6">
-                <label for="nome">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" required>
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="cognome">Cognome</label>
-                <input type="text" class="form-control" id="cognome" name="cognome" required>
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="email">E-mail</label>
-                <input type="email" class="form-control" id="email" name="email">
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="telefono">Telefono</label>
-                <input type="tel" class="form-control" id="telefono" name="telefono">
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="data_nascita">Data di nascita</label>
-                <input type="date" class="form-control" id="data_nascita" name="data_nascita">
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="sesso">Sesso</label>
-                <select class="form-control" id="sesso" name="sesso">
-                  <option value="">Seleziona</option>
-                  <option value="Maschio">Maschio</option>
-                  <option value="Femmina">Femmina</option>
-                  <option value="Altro">Altro</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- SCELTA SERVIZIO -->
-            <label for="servizio_id" class="top-gap">Seleziona Servizio</label>
-            <select class="form-control" id="servizio_id" name="servizio_id" required>
-              <[lista_servizi]>
-            </select>
-
-            <!-- SCELTA FISIOTERAPISTA -->
-            <label for="fisioterapista_id">Seleziona Fisioterapista (facoltativo)</label>
-            <select class="form-control" id="fisioterapista_id" name="fisioterapista_id">
-              <option value="">Qualunque disponibile</option>
-              <[lista_fisioterapisti]>
-            </select>
-
-            <!-- DATA & FASCIA -->
-            <div class="row">
-              <div class="col-md-6 col-sm-6">
-                <label for="data">Data preferita</label>
-                <input type="date" class="form-control" id="data" name="data" required>
-              </div>
-              <div class="col-md-6 col-sm-6">
-                <label for="fascia_id">Fascia oraria</label>
-                <select class="form-control" id="fascia_id" name="fascia_id" required>
-                  <[lista_fasce]>
-                </select>
-              </div>
-            </div>
-
-            <!-- NOTE -->
-            <label for="note">Note aggiuntive</label>
-            <textarea class="form-control" rows="4" id="note" name="note"></textarea>
-
-            <!-- SUBMIT -->
-            <button type="submit" class="form-control" id="submit-prenota">Invia richiesta</button>
-          </div>
-        </form>
-      </div>
-
-    </div>
-  </div>
-</section>
+<!-- PRENOTAZIONE -->
+<section id="appointment" data-stellar-background-ratio="3">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-6 col-sm-6">
+        <img src="/tec-web/application/dtml/2098_health/images/appointment-image.jpg" class="img-responsive" alt="Prenota">
+      </div>
+
+      <div class="col-md-6 col-sm-6">
+        <form id="appointment-form" class="appnt-form"
+              action="index.php?page=form_prenotazione" method="post">
+
+          <!-- TITOLO -->
+          <div class="section-title wow fadeInUp" data-wow-delay="0.4s">
+            <h2>Prenota un appuntamento</h2>
+          </div>
+
+          <!-- MESSAGGIO DI ERRORE / SUCCESSO -->
+          <div class="wow fadeInUp" data-wow-delay="0.6s">
+            <[messaggio_form]>
+          </div>
+
+          <!-- DATI ANAGRAFICI -->
+          <div class="wow fadeInUp" data-wow-delay="0.8s">
+            <div class="row">
+              <div class="col-md-6 col-sm-6">
+                <label for="nome">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="cognome">Cognome</label>
+                <input type="text" class="form-control" id="cognome" name="cognome" required>
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="email">E-mail</label>
+                <input type="email" class="form-control" id="email" name="email">
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="telefono">Telefono</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono">
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="data_nascita">Data di nascita</label>
+                <input type="date" class="form-control" id="data_nascita" name="data_nascita">
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="sesso">Sesso</label>
+                <select class="form-control" id="sesso" name="sesso">
+                  <option value="">Seleziona</option>
+                  <option value="Maschio">Maschio</option>
+                  <option value="Femmina">Femmina</option>
+                  <option value="Altro">Altro</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- SCELTA SERVIZIO -->
+            <label for="servizio_id" class="top-gap">Seleziona Servizio</label>
+            <select class="form-control" id="servizio_id" name="servizio_id" required>
+              <[lista_servizi]>
+            </select>
+
+            <!-- SCELTA FISIOTERAPISTA -->
+            <label for="fisioterapista_id">Seleziona Fisioterapista (facoltativo)</label>
+            <select class="form-control" id="fisioterapista_id" name="fisioterapista_id">
+              <option value="">Qualunque disponibile</option>
+              <[lista_fisioterapisti]>
+            </select>
+
+            <!-- DATA & FASCIA -->
+            <div class="row">
+              <div class="col-md-6 col-sm-6">
+                <label for="data">Data preferita</label>
+                <input type="date" class="form-control" id="data" name="data" required>
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <label for="fascia_id">Fascia oraria</label>
+                <select class="form-control" id="fascia_id" name="fascia_id" required>
+                  <[lista_fasce]>
+                </select>
+              </div>
+            </div>
+
+            <!-- NOTE -->
+            <label for="note">Note aggiuntive</label>
+            <textarea class="form-control" rows="4" id="note" name="note"></textarea>
+
+            <!-- SUBMIT -->
+            <button type="submit" class="form-control" id="submit-prenota">Invia richiesta</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>

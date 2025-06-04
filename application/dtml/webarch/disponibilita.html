@@ -1,114 +1,114 @@
-<!-- DISPONIBILITÀ -->
-<section id="disponibilita">
-  <div class="page-content">
-    <div class="content">
-
-      <!-- TITOLO PAGINA -->
-      <div class="page-title">
-        <h3>Gestione Disponibilità</h3>
-      </div>
-
-      <!-- FORM AGGIUNGI / MODIFICA FASCIA -->
-      <div class="row spacing-bottom">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-
-              <form id="form-disponibilita" class="form-horizontal"
-                    action="index.php?page=disponibilita&action=save" method="post">
-                
-                <!-- MESSAGGIO DI ESITO -->
-                <div><[messaggio_form]></div>
-
-                <!-- SELEZIONE SALA -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Sala*</label>
-                  <div class="col-sm-9">
-                    <select class="form-control" name="sala_id" required>
-                      <option value="">-- Seleziona Sala --</option>
-                      <[lista_sale]>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- DATA E ORA INIZIO -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Inizio*</label>
-                  <div class="col-sm-9">
-                    <input type="datetime-local" class="form-control" name="inizio"
-                           value="<[old_inizio]>" required>
-                  </div>
-                </div>
-
-                <!-- DATA E ORA FINE -->
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Fine*</label>
-                  <div class="col-sm-9">
-                    <input type="datetime-local" class="form-control" name="fine"
-                           value="<[old_fine]>" required>
-                  </div>
-                </div>
-
-                <!-- HIDDEN ID PER MODIFICA (vuoto se nuova) -->
-                <input type="hidden" name="fascia_id" value="<[old_fascia_id]>">
-
-                <!-- PULSANTE INVIO -->
-                <div class="form-group">
-                  <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit" class="btn btn-primary">
-                      <[label_submit]>  <!-- “Aggiungi” o “Modifica” a seconda del contesto -->
-                    </button>
-                    &nbsp;
-                    <a href="index.php?page=disponibilita" class="btn btn-default">Annulla</a>
-                  </div>
-                </div>
-              </form>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TABELLA DISPONIBILITÀ ESISTENTI -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-              <table class="table table-bordered table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Sala</th>
-                    <th>Inizio</th>
-                    <th>Fine</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[lista_disponibilita]>
-                  <!--
-                    Esempio riga generata dal controller:
-                    <tr>
-                      <td>Sala 1</td>
-                      <td>2025-06-10 09:00</td>
-                      <td>2025-06-10 12:00</td>
-                      <td>
-                        <a href="index.php?page=disponibilita&action=edit&id=45" 
-                           class="btn btn-warning btn-xs">Modifica</a>
-                        <a href="index.php?page=disponibilita&action=delete&id=45" 
-                           class="btn btn-danger btn-xs"
-                           onclick="return confirm('Sei sicuro di voler eliminare?');">
-                          Elimina
-                        </a>
-                      </td>
-                    </tr>
-                  -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+<!-- DISPONIBILITÀ -->
+<section id="disponibilita">
+  <div class="page-content">
+    <div class="content">
+
+      <!-- TITOLO PAGINA -->
+      <div class="page-title">
+        <h3>Gestione Disponibilità</h3>
+      </div>
+
+      <!-- FORM AGGIUNGI / MODIFICA FASCIA -->
+      <div class="row spacing-bottom">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+
+              <form id="form-disponibilita" class="form-horizontal"
+                    action="index.php?page=disponibilita&action=save" method="post">
+                
+                <!-- MESSAGGIO DI ESITO -->
+                <div><[messaggio_form]></div>
+
+                <!-- SELEZIONE SALA -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Sala*</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" name="sala_id" required>
+                      <option value="">-- Seleziona Sala --</option>
+                      <[lista_sale]>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- DATA E ORA INIZIO -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Inizio*</label>
+                  <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" name="inizio"
+                           value="<[old_inizio]>" required>
+                  </div>
+                </div>
+
+                <!-- DATA E ORA FINE -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Fine*</label>
+                  <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" name="fine"
+                           value="<[old_fine]>" required>
+                  </div>
+                </div>
+
+                <!-- HIDDEN ID PER MODIFICA (vuoto se nuova) -->
+                <input type="hidden" name="fascia_id" value="<[old_fascia_id]>">
+
+                <!-- PULSANTE INVIO -->
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary">
+                      <[label_submit]>  <!-- “Aggiungi” o “Modifica” a seconda del contesto -->
+                    </button>
+                    &nbsp;
+                    <a href="index.php?page=disponibilita" class="btn btn-default">Annulla</a>
+                  </div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELLA DISPONIBILITÀ ESISTENTI -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Sala</th>
+                    <th>Inizio</th>
+                    <th>Fine</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <[lista_disponibilita]>
+                  <!--
+                    Esempio riga generata dal controller:
+                    <tr>
+                      <td>Sala 1</td>
+                      <td>2025-06-10 09:00</td>
+                      <td>2025-06-10 12:00</td>
+                      <td>
+                        <a href="index.php?page=disponibilita&action=edit&id=45" 
+                           class="btn btn-warning btn-xs">Modifica</a>
+                        <a href="index.php?page=disponibilita&action=delete&id=45" 
+                           class="btn btn-danger btn-xs"
+                           onclick="return confirm('Sei sicuro di voler eliminare?');">
+                          Elimina
+                        </a>
+                      </td>
+                    </tr>
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
