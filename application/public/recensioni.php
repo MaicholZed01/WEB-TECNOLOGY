@@ -1,86 +1,123 @@
-<?php
-// application/public/recensioni.php
-
-require "../include/dbms.inc.php";
-require "../include/template2.inc.php";
-require "../logic/Appuntamenti.php";
-require "../logic/Richieste.php";
-
-$main = new Template("application/dtml/2098_health/frame");
-$body = new Template("application/dtml/2098_health/recensioni");
-
-// 1) Recupera elenco di appuntamenti già completati (per selezionare a quale lasciare recensione)
-$listaApp = Appuntamenti::listCompleted();  
-// listCompleted() esegue qualcosa come:
-// SELECT a.appuntamento_id, req.nome, req.cognome, a.aggiornato_il
-//  FROM appuntamenti AS a
-//  JOIN richieste AS req ON a.richiesta_id = req.richiesta_id
-//  WHERE a.stato = 'Completato'
-$htmlOptions = "<option value=\"\">-- Seleziona Appuntamento --</option>";
-foreach ($listaApp as $app) {
-    $idApp = intval($app['appuntamento_id']);
-    $nome  = htmlspecialchars($app['nome']);
-    $cogn  = htmlspecialchars($app['cognome']);
-    $dataA = date("d/m/Y", strtotime($app['aggiornato_il']));
-    $htmlOptions .= "<option value=\"$idApp\">$dataA – $nome $cogn</option>";
-}
-$body->setContent("lista_appuntamento_option", $htmlOptions);
-
-// 2) Se POST => salva la recensione
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $app_id     = intval($_POST['appuntamento_id'] ?? 0);
-    $valutazione = intval($_POST['valutazione'] ?? 0);
-    $commento   = trim($_POST['commento'] ?? "");
-    $errore      = "";
-
-    if ($app_id <= 0) {
-        $errore = "Devi selezionare un appuntamento valido.";
-    } elseif ($valutazione < 1 || $valutazione > 5) {
-        $errore = "La valutazione deve essere un numero tra 1 e 5.";
-    }
-
-    if ($errore === "") {
-        $dati = [
-            'appuntamento_id' => $app_id,
-            'valutazione'     => $valutazione,
-            'commento'        => $commento
-        ];
-        $ok = Appuntamenti::addReview($dati);
-        if ($ok) {
-            $body->setContent("messaggio_form", "<div class=\"alert alert-success\">Recensione salvata con successo.</div>");
-        } else {
-            $body->setContent("messaggio_form", "<div class=\"alert alert-danger\">Errore durante il salvataggio della recensione.</div>");
-        }
-    } else {
-        $body->setContent("messaggio_form", "<div class=\"alert alert-danger\">$errore</div>");
-    }
-
-    // Ripristina selezioni  
-    $body->setContent("old_appuntamento_id", $app_id);
-    $body->setContent("sel_val_1",   $valutazione===1 ? "selected" : "");
-    $body->setContent("sel_val_2",   $valutazione===2 ? "selected" : "");
-    $body->setContent("sel_val_3",   $valutazione===3 ? "selected" : "");
-    $body->setContent("sel_val_4",   $valutazione===4 ? "selected" : "");
-    $body->setContent("sel_val_5",   $valutazione===5 ? "selected" : "");
-    $body->setContent("old_commento", htmlspecialchars($commento));
-    $body->setContent("old_nome_cliente",    ""); // non usato in questo contesto
-    $body->setContent("old_cognome_cliente", ""); // non usato in questo contesto
-}
-else {
-    // Primo accesso, campi vuoti
-    $body->setContent("messaggio_form", "");
-    $body->setContent("old_appuntamento_id", "");
-    $body->setContent("sel_val_1",   "");
-    $body->setContent("sel_val_2",   "");
-    $body->setContent("sel_val_3",   "");
-    $body->setContent("sel_val_4",   "");
-    $body->setContent("sel_val_5",   "");
-    $body->setContent("old_commento",       "");
-    $body->setContent("old_nome_cliente",    "");
-    $body->setContent("old_cognome_cliente", "");
-}
-
-// Render finale
-$main->setContent("body", $body->get());
-$main->close();
+<?php
+// application/public/recensioni.php
+
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
+
+/**
+ * handleRecensioni(&$showRec, &$bodyHtmlRec)
+ *   - Se $_GET['page']=='recensioni', imposta $showRec=true.
+ *   - Gestisce l’inserimento POST (action=save) e usa Post-Redirect-Get per il flash message.
+ *   - Verifica che esista un appuntamento con quell'id e che nome/cognome corrispondano alla richiesta.
+ *   - Al primo POST (sia in caso di errore sia di successo) setta $_SESSION['rec_flash'] e ridirige a GET.
+ */
+function handleRecensioni(bool &$showRec, string &$bodyHtmlRec): void {
+    $showRec     = false;
+    $bodyHtmlRec = '';
+
+    if (!isset($_GET['page']) || $_GET['page'] !== 'recensioni') {
+        return;
+    }
+    $showRec = true;
+
+    // 1) Flash message
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $flash = $_SESSION['rec_flash'] ?? '';
+    unset($_SESSION['rec_flash']);
+
+    // 2) Se è un POST per salvare la recensione:
+    if (isset($_GET['action']) && $_GET['action'] === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $conn = Db::getConnection();
+
+        $nome_cli    = trim($_POST['nome_cliente'] ?? '');
+        $cogn_cli    = trim($_POST['cognome_cliente'] ?? '');
+        $app_id      = (int)($_POST['appuntamento_id'] ?? 0);
+        $valutazione = (int)($_POST['valutazione'] ?? 0);
+        $commento    = trim($_POST['commento'] ?? '');
+
+        // 3) Validazione campi obbligatori
+        if ($nome_cli === '' || $cogn_cli === '' || $app_id <= 0 || !in_array($valutazione, [1,2,3,4,5], true)) {
+            $_SESSION['rec_flash'] = '<div class="alert alert-danger">'
+                                  . 'Compila tutti i campi obbligatori (Nome, Cognome, Appuntamento ID, Valutazione).'
+                                  . '</div>';
+            header('Location: index.php?page=recensioni');
+            exit;
+        }
+
+        // 4) Verifico corrispondenza con appuntamento → richiesta
+        $nome_escape = $conn->real_escape_string($nome_cli);
+        $cogn_escape = $conn->real_escape_string($cogn_cli);
+
+        $checkSql = "
+            SELECT r.richiesta_id
+            FROM appuntamenti AS a
+            JOIN richieste   AS r ON a.richiesta_id = r.richiesta_id
+            WHERE a.appuntamento_id = $app_id
+              AND r.nome = '$nome_escape'
+              AND r.cognome = '$cogn_escape'
+            LIMIT 1
+        ";
+        $resCheck = $conn->query($checkSql);
+        if ($resCheck === false) {
+            $_SESSION['rec_flash'] = '<div class="alert alert-danger">'
+                                  . 'Errore SQL durante la verifica: '
+                                  . htmlspecialchars($conn->error, ENT_QUOTES)
+                                  . '</div>';
+            header('Location: index.php?page=recensioni');
+            exit;
+        }
+        if ($resCheck->num_rows === 0) {
+            $_SESSION['rec_flash'] = '<div class="alert alert-danger">'
+                                  . 'Appuntamento non trovato o nome/cognome non corrispondono.'
+                                  . '</div>';
+            header('Location: index.php?page=recensioni');
+            exit;
+        }
+
+        // 5) Tutto corretto → eseguo INSERT in recensioni
+        $commento_escape = $conn->real_escape_string($commento);
+        $insertSql = "
+            INSERT INTO recensioni
+              (appuntamento_id, valutazione, commento, creato_il)
+            VALUES (
+              $app_id,
+              $valutazione,
+              '" . ($commento_escape ? $commento_escape : '') . "',
+              NOW()
+            )
+        ";
+        if ($conn->query($insertSql)) {
+            $_SESSION['rec_flash'] = '<div class="alert alert-success">'
+                                  . 'Recensione salvata con successo!'
+                                  . '</div>';
+            header('Location: index.php?page=recensioni');
+            exit;
+        } else {
+            $_SESSION['rec_flash'] = '<div class="alert alert-danger">'
+                                  . 'Errore durante il salvataggio: '
+                                  . htmlspecialchars($conn->error, ENT_QUOTES)
+                                  . '</div>';
+            header('Location: index.php?page=recensioni');
+            exit;
+        }
+    }
+
+    // 6) Caso GET → carico il template spazzando vecchi dati POST
+    $tpl = new Template('dtml/2098_health/recensioni');
+    $tpl->setContent('messaggio_form', $flash);
+    // Non settiamo mai “old_…” perché vogliamo che il form sia sempre pulito al reload
+    $tpl->setContent('old_nome_cliente', '');
+    $tpl->setContent('old_cognome_cliente', '');
+    $tpl->setContent('old_appuntamento_id', '');
+    $tpl->setContent('sel_val_1', '');
+    $tpl->setContent('sel_val_2', '');
+    $tpl->setContent('sel_val_3', '');
+    $tpl->setContent('sel_val_4', '');
+    $tpl->setContent('sel_val_5', '');
+    $tpl->setContent('old_commento', '');
+
+    $bodyHtmlRec = $tpl->get();
+}
 ?>

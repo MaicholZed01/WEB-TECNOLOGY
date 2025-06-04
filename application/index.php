@@ -12,9 +12,12 @@ require __DIR__ . '/public/prenotazioni.php';
 require __DIR__ . '/private/certificazioni.php';
 require __DIR__ . '/private/media.php';
 
+// 3. INCLUSIONE NUOVO GESTORE “RECENSIONI”
+require __DIR__ . '/public/recensioni.php';
+
 session_start();
 
-// 3. Definizione delle pagine
+// 4. Definizione delle pagine
 $publicPages  = [
     'index', 'avvisi', 'chisiamo', 'contatti',
     'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'
@@ -95,7 +98,25 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 5) (Opzionale) Protezione area privata
+    // 5) RECENSIONI (AREA PUBBLICA)
+    // ──────────────────────────────────────────────────────────────
+    $showRec     = false;
+    $bodyHtmlRec = '';
+    $msgRec      = '';
+    handleRecensioni($showRec, $bodyHtmlRec, $msgRec);
+    if ($showRec) {
+        // Usando il frame pubblico di Nicepage
+        $base = 'dtml/2098_health/frame';
+        $main = new Template($base);
+        // Poiché il template recensioni.html inserisce già <[messaggio_form]>,
+        // non è necessario passare $msgRec separatamente: fa tutto handleRecensioni.
+        $main->setContent('body', $bodyHtmlRec);
+        $main->close();
+        exit;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 6) (Opzionale) Protezione area privata
     // ──────────────────────────────────────────────────────────────
     /*
     if (in_array($page, $privatePages) && empty($_SESSION['fisio'])) {
@@ -105,7 +126,7 @@ try {
     */
 
     // ──────────────────────────────────────────────────────────────
-    // 6) Routing “standard” per tutte le altre pagine
+    // 7) Routing “standard” per tutte le altre pagine
     // ──────────────────────────────────────────────────────────────
     if ($page === 'login') {
         $base = 'dtml/webarch/login';
@@ -129,7 +150,7 @@ try {
 }
 
 // ──────────────────────────────────────────────────────────────
-// 7) Rendering generale per tutte le altre pagine
+// 8) Rendering generale per tutte le altre pagine
 // ──────────────────────────────────────────────────────────────
 $main = new Template($base);
 if (!empty($body) && file_exists(__DIR__ . "/$body.html")) {
