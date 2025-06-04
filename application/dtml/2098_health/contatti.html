@@ -1,65 +1,101 @@
 <!-- CONTATTI -->
 <section id="contact" data-stellar-background-ratio="1">
   <div class="container">
+    <!-- PRIMA RIGA: “Dove siamo” E FORM -->
     <div class="row">
+      <!-- COLONNA SINISTRA: INFO “Dove siamo” -->
+      <div class="col-md-6 mb-4">
+        <div class="contact-info shadow-sm p-4" style="background: #fff; border-radius: .5rem;">
+          <div class="section-title mb-3">
+            <h2>Dove siamo</h2>
+          </div>
+          <p class="mb-2"><i class="fa fa-map-marker me-2"></i>Via Fontana murata, 10 – 03025 Monte San Giovanni Campano (FR)</p>
+          <p class="mb-2"><i class="fa fa-phone me-2"></i>333 4455566</p>
+          <p class="mb-0"><i class="fa fa-envelope-o me-2"></i><a href="mailto:info@fisiocenter.it">info@fisiocenter.it</a></p>
+        </div>
+      </div>
 
-      <!-- MAPPA -->
-      <div class="col-md-6 col-sm-6">
-        <div class="contact-map">
+      <!-- COLONNA DESTRA: FORM CONTATTI -->
+      <div class="col-md-6 mb-4">
+        <div class="login-card p-4 shadow-sm" style="background: #fff; border-radius: .5rem;">
+          <div class="section-title mb-3 text-center">
+            <h2>Contattaci</h2>
+          </div>
+          <form
+            id="contact-form"
+            role="form"
+            class="appnt-form text-start"
+            action="index.php?page=process_contatto"
+            method="post"
+          >
+            <div class="mb-3"><[messaggio_form]></div>
+
+            <div class="mb-3">
+              <label for="mittente" class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control"
+                id="mittente"
+                name="mittente"
+                placeholder="Il tuo nome"
+                required
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">E-mail</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="esempio@dominio.it"
+                required
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="contenuto" class="form-label">Messaggio</label>
+              <textarea
+                class="form-control"
+                rows="5"
+                id="contenuto"
+                name="contenuto"
+                placeholder="Scrivi qui il tuo messaggio..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Invia</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECONDA RIGA: MAPPA A META' LARGHEZZA CENTRATA -->
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="contact-map shadow-sm" style="border-radius: .5rem; overflow: hidden;">
           <iframe
-            src="https://maps.app.goo.gl/341ydo5zwtiynaSA9"
-            width="100%" height="340" frameborder="0" style="border:0" allowfullscreen>
+            width="100%"
+            height="340"
+            frameborder="0"
+            style="border:0"
+            src="https://maps.google.com/maps?q=Via%20Fontana%20murata%2010%2003025%20Monte%20San%20Giovanni%20Campano%20FR&output=embed"
+            allowfullscreen>
           </iframe>
         </div>
       </div>
-
-      <!-- FORM & INFO -->
-      <div class="col-md-6 col-sm-6">
-        <form id="contact-form" role="form" class="appnt-form wow fadeInUp" data-wow-delay="0.2s" action="index.php?page=process_contatto" method="post">
-          <!-- TITOLO -->
-          <div class="section-title wow fadeInUp" data-wow-delay="0.4s">
-        <h2>Contattaci</h2>
-          </div>
-
-          <!-- MESSAGGIO SUCCESSO/ERRORE -->
-          <div class="wow fadeInUp" data-wow-delay="0.6s">
-        <[messaggio_form]>
-          </div>
-
-          <!-- CAMPi -->
-          <div class="wow fadeInUp" data-wow-delay="0.8s">
-        <div class="row">
-          <div class="col-md-6 col-sm-6">
-            <label for="nome">Nome</label>
-            <input type="text" class="form-control" id="nome" name="nome" required>
-          </div>
-          <div class="col-md-6 col-sm-6">
-            <label for="email">E-mail</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-          </div>
-          <div class="col-md-12 col-sm-12">
-            <label for="messaggio">Messaggio</label>
-            <textarea class="form-control" rows="6" id="messaggio" name="messaggio" required></textarea>
-          </div>
-          <div class="col-md-4 col-sm-12">
-            <button type="submit" class="form-control" id="cf-submit">Invia</button>
-          </div>
-        </div>
-          </div>
-        </form>
-      </div>
-
-        <!-- INFO CONTATTI -->
-        <div class="contact-info wow fadeInUp" data-wow-delay="0.4s">
-          <div class="section-title">
-            <h2>Dove siamo</h2>
-          </div>
-          <p><i class="fa fa-map-marker"></i> Via Fontana murata, 10 CAP 03025 - Monte San Giovanni campano (FR)</p>
-          <p><i class="fa fa-phone"></i> 333 4455566</p>
-          <p><i class="fa fa-envelope-o"></i> <a href="mailto:info@fisiocenter.it">info@fisiocenter.it</a></p>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
+
+<!-- Assicurati di includere i CSS/JS di Webarch come in altri template:
+<link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
+<link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
+<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
+<script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+-->
