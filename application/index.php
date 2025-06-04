@@ -6,10 +6,11 @@ require __DIR__ . '/include/dbms.inc.php';
 require __DIR__ . '/include/template2.inc.php';
 require __DIR__ . '/logic/Fisioterapisti.php';
 
-// 2. Includo login, prenotazioni e certificazioni (funzioni globali)
+// 2. Includo login, prenotazioni, certificazioni e media (funzioni globali)
 require __DIR__ . '/private/login.php';
 require __DIR__ . '/public/prenotazioni.php';
 require __DIR__ . '/private/certificazioni.php';
+require __DIR__ . '/private/media.php';
 
 session_start();
 
@@ -20,9 +21,8 @@ $publicPages  = [
 ];
 $privatePages = [
     'dashboard', 'appuntamenti', 'disponibilita',
-    'servizi', 'richieste', 'media',
-    'certificazioni', 'messaggi', 'notifiche',
-    'profilo', 'login', 'logout'
+    'servizi', 'richieste', 'certificazioni', 'media',
+    'messaggi', 'notifiche', 'profilo', 'login', 'logout'
 ];
 
 try {
@@ -37,11 +37,11 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 1) Gestione del form di prenotazione (delegata a prenotazioni.php)
+    // 1) Prenotazioni (delegata a prenotazioni.php)
     // ──────────────────────────────────────────────────────────────
-    $showForm    = false;
-    $bodyHtml    = '';
-    $message     = '';
+    $showForm = false;
+    $bodyHtml = '';
+    $message  = '';
     handlePrenotazioneForm($showForm, $bodyHtml, $message);
     if ($showForm) {
         $base = 'dtml/2098_health/frame';
@@ -52,7 +52,7 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 2) Gestione del login (GET o POST su process_login)
+    // 2) Login (GET o POST su process_login)
     // ──────────────────────────────────────────────────────────────
     $errorLogin = null;
     if ($page === 'process_login') {
@@ -67,13 +67,12 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 3) Gestione delle Certificazioni (area privata)
+    // 3) Certificazioni (area privata)
     // ──────────────────────────────────────────────────────────────
     $showCert     = false;
     $bodyHtmlCert = '';
     handleCertificazioni($showCert, $bodyHtmlCert);
     if ($showCert) {
-        // Se handleCertificazioni imposta $showCert=true, mostro il frame privato
         $base = 'dtml/webarch/frame';
         $main = new Template($base);
         $main->setContent('body', $bodyHtmlCert);
@@ -82,7 +81,21 @@ try {
     }
 
     // ──────────────────────────────────────────────────────────────
-    // 4) (Opzionale) Protezione area privata
+    // 4) Media (area privata)
+    // ──────────────────────────────────────────────────────────────
+    $showMedia     = false;
+    $bodyHtmlMedia = '';
+    handleMedia($showMedia, $bodyHtmlMedia);
+    if ($showMedia) {
+        $base = 'dtml/webarch/frame';
+        $main = new Template($base);
+        $main->setContent('body', $bodyHtmlMedia);
+        $main->close();
+        exit;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 5) (Opzionale) Protezione area privata
     // ──────────────────────────────────────────────────────────────
     /*
     if (in_array($page, $privatePages) && empty($_SESSION['fisio'])) {
@@ -92,7 +105,7 @@ try {
     */
 
     // ──────────────────────────────────────────────────────────────
-    // 5) Routing “standard” per tutte le altre pagine
+    // 6) Routing “standard” per tutte le altre pagine
     // ──────────────────────────────────────────────────────────────
     if ($page === 'login') {
         $base = 'dtml/webarch/login';
@@ -116,7 +129,7 @@ try {
 }
 
 // ──────────────────────────────────────────────────────────────
-// 6) Rendering generale per tutte le altre pagine
+// 7) Rendering generale per tutte le altre pagine
 // ──────────────────────────────────────────────────────────────
 $main = new Template($base);
 if (!empty($body) && file_exists(__DIR__ . "/$body.html")) {
