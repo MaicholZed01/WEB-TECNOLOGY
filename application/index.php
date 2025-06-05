@@ -50,6 +50,8 @@ try {
     if ($showForm) {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
+        $footerHtml = getFooterNews(5);
+    $main->setContent('footer_news', $footerHtml);
         $main->setContent('body', $bodyHtml);
         $main->close();
         exit;
@@ -107,6 +109,8 @@ try {
     if ($showRec) {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
+        $footerHtml = getFooterNews(5);
+    $main->setContent('footer_news', $footerHtml);
         $main->setContent('body', $bodyRec);
         $main->close();
         exit;
@@ -121,6 +125,8 @@ try {
     if ($showContact) {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
+        $footerHtml = getFooterNews(5);
+    $main->setContent('footer_news', $footerHtml);
         $main->setContent('body', $bodyContact);
         $main->close();
         exit;
@@ -135,6 +141,10 @@ try {
     if ($showFisioList) {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
+        
+        $footerHtml = getFooterNews(5);
+    $main->setContent('footer_news', $footerHtml);
+        
         $main->setContent('body', $bodyFisioList);
         $main->close();
         exit;
@@ -167,7 +177,7 @@ if ($showAvvisi) {
     $main->setContent('body', $bodyHtmlAvvisi);
 
     // Prima di chiudere, inietto le ultime news nel footer:
-    $footerHtml = getFooterNews(3);
+    $footerHtml = getFooterNews(5);
     $main->setContent('footer_news', $footerHtml);
 
     $main->close();
@@ -216,7 +226,7 @@ if (!empty($body) && file_exists(__DIR__ . "/$body.html")) {
     $main->setContent('body', (new Template($body))->get());
 }
 
-$footerHtml = getFooterNews(3);
+$footerHtml = getFooterNews(5);
 $main->setContent('footer_news', $footerHtml);
 
 $main->close();
