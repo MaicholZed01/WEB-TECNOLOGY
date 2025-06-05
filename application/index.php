@@ -159,6 +159,8 @@ try {
     if ($showFisioDetail) {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
+        $footerHtml = getFooterNews(5);
+    	$main->setContent('footer_news', $footerHtml);
         $main->setContent('body', $bodyFisioDetail);
         $main->close();
         exit;
