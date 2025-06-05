@@ -5,6 +5,47 @@
   <title>Contattaci – Area Pubblica</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- STILE APPLICATO SOLO ALLA FORM -->
+  <style>
+    
+    #contact-form button#cf-submit {
+      width: 100%;
+      border: none;
+    }
+
+    #contact-form label {
+      color: #393939;
+      font-weight: 500;
+    }
+
+    #contact-form .form-control {
+      background: #f9f9f9;
+      border: none;
+      border-radius: 3px;
+      box-shadow: none;
+      font-size: 14px;
+      font-weight: normal;
+      margin-bottom: 15px;
+      transition: all ease-in-out 0.4s;
+    }
+
+    #contact-form input,
+    #contact-form select {
+      height: 45px;
+    }
+
+    #contact-form button#cf-submit {
+      background: #a5c422;
+      color: #ffffff;
+      font-weight: 600;
+      height: 55px;
+    }
+
+    #contact-form button#cf-submit:hover {
+      background: #393939;
+      color: #ffffff;
+    }
+  </style>
 
 </head>
 <body>
@@ -43,7 +84,7 @@
               <div class="mb-3"><[messaggio_form]></div>
 
               <div class="mb-3">
-                <label for="mittente" class="form-label">Nome</label>
+                <label for="mittente">Nome</label>
                 <input
                   type="text"
                   class="form-control"
@@ -55,7 +96,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
+                <label for="email">E-mail</label>
                 <input
                   type="email"
                   class="form-control"
@@ -67,7 +108,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="contenuto" class="form-label">Messaggio</label>
+                <label for="contenuto">Messaggio</label>
                 <textarea
                   class="form-control"
                   rows="5"
@@ -79,7 +120,7 @@
               </div>
 
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Invia</button>
+                <button type="submit" id="cf-submit">Invia</button>
               </div>
             </form>
           </div>

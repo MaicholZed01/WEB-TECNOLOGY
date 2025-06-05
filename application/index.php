@@ -28,7 +28,7 @@ $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'dettagli_fisioterap
                  'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'];
 $privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari',
                  'servizi', 'richieste', 'certificazioni', 'media', 'avvisi2',
-                 'messaggi', 'fatturazione', 'profilo', 'login'];
+                 'messaggi', 'fatturazione', 'aggiungi_appuntamento', 'profilo', 'login'];
 
 try {
     $page = $_GET['page'] ?? 'index';

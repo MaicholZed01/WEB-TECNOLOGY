@@ -58,16 +58,72 @@
     </div>
   </div>
 
-  <!-- ISTOGRAMMA RICAVI SETTIMANALI -->
+  <!-- FORM FILTRO FATTURAZIONI PER INTERVALLO E ULTERIORI CAMPI -->
   <div class="panel mb-4">
     <div class="panel-header">
       <h4>
-        <i class="fas fa-chart-column me-2"></i>
-        <span>Ricavi Settimanali</span>
+        <i class="fas fa-filter me-2"></i>
+        <span>Filtra Fatturazioni</span>
       </h4>
     </div>
     <div class="panel-body">
-      <div id="chart-fatturazioni" class="bar-chart"></div>
+      <form id="form-filter" action="index.php?page=fatturazioni" method="get" class="row g-3 align-items-end">
+        <!-- Data Inizio (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_inizio"
+            name="data_inizio"
+          >
+        </div>
+
+        <!-- Data Fine (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_fine">Data Fine</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_fine"
+            name="data_fine"
+          >
+        </div>
+
+        <!-- Cliente -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="cliente">Cliente</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cliente"
+            name="cliente"
+            placeholder="Nome cliente"
+          >
+        </div>
+
+        <!-- Servizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
+          <select
+            class="form-control"
+            id="servizio_filter"
+            name="servizio_id"
+          >
+            <option value="">-- Seleziona Servizio --</option>
+            <[lista_servizi]>
+          </select>
+        </div>
+
+        
+
+        <!-- Pulsante Filtra -->
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-search me-1"></i>Filtra
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -84,8 +140,10 @@
         <table class="table-modern">
           <thead>
             <tr>
-              <th>Pagamento&nbsp;ID</th>
-              <th>Appuntamento&nbsp;ID</th>
+              <th>Fatturazione&nbsp;ID</th>
+              <th>Cliente</th>
+              <th>Data&nbsp;Appuntamento</th>
+              <th>Servizio</th>
               <th>Importo (€)</th>
               <th>Azioni</th>
             </tr>
@@ -96,13 +154,11 @@
               Esempio riga generata dal controller:
               <tr>
                 <td>12</td>
-                <td>57</td>
+                <td>Giulia Bianchi</td>
+                <td>2025-06-05 10:00</td>
+                <td>Fisioterapia Ortopedica</td>
                 <td>85.00</td>
                 <td>
-                  <a href="index.php?page=fatturazioni&action=edit&id=12"
-                     class="btn btn-primary-modern btn-xs">
-                    <i class="fas fa-edit me-1"></i>Modifica
-                  </a>
                   <a href="index.php?page=fatturazioni&action=delete&id=12"
                      class="btn btn-outline-modern btn-xs text-danger"
                      onclick="return confirm('Eliminare questa fatturazione?');">
@@ -117,63 +173,3 @@
     </div>
   </div>
 </section>
-
-<!-- CSS specifico per l’istogramma -->
-<style>
-.bar-chart{
-  display:flex;
-  align-items:flex-end;
-  gap:1rem;
-  height:220px;
-}
-.bar-wrapper{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-.bar{
-  width:100%;
-  background:var(--primary-color);
-  border-radius:4px 4px 0 0;
-  transition:opacity .2s;
-}
-.bar:hover{opacity:.8;}
-.bar-label{
-  margin-top:.5rem;
-  font-size:.75rem;
-  color:#6b7280;
-}
-</style>
-
-<!-- Script per caricare l’istogramma via AJAX -->
-<script>
-$(function () {
-  // Recupero JSON dei ricavi giornalieri
-  $.getJSON('index.php?page=fatturazioni&action=chart-json', function (data) {
-    const giorni = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-    const max = Math.max(...Object.values(data), 0);
-    const scala = max > 0 ? 180 / max : 0; // 180px altezza max della barra
-
-    const $chart = $('#chart-fatturazioni').empty();
-
-    $.each(giorni, function (_, g) {
-      const valore = data[g] || 0;
-      const altezza = valore * scala;
-
-      const $wrapper = $('<div/>', { class: 'bar-wrapper' }).append(
-        $('<div/>', {
-          class: 'bar',
-          css: { height: altezza }
-        }),
-        $('<span/>', {
-          class: 'bar-label',
-          text: g
-        })
-      );
-
-      $chart.append($wrapper);
-    });
-  });
-});
-</script>

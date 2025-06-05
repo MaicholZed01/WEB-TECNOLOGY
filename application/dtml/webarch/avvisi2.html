@@ -21,15 +21,6 @@
           <[messaggio_form]>
         </div>
 
-        <!-- Selezione Fisioterapista -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Fisioterapista*</label>
-          <select class="form-control" name="fisioteraprista_id" required>
-            <option value="">-- Seleziona Fisioterapista --</option>
-            <[lista_fisioterapisti]>
-          </select>
-        </div>
-
         <!-- Titolo Avviso -->
         <div class="mb-3">
           <label class="d-block mb-1">Titolo*</label>
@@ -92,7 +83,7 @@
           <tbody>
             <[lista_annunci]>
             <!--
-              Esempio di riga generata dal controller:
+              Esempio riga generata dal controller:
               <tr>
                 <td>1</td>
                 <td>Mario Rossi</td>
@@ -100,10 +91,6 @@
                 <td>Offriamo un nuovo pacchetto di fisioterapia per la riabilitazione post‐operatoria.</td>
                 <td>2025-06-03 20:22:05</td>
                 <td>
-                  <a href="index.php?page=avvisi2&action=edit&id=1"
-                     class="btn btn-primary-modern btn-xs">
-                    <i class="fas fa-edit me-1"></i>Modifica
-                  </a>
                   <a href="index.php?page=avvisi2&action=delete&id=1"
                      class="btn btn-outline-modern btn-xs text-danger"
                      onclick="return confirm('Eliminare questo avviso?');">

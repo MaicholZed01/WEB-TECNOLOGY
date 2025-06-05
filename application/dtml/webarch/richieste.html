@@ -5,9 +5,87 @@
     <h1>Richieste</h1>
   </div>
 
-  <!-- Messaggio di esito operazione -->
+  <!-- MESSAGGIO DI ESITO -->
   <div class="mb-3">
     <[messaggio_form]>
+  </div>
+
+  <!-- FORM FILTRO RICHIESTE -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-filter me-2"></i>
+        <span>Filtra Richieste</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-filter" action="index.php?page=richieste" method="get" class="row g-3 align-items-end">
+
+        <!-- Data Inizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_inizio"
+            name="data_inizio"
+          >
+        </div>
+
+        <!-- Data Fine -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_fine">Data Fine</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_fine"
+            name="data_fine"
+          >
+        </div>
+
+        <!-- Nome -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="nome_filter">Nome</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nome_filter"
+            name="nome"
+          >
+        </div>
+
+        <!-- Cognome -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="cognome_filter">Cognome</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cognome_filter"
+            name="cognome"
+          >
+        </div>
+
+        <!-- Servizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
+          <select
+            class="form-control"
+            id="servizio_filter"
+            name="servizio_id"
+          >
+            <option value="">-- Seleziona Servizio --</option>
+            <[lista_servizi]>
+          </select>
+        </div>
+
+        <!-- Pulsante Filtra -->
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-search me-1"></i>Filtra
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ELENCO RICHIESTE -->
@@ -23,13 +101,16 @@
         <table class="table-modern">
           <thead>
             <tr>
-              <th>Data Richiesta</th>
+              <th>Data&nbsp;Richiesta</th>
               <th>Nome</th>
               <th>Cognome</th>
               <th>Email</th>
               <th>Telefono</th>
               <th>Sesso</th>
-              <th>Data di Nascita</th>
+              <th>Data&nbsp;Nascita</th>
+              <th>Servizio</th>
+              <th>Data&nbsp;Preferita</th>
+              <th>Fascia</th>
               <th>Azioni</th>
             </tr>
           </thead>
@@ -45,19 +126,18 @@
                 <td>333-1234567</td>
                 <td>Femmina</td>
                 <td>1990-03-15</td>
+                <td>Fisioterapia Ortopedica</td>
+                <td>2025-06-10</td>
+                <td>09:00 – 10:00</td>
                 <td>
-                  <a href="index.php?page=richieste&action=view&id=42"
-                     class="btn btn-primary-modern btn-xs">
-                    <i class="fas fa-eye me-1"></i>Visualizza
-                  </a>
-                  <a href="index.php?page=richieste&action=conferma&id=42"
+                  <a href="index.php?page=aggiungi_appuntamento&richiesta_id=42"
                      class="btn btn-outline-modern btn-xs text-success">
-                    <i class="fas fa-check me-1"></i>Conferma
+                    <i class="fas fa-plus me-1"></i>Aggiungi
                   </a>
-                  <a href="index.php?page=richieste&action=rifiuta&id=42"
+                  <a href="index.php?page=richieste&action=delete&id=42"
                      class="btn btn-outline-modern btn-xs text-danger"
-                     onclick="return confirm('Rifiutare questa richiesta?');">
-                    <i class="fas fa-times me-1"></i>Rifiuta
+                     onclick="return confirm('Eliminare questa richiesta?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
                   </a>
                 </td>
               </tr>

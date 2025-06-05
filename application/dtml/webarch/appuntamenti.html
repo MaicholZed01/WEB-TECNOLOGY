@@ -1,276 +1,149 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appuntamenti - Centro Fisioterapia</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="/tec-web/application/dtml/webarch/assets/css/styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/appuntamento.css">
-</head>
-<body>
-    <section id="appuntamenti">
-        <div class="dashboard-container">
-            <!-- Header della Pagina -->
-            <div class="page-header">
-                <h1><i class="fas fa-calendar-alt me-3"></i>Appuntamenti</h1>
-                <p>Gestisci tutti gli appuntamenti del centro fisioterapico</p>
-            </div>
+<!-- appuntamenti.html -->
+<section id="appuntamenti" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Appuntamenti</h1>
+  </div>
 
-            <!-- Statistiche Appuntamenti -->
-            <div class="stats-grid">
-                <div class="stat-card success">
-                    <div class="stat-icon success">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div class="stat-number animate-number" data-value="<[appuntamenti_oggi]>">0</div>
-                    <div class="stat-label">Appuntamenti Oggi</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+2 rispetto a ieri</span>
-                    </div>
-                </div>
+  <!-- Messaggio di esito operazione -->
+  <div class="mb-3">
+    <[messaggio_form]>
+  </div>
 
-                <div class="stat-card info">
-                    <div class="stat-icon info">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-number animate-number" data-value="<[appuntamenti_confermati]>">0</div>
-                    <div class="stat-label">Confermati</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>95% tasso conferma</span>
-                    </div>
-                </div>
-
-                <div class="stat-card warning">
-                    <div class="stat-icon warning">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-number animate-number" data-value="<[appuntamenti_attesa]>">0</div>
-                    <div class="stat-label">In Attesa</div>
-                    <div class="stat-change negative">
-                        <i class="fas fa-arrow-down"></i>
-                        <span>-1 rispetto a ieri</span>
-                    </div>
-                </div>
-
-                <div class="stat-card danger">
-                    <div class="stat-icon danger">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <div class="stat-number animate-number" data-value="<[appuntamenti_annullati]>">0</div>
-                    <div class="stat-label">Annullati</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-down"></i>
-                        <span>Meno del solito</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filtri e Azioni -->
-            <div class="panel mb-4">
-                <div class="panel-header">
-                    <h4><i class="fas fa-filter"></i> Filtri e Azioni</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <div class="d-flex gap-3 flex-wrap">
-                            <div class="filter-group">
-                                <label class="form-label">Data</label>
-                                <input type="date" class="form-control form-control-sm" style="width: 150px;">
-                            </div>
-                            <div class="filter-group">
-                                <label class="form-label">Stato</label>
-                                <select class="form-select form-select-sm" style="width: 130px;">
-                                    <option value="">Tutti</option>
-                                    <option value="confermato">Confermato</option>
-                                    <option value="attesa">In Attesa</option>
-                                    <option value="annullato">Annullato</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label class="form-label">Terapista</label>
-                                <select class="form-select form-select-sm" style="width: 150px;">
-                                    <option value="">Tutti</option>
-                                    <option value="verdi">Dott. Verdi</option>
-                                    <option value="neri">Dott.ssa Neri</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-outline-modern btn-sm">
-                                <i class="fas fa-search"></i> Filtra
-                            </button>
-                            <a href="index.php?page=appuntamenti&action=new" class="btn btn-primary-modern">
-                                <i class="fas fa-plus"></i> Nuovo Appuntamento
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Elenco Appuntamenti -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h4><i class="fas fa-calendar-check"></i> Elenco Appuntamenti</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-modern">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Ora</th>
-                                    <th>Cliente</th>
-                                    <th>Servizio</th>
-                                    <th>Terapista</th>
-                                    <th>Stato</th>
-                                    <th>Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>05/06/2025</strong></td>
-                                    <td><span class="time-badge">09:00</span></td>
-                                    <td>
-                                        <div class="client-info">
-                                            <strong>Mario Rossi</strong>
-                                            <small class="text-muted d-block">333-1234567</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="service-badge">Fisioterapia</span>
-                                    </td>
-                                    <td>
-                                        <div class="therapist-info">
-                                            <i class="fas fa-user-md"></i>
-                                            <span>Dott. Verdi</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="status-badge status-confermato">Confermato</span></td>
-                                    <td>
-                                        <div class="action-buttons-group">
-                                            <a href="index.php?page=appuntamenti&action=view&id=1" class="btn btn-primary-modern btn-xs" title="Visualizza">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=edit&id=1" class="btn btn-outline-modern btn-xs" title="Modifica">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=delete&id=1" class="btn btn-outline-modern btn-xs text-danger" title="Elimina" onclick="return confirm('Eliminare questo appuntamento?');">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>05/06/2025</strong></td>
-                                    <td><span class="time-badge">10:00</span></td>
-                                    <td>
-                                        <div class="client-info">
-                                            <strong>Lucia Bianchi</strong>
-                                            <small class="text-muted d-block">347-9876543</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="service-badge">Massaggio</span>
-                                    </td>
-                                    <td>
-                                        <div class="therapist-info">
-                                            <i class="fas fa-user-md"></i>
-                                            <span>Dott.ssa Neri</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="status-badge status-in-attesa">In Attesa</span></td>
-                                    <td>
-                                        <div class="action-buttons-group">
-                                            <a href="index.php?page=appuntamenti&action=view&id=2" class="btn btn-primary-modern btn-xs" title="Visualizza">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=edit&id=2" class="btn btn-outline-modern btn-xs" title="Modifica">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=confirm&id=2" class="btn-success btn-xs" title="Conferma">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>06/06/2025</strong></td>
-                                    <td><span class="time-badge">14:30</span></td>
-                                    <td>
-                                        <div class="client-info">
-                                            <strong>Giuseppe Verde</strong>
-                                            <small class="text-muted d-block">320-5678901</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="service-badge">Riabilitazione</span>
-                                    </td>
-                                    <td>
-                                        <div class="therapist-info">
-                                            <i class="fas fa-user-md"></i>
-                                            <span>Dott. Verdi</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="status-badge status-confermato">Confermato</span></td>
-                                    <td>
-                                        <div class="action-buttons-group">
-                                            <a href="index.php?page=appuntamenti&action=view&id=3" class="btn btn-primary-modern btn-xs" title="Visualizza">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=edit&id=3" class="btn btn-outline-modern btn-xs" title="Modifica">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="index.php?page=appuntamenti&action=delete&id=3" class="btn btn-outline-modern btn-xs text-danger" title="Elimina" onclick="return confirm('Eliminare questo appuntamento?');">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Placeholder per altri appuntamenti dinamici -->
-                                <[lista_appuntamenti]>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginazione -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="pagination-info">
-                            <small class="text-muted">Mostrando 1-10 di <[total_appuntamenti]> appuntamenti</small>
-                        </div>
-                        <nav aria-label="Navigazione appuntamenti">
-                            <ul class="pagination pagination-sm">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Precedente">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="index.php?page=appuntamenti&pg=2">2</a></li>
-                                <li class="page-item"><a class="page-link" href="index.php?page=appuntamenti&pg=3">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="index.php?page=appuntamenti&pg=2" aria-label="Successivo">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Azioni Rapide --
-                
-            </div>
+  <!-- FORM FILTRO APPUNTAMENTI -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-filter me-2"></i>
+        <span>Filtra Appuntamenti</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-filter" action="index.php?page=appuntamenti" method="get" class="row g-3 align-items-end">
+        <!-- Data Inizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_inizio"
+            name="data_inizio"
+          >
         </div>
-    </section>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="/tec-web/application/dtml/webarch/assets/js/appuntamenti.js"></script>
-</body>
-</html>
+        <!-- Data Fine -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_fine">Data Fine</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_fine"
+            name="data_fine"
+          >
+        </div>
+
+        <!-- Stato -->
+        <div class="col-md-2">
+          <label class="d-block mb-1" for="stato_filter">Stato</label>
+          <select class="form-control" id="stato_filter" name="stato">
+            <option value="">Tutti</option>
+            <option value="Prenotato">Prenotato</option>
+            <option value="Completato">Completato</option>
+          </select>
+        </div>
+
+        <!-- Fisioterapista -->
+        <div class="col-md-2">
+          <label class="d-block mb-1" for="fisioterapista_filter">Fisioterapista</label>
+          <select class="form-control" id="fisioterapista_filter" name="fisioterapista_id">
+            <option value="">Tutti</option>
+            <[lista_fisioterapisti]>
+          </select>
+        </div>
+
+        <!-- Servizio -->
+        <div class="col-md-2">
+          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
+          <select class="form-control" id="servizio_filter" name="servizio_id">
+            <option value="">Tutti</option>
+            <[lista_servizi]>
+          </select>
+        </div>
+
+        <!-- Pulsante Filtra -->
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-search me-1"></i>Filtra
+          </button>
+          &nbsp;
+          <a href="index.php?page=appuntamenti&action=new" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-plus me-1"></i>Nuovo Appuntamento
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ELENCO APPUNTAMENTI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-calendar-check me-2"></i>
+        <span>Elenco Appuntamenti</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Ora</th>
+              <th>Cliente</th>
+              <th>Servizio</th>
+              <th>Fisioterapista</th>
+              <th>Stato</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_appuntamenti]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>2025-06-05</td>
+                <td>09:00</td>
+                <td>Mario Rossi</td>
+                <td>Fisioterapia Sportiva</td>
+                <td>Dott. Verdi</td>
+                <td>Prenotato</td>
+
+                Azioni: Modifica, Elimina, Cambia Stato
+                <td>
+                  <a href="index.php?page=appuntamenti&action=edit&id=1"
+                     class="btn btn-outline-modern btn-xs me-1" title="Modifica">
+                    <i class="fas fa-edit fa-sm"></i>
+                  </a>
+                  <a href="index.php?page=appuntamenti&action=delete&id=1"
+                     class="btn btn-outline-modern btn-xs text-danger me-1" title="Elimina"
+                     onclick="return confirm('Eliminare questo appuntamento?');">
+                    <i class="fas fa-trash-alt fa-sm"></i>
+                  </a>
+                  <form action="index.php?page=appuntamenti&action=updateStato" method="post" class="d-inline">
+                    <input type="hidden" name="appuntamento_id" value="1">
+                    <button type="submit" name="stato" value="Completato"
+                            class="btn btn-outline-modern btn-xs" title="Segna come completato">
+                      <i class="fas fa-check fa-sm"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
+
+      
+    </div>
+  </div>
+</section>

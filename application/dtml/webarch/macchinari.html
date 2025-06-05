@@ -76,6 +76,18 @@
           >
         </div>
 
+        <!-- Quantità -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Quantità</label>
+          <input
+            type="number"
+            class="form-control"
+            name="quantita"
+            value="<[old_quantita]>"
+            min="0"
+          >
+        </div>
+
         <!-- Stato -->
         <div class="mb-3">
           <label class="d-block mb-1">Stato*</label>
@@ -119,6 +131,7 @@
               <th>Marca</th>
               <th>Descrizione</th>
               <th>Data Acquisto</th>
+              <th>Quantità</th>
               <th>Stato</th>
               <th>Creato Il</th>
               <th>Azioni</th>
@@ -127,20 +140,17 @@
           <tbody>
             <[lista_macchinari]>
             <!--
-              Esempio di riga generata dal controller:
+              Esempio riga generata dal controller:
               <tr>
                 <td>Tapis Roulant XT200</td>
                 <td>XT200</td>
                 <td>LifeFit</td>
                 <td>Macchinario per allenamento cardio</td>
                 <td>2023-04-15</td>
+                <td>3</td>
                 <td>Attivo</td>
                 <td>2025-06-05 11:35:42</td>
                 <td>
-                  <a href="index.php?page=macchinari&action=edit&id=5"
-                     class="btn btn-primary-modern btn-xs">
-                    <i class="fas fa-edit me-1"></i>Modifica
-                  </a>
                   <a href="index.php?page=macchinari&action=delete&id=5"
                      class="btn btn-outline-modern btn-xs text-danger"
                      onclick="return confirm('Eliminare questo macchinario?');">

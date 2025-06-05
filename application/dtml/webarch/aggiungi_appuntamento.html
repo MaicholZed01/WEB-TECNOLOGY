@@ -1,0 +1,92 @@
+<!-- aggiungi_appuntamento.html -->
+<section id="aggiungi_appuntamento" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Aggiungi Appuntamento</h1>
+  </div>
+
+  <!-- MESSAGGIO ESITO -->
+  <div class="mb-3">
+    <[messaggio_form]>
+  </div>
+
+  <!-- DATI RICHIESTA ORIGINALE (sola lettura) -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-info-circle me-2"></i>Dati Richiesta
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="row g-3">
+        <div class="col-md-4"><strong>Nome:</strong> <span><[richiesta_nome]></span></div>
+        <div class="col-md-4"><strong>Cognome:</strong> <span><[richiesta_cognome]></span></div>
+        <div class="col-md-4"><strong>E-mail:</strong> <span><[richiesta_email]></span></div>
+        <div class="col-md-4"><strong>Telefono:</strong> <span><[richiesta_telefono]></span></div>
+        <div class="col-md-4"><strong>Servizio richiesto:</strong> <span><[richiesta_servizio]></span></div>
+        <div class="col-md-4"><strong>Data preferita:</strong> <span><[richiesta_data_preferita]></span></div>
+        <div class="col-md-4"><strong>Fascia preferita:</strong> <span><[richiesta_fascia]></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM INSERIMENTO APPUNTAMENTO -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-calendar-plus me-2"></i>Nuovo Appuntamento
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-appuntamenti" action="index.php?page=aggiungi_appuntamento&action=save" method="post">
+
+        <!-- Richiesta di partenza -->
+        <input type="hidden" name="richiesta_id" value="<[richiesta_id]>">
+
+        <!-- Data dell’appuntamento -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Data*</label>
+          <input
+            type="date"
+            class="form-control"
+            name="data"
+            value="<[old_data]>"
+            required
+          >
+        </div>
+
+        <!-- Orario -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Orario*</label>
+          <input
+            type="time"
+            class="form-control"
+            name="orario"
+            value="<[old_orario]>"
+            required
+          >
+        </div>
+
+        <!-- Sala -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Sala*</label>
+          <select class="form-control" name="sala_id" required>
+            <option value="">-- Seleziona Sala --</option>
+            <[lista_sale]>
+          </select>
+        </div>
+
+        <!-- Pulsanti -->
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-save me-1"></i>Salva Appuntamento
+          </button>
+          <a href="index.php?page=richieste" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-times me-1"></i>Annulla
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>

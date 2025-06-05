@@ -30,11 +30,25 @@
           </select>
         </div>
 
-        <!-- Data e Ora Inizio -->
+        <!-- Giorno della Settimana -->
         <div class="mb-3">
-          <label class="d-block mb-1">Inizio*</label>
+          <label class="d-block mb-1">Giorno della Settimana*</label>
+          <select class="form-control" name="giorno" required>
+            <option value="">-- Seleziona Giorno --</option>
+            <option value="Lunedì" <[sel_lun]>>Lunedì</option>
+            <option value="Martedì" <[sel_mar]>>Martedì</option>
+            <option value="Mercoledì" <[sel_mer]>>Mercoledì</option>
+            <option value="Giovedì" <[sel_gio]>>Giovedì</option>
+            <option value="Venerdì" <[sel_ven]>>Venerdì</option>
+            <option value="Sabato" <[sel_sab]>>Sabato</option>
+          </select>
+        </div>
+
+        <!-- Ora Inizio -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Inizio (ora)*</label>
           <input
-            type="datetime-local"
+            type="time"
             class="form-control"
             name="inizio"
             value="<[old_inizio]>"
@@ -42,11 +56,11 @@
           >
         </div>
 
-        <!-- Data e Ora Fine -->
+        <!-- Ora Fine -->
         <div class="mb-3">
-          <label class="d-block mb-1">Fine*</label>
+          <label class="d-block mb-1">Fine (ora)*</label>
           <input
-            type="datetime-local"
+            type="time"
             class="form-control"
             name="fine"
             value="<[old_fine]>"
@@ -84,6 +98,7 @@
           <thead>
             <tr>
               <th>Sala</th>
+              <th>Giorno</th>
               <th>Inizio</th>
               <th>Fine</th>
               <th>Azioni</th>
@@ -95,13 +110,10 @@
               Esempio riga generata dal controller:
               <tr>
                 <td>Sala 1</td>
-                <td>2025-06-10 09:00</td>
-                <td>2025-06-10 12:00</td>
+                <td>Lunedì</td>
+                <td>09:00:00</td>
+                <td>12:00:00</td>
                 <td>
-                  <a href="index.php?page=disponibilita&action=edit&id=45"
-                     class="btn btn-outline-modern btn-xs">
-                    <i class="fas fa-edit me-1"></i>Modifica
-                  </a>
                   <a href="index.php?page=disponibilita&action=delete&id=45"
                      class="btn btn-outline-modern btn-xs text-danger"
                      onclick="return confirm('Sei sicuro di voler eliminare?');">

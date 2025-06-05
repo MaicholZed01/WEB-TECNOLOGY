@@ -23,22 +23,17 @@
         
         <div class="sidebar-nav">
             <div class="nav-section">
-                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-section-title">Menù</div>
                 <div class="nav-item">
                     <a href="index.php?page=dashboard" class="nav-link" data-page="dashboard">
                         <i class="fas fa-tachometer-alt nav-icon"></i>
                         <span class="nav-text">Dashboard</span>
                     </a>
                 </div>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title">Gestione</div>
                 <div class="nav-item">
                     <a href="index.php?page=appuntamenti" class="nav-link" data-page="appuntamenti">
                         <i class="fas fa-calendar-alt nav-icon"></i>
                         <span class="nav-text">Appuntamenti</span>
-                        <span class="nav-badge"><[count_appuntamenti]></span>
                     </a>
                 </div>
                 <div class="nav-item">
@@ -53,10 +48,6 @@
                         <span class="nav-text">Macchinari</span>
                     </a>
                 </div>
-  
-
-            <div class="nav-section">
-                <div class="nav-section-title">Finanziari</div>
                 <div class="nav-item">
                     <a href="index.php?page=fatturazione" class="nav-link" data-page="fatturazione">
                         <i class="fas fa-file-invoice-dollar nav-icon"></i>
@@ -65,16 +56,11 @@
                 </div>
           
                 
-            <div class="nav-section">
-                <div class="nav-section-title">Sistema</div>
-           
-                </div>
                 
                 <div class="nav-item">
                     <a href="index.php?page=messaggi" class="nav-link" data-page="messaggi">
                         <i class="fas fa-life-ring nav-icon"></i>
                         <span class="nav-text">Messaggi</span>
-                        <span class="nav-badge"><[count_messaggi]></span>
                     </a>
                 </div>
                 <div class="nav-item">
@@ -134,29 +120,13 @@
         <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="breadcrumb-modern">
-                    <i class="fas fa-home"></i>
-                    <span>/</span>
-                    <span id="currentPage"><[current_page_name]></span>
+                <div class="welcome-message">
+                    Benvenuto, <strong><[physio_name]></strong>
                 </div>
             </div>
             
-            <div class="header-right">
-                <div class="header-search">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Cerca...">
-                </div>
-                
-                <div class="header-notifications">
-                    <button class="notification-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge" style="display: none"></span>
-                    </button>
-                </div>
-                
+            
+            <div class="header-right">                               
                 <div class="user-menu dropdown">
                     <div class="user-menu-trigger" data-bs-toggle="dropdown">
                         <div class="user-info">
