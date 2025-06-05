@@ -1,114 +1,104 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Media – Area Privata</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- media.html -->
+<section id="media" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Media</h1>
+  </div>
 
-  <!-- CORE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
-</head>
-<body>
-
-  <section id="media">
-    <div class="page-content">
-      <div class="content">
-
-        <!-- TITOLO PAGINA -->
-        <div class="page-title">
-          <h3>Media</h3>
+  <!-- FORM UPLOAD MEDIA -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-upload me-2"></i>
+        <span>Carica Media</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-media" action="index.php?page=media&action=upload" method="post" enctype="multipart/form-data">
+        
+        <!-- MESSAGGIO ESITO UPLOAD -->
+        <div class="mb-3">
+          <[messaggio_form]>
         </div>
 
-        <!-- FORM UPLOAD MEDIA -->
-        <div class="row spacing-bottom">
-          <div class="col-md-12">
-            <div class="panel">
-              <div class="panel-body">
-                <form id="form-media" class="form-horizontal"
-                      action="index.php?page=media&action=upload" method="post" enctype="multipart/form-data">
-
-                  <!-- MESSAGGIO ESITO UPLOAD -->
-                  <div><[messaggio_form]></div>
-                  <div><[debug_comment]></div>
-
-                  <!-- SELEZIONE TIPO -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Tipo*</label>
-                    <div class="col-sm-9">
-                      <select class="form-control" name="tipo" required>
-                        <option value="">-- Seleziona Tipo --</option>
-                        <option value="Immagine" <[sel_immagine]> >Immagine</option>
-                        <option value="Video"     <[sel_video]>     >Video</option>
-                        <option value="Documento" <[sel_documento]> >Documento</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- SELEZIONE FILE -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">File*</label>
-                    <div class="col-sm-9">
-                      <input type="file" class="form-control" name="file_media" required>
-                      <p class="help-block">Immagine, video o documento (max 5MB).</p>
-                    </div>
-                  </div>
-
-                  <!-- DESCRIZIONE -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Descrizione</label>
-                    <div class="col-sm-9">
-                      <input type="text" class="form-control" name="descrizione"
-                             value="<[old_descrizione]>">
-                    </div>
-                  </div>
-
-                  <!-- PULSANTE UPLOAD -->
-                  <div class="form-group">
-                    <div class="col-sm-offset-3 col-sm-9">
-                      <button type="submit" class="btn btn-primary">Carica</button>
-                    </div>
-                  </div>
-
-                </form>
-              </div>
-            </div>
-          </div>
+        <!-- SELEZIONE TIPO -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Tipo*</label>
+          <select class="form-control" name="tipo" required>
+            <option value="">-- Seleziona Tipo --</option>
+            <option value="Immagine" <[sel_immagine]> >Immagine</option>
+            <option value="Video"     <[sel_video]>     >Video</option>
+            <option value="Documento" <[sel_documento]> >Documento</option>
+          </select>
         </div>
 
-        <!-- TABELLA MEDIA CARICATI -->
-        <div class="row">
-          <div class="col-md-12">
-            <div class="panel">
-              <div class="panel-body">
-
-                <table class="table table-bordered table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Anteprima</th>
-                      <th>Tipo</th>
-                      <th>Descrizione</th>
-                      <th>Data Caricamento</th>
-                      <th>Azioni</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <[lista_media]>
-                  </tbody>
-                </table>
-
-              </div>
-            </div>
-          </div>
+        <!-- SELEZIONE FILE -->
+        <div class="mb-3">
+          <label class="d-block mb-1">File*</label>
+          <input type="file" class="form-control" name="file_media" required>
+          <p class="help-block mb-0">Immagine, video o documento (max 5MB).</p>
         </div>
 
+        <!-- DESCRIZIONE -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Descrizione</label>
+          <input type="text" class="form-control" name="descrizione" value="<[old_descrizione]>">
+        </div>
+
+        <!-- Pulsante Carica -->
+        <div>
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-cloud-upload-alt me-1"></i>Carica
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABELLA MEDIA CARICATI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-photo-video me-2"></i>
+        <span>Elenco Media</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Anteprima</th>
+              <th>Tipo</th>
+              <th>Descrizione</th>
+              <th>Data Caricamento</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_media]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>
+                  <img src="/tec-web/upload/media/img123.jpg"
+                       style="max-height:60px;" alt="Anteprima">
+                </td>
+                <td>Immagine</td>
+                <td>Foto paziente in esercizio</td>
+                <td>2025-06-01 14:22</td>
+                <td>
+                  <a href="index.php?page=media&action=delete&id=15"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Eliminare questo file?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
       </div>
     </div>
-  </section>
-
-  <!-- JS (facoltativi) -->
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
+  </div>
+</section>

@@ -58,66 +58,7 @@
     </div>
   </div>
 
-  <!-- DETTAGLIO THREAD E RISPOSTA -->
-  <div class="panel">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-comments me-2"></i>
-        <span>Dettaglio Conversazione</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-
-      <!-- Selezione thread -->
-      <div class="mb-4">
-        <[messaggio_seleziona_thread]>
-      </div>
-
-      <!-- SOLO SE È PASSATO action=view E ID VALIDO -->
-      <div id="dettaglio-thread">
-        <[dettaglio_thread]>
-        <!--
-          Esempio di markup generato dal controller:
-          <div class="thread-header mb-3">
-            <h4>Conversazione con: Giulia Bianchi</h4>
-            <p><small>Oggetto: Prenotazione Appuntamento</small></p>
-          </div>
-          <hr>
-          <div class="messages-list mb-4">
-            <div class="message from-cliente mb-3">
-              <div class="message-meta mb-1">
-                <strong>Giulia Bianchi</strong>
-                <span class="text-muted">03/06/2025 14:20</span>
-              </div>
-              <div class="message-body p-3 border rounded bg-gray-light">
-                Buongiorno, vorrei confermare la data dell’appuntamento del 05/06…
-              </div>
-            </div>
-            <div class="message from-fisio mb-3">
-              <div class="message-meta mb-1">
-                <strong>Io</strong>
-                <span class="text-muted">03/06/2025 14:45</span>
-              </div>
-              <div class="message-body p-3 border rounded bg-gray-light">
-                Ciao Giulia, confermo il tuo appuntamento per il 05/06 alle 10:00.
-              </div>
-            </div>
-            <!-- Altri messaggi… -->
-          </div>
-          <hr>
-          <!-- FORM PER INVIO RISPOSTA -->
-          <form id="form-risposta" action="index.php?page=messaggi&action=send&id=< [id_thread] >" method="post">
-            <div class="mb-3">
-              <label class="d-block mb-1">Risposta*</label>
-              <textarea class="form-control" rows="4" name="testo" required></textarea>
-            </div>
-            <div>
-              <button type="submit" class="btn btn-primary-modern btn-xs">
-                <i class="fas fa-paper-plane me-1"></i>Invia Risposta
-              </button>
-            </div>
-          </form>
-      </div>
+ 
 
     </div>
   </div>
