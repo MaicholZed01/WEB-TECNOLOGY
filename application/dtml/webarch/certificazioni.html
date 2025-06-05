@@ -1,137 +1,145 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Certificazioni – Area Privata</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- certificazioni.html -->
+<section id="certificazioni" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Certificazioni</h1>
+  </div>
 
-  <!-- CORE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
-</head>
-<body>
-
-  <!-- (Eventuale navbar/header dell’area privata) -->
-
-  <section id="certificazioni">
-    <div class="page-content">
-      <div class="content">
-
-        <!-- TITOLO PAGINA -->
-        <div class="page-title">
-          <h3>Certificazioni</h3>
+  <!-- FORM AGGIUNGI / MODIFICA CERTIFICAZIONE -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-certificate me-2"></i>
+        <span><[label_submit]> Certificazione</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-certificazioni" action="index.php?page=certificazioni&action=save" method="post">
+        
+        <!-- Messaggio Esito Operazione -->
+        <div class="mb-3">
+          <[messaggio_form]>
         </div>
 
-        <!-- FORM AGGIUNGI / MODIFICA CERTIFICAZIONE -->
-        <div class="row spacing-bottom">
-          <div class="col-md-12">
-            <div class="panel">
-              <div class="panel-body">
-                <form id="form-certificazioni" class="form-horizontal"
-                      action="index.php?page=certificazioni&action=save" method="post">
-
-                  <!-- MESSAGGIO ESITO OPERAZIONE -->
-                  <div><[messaggio_form]></div>
-					
-                  <!-- NOME CERTIFICAZIONE -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Nome*</label>
-                    <div class="col-sm-9">
-                      <input type="text" class="form-control" name="nome"
-                             value="<[old_nome]>" required>
-                    </div>
-                  </div>
-
-                  <!-- ENTE EMITTENTE -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Ente Emittente</label>
-                    <div class="col-sm-9">
-                      <input type="text" class="form-control" name="ente_emittente"
-                             value="<[old_ente_emittente]>">
-                    </div>
-                  </div>
-
-                  <!-- DATA RILASCIO -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Data Rilascio</label>
-                    <div class="col-sm-9">
-                      <input type="date" class="form-control" name="data_rilascio"
-                             value="<[old_data_rilascio]>">
-                    </div>
-                  </div>
-
-                  <!-- DATA SCADENZA -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Data Scadenza</label>
-                    <div class="col-sm-9">
-                      <input type="date" class="form-control" name="data_scadenza"
-                             value="<[old_data_scadenza]>">
-                    </div>
-                  </div>
-
-                  <!-- URL DOCUMENTO -->
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">URL Documento</label>
-                    <div class="col-sm-9">
-                      <input type="url" class="form-control" name="url_documento"
-                             value="<[old_url_documento]>">
-                    </div>
-                  </div>
-
-                  <!-- HIDDEN ID PER MODIFICA -->
-                  <input type="hidden" name="certificazione_id" value="<[old_certificazione_id]>">
-
-                  <!-- PULSANTI -->
-                  <div class="form-group">
-                    <div class="col-sm-offset-3 col-sm-9">
-                      <button type="submit" class="btn btn-primary">
-                        <[label_submit]>
-                      </button>
-                      &nbsp;
-                      <a href="index.php?page=certificazioni" class="btn btn-default">
-                        Annulla
-                      </a>
-                    </div>
-                  </div>
-
-                </form>
-              </div>
-            </div>
-          </div>
+        <!-- Nome Certificazione -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Nome*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nome"
+            value="<[old_nome]>"
+            required
+          >
         </div>
 
-        <!-- TABELLA CERTIFICAZIONI ESISTENTI -->
-        <div class="row">
-          <div class="col-md-12">
-            <div class="panel">
-              <div class="panel-body">
-                <table class="table table-bordered table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Ente Emittente</th>
-                      <th>Data Rilascio</th>
-                      <th>Data Scadenza</th>
-                      <th>Documento</th>
-                      <th>Azioni</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <[lista_certificazioni]>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+        <!-- Ente Emittente -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Ente Emittente</label>
+          <input
+            type="text"
+            class="form-control"
+            name="ente_emittente"
+            value="<[old_ente_emittente]>"
+          >
         </div>
 
+        <!-- Data Rilascio -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Data Rilascio</label>
+          <input
+            type="date"
+            class="form-control"
+            name="data_rilascio"
+            value="<[old_data_rilascio]>"
+          >
+        </div>
+
+        <!-- Data Scadenza -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Data Scadenza</label>
+          <input
+            type="date"
+            class="form-control"
+            name="data_scadenza"
+            value="<[old_data_scadenza]>"
+          >
+        </div>
+
+        <!-- URL Documento -->
+        <div class="mb-3">
+          <label class="d-block mb-1">URL Documento</label>
+          <input
+            type="url"
+            class="form-control"
+            name="url_documento"
+            value="<[old_url_documento]>"
+          >
+        </div>
+
+        <!-- Hidden ID per Modifica -->
+        <input type="hidden" name="certificazione_id" value="<[old_certificazione_id]>">
+
+        <!-- Pulsanti -->
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-save me-1"></i><span> <[label_submit]></span>
+          </button>
+          <a href="index.php?page=certificazioni" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-times me-1"></i> Annulla
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABELLA CERTIFICAZIONI ESISTENTI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-list me-2"></i>
+        <span>Elenco Certificazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Ente Emittente</th>
+              <th>Data Rilascio</th>
+              <th>Data Scadenza</th>
+              <th>Documento</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_certificazioni]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>Corso di Terapia Manuale</td>
+                <td>Federazione Fisioterapisti</td>
+                <td>2023-05-10</td>
+                <td>2025-05-10</td>
+                <td><a href="/tec-web/upload/certificazioni/doc123.pdf" target="_blank">Scarica</a></td>
+                <td>
+                  <a href="index.php?page=certificazioni&action=edit&id=12"
+                     class="btn btn-outline-modern btn-xs">
+                    <i class="fas fa-edit me-1"></i>Modifica
+                  </a>
+                  <a href="index.php?page=certificazioni&action=delete&id=12"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Sei sicuro di voler eliminare questa certificazione?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
       </div>
     </div>
-  </section>
-
-  <!-- JS (facoltativi) -->
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
+  </div>
+</section>

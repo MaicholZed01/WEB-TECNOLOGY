@@ -1,205 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>FisioCenter – Admin Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <!-- PLUGIN CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/fullcalendar/fullcalendar.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/pace/pace-theme-flash.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/gritter/css/jquery.gritter.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap-datepicker/css/datepicker.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/jquery-ricksaw-chart/css/rickshaw.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/jquery-morris-chart/css/morris.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/jquery-slider/css/jquery.sidr.light.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap-select2/select2.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/jquery-jvectormap/css/jquery-jvectormap-1.2.2.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/boostrap-checkbox/css/bootstrap-checkbox.css">
-
-  <!-- CORE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/boostrapv3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/boostrapv3/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/animate.min.css">
-
-  <!-- TEMPLATE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/responsive.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/custom-icon-set.css">
-</head>
-
-<body>
-
-<!-- BEGIN HEADER -->
-<div class="header navbar navbar-inverse">
-  <!-- BEGIN TOP NAVIGATION BAR -->
-  <div class="navbar-inner">
-
-	<div class="header-seperation" style="display: flex; align-items: center; justify-content: space-between;">
-		
-		<!-- LOGO 
-		<a href="/tec-web/application/index.php?page=dashboard">
-			<img src="/tec-web/application/dtml/webarch/assets/img/logo.png" class="logo" width="106" height="21">
-		</a> -->
-		<a href="index.php?page=dashboard" class="navbar-brand"><i class="fa fa-h-square"></i> Fisio&nbsp;Center</a>
-		<!-- TOP ICONS -->
-		<ul class="nav notifcation-center" style="margin: 0;">
-			<!-- Home Icon -->
-			<li class="dropdown" id="header_home_bar">
-				<a href="/tec-web/application/index.php?page=dashboard" class="dropdown-toggle">
-					<div class="iconset top-home"></div>
-				</a>
-			</li>
-			<!-- Messages Icon -->
-			<li class="dropdown" id="header_messages_bar" style="position: relative;">
-				<a href="/tec-web/application/index.php?page=messaggi" class="dropdown-toggle">
-					<div class="iconset top-messages"></div>
-					<span class="badge" id="msgs-badge"><[count_messaggi]></span>
-					<!-- Red badge for unread notifications -->
-                <span class="badge badge-danger" id="unread-notifs"	style="position:absolute; top:-5px; right:-5px; display: none;"><[count_notifiche]></span>
-        		</a>
-			</li>			
-		</ul>
-	</div>
-
-    <div class="header-quick-nav">
-      <!-- BEGIN LEFT NAVIGATION MENU -->
-      <div class="pull-left">
-        <!-- Sidebar collapse/expand 
-		<ul class="nav quick-section">
-			<li class="quicklinks">
-				<a id="sidebar-toggle" class="sidebar-collapse">			
-					<div class="iconset top-menu-toggle-dark"></div>
-				</a>
-			</li>
-        </ul>-->
-        <ul class="nav quick-section">
-          <!-- Reload Page -->
-          <li class="quicklinks">
-            <a href="/tec-web/application/index.php?page=dashboard" class="">
-              <div class="iconset top-reload"></div>
-            </a>
-          </li>
-          <li class="quicklinks"><span class="h-seperate"></span></li>
-          
-        </ul>
-      </div>
-      <!-- END LEFT NAV MENU -->
-
-      <!-- BEGIN USER PROFILE & SETTINGS -->
-	<div class="pull-right">
-	  <!-- User Info -->	  
-	  <ul class="nav quick-section">
-		<!-- Settings Icon linking to profile -->
-		<li class="quicklinks">
-		<a href="/tec-web/application/index.php?page=profilo" title="Profilo">
-		  <div class="iconset top-settings-dark"></div>
-		</a>
-		</li>
-		<li class="quicklinks"><span class="h-seperate"></span></li>		
-		<!-- Logout Button -->
-		<li class="quicklinks">
-			<a href="index.php?page=logout" title="Logout" class="btn btn-logout">
-				Logout
-			</a>
-		</li>
-				
-	  </ul>
-	</div>
-      <!-- END USER PROFILE & SETTINGS -->
-    </div>
-    <!-- END TOP NAVIGATION MENU -->
-
-  </div>
-  <!-- END TOP NAVIGATION BAR -->
-</div>
-<!-- END HEADER -->
-
-<!-- ========== CONTAINER ======= -->
-<div class="page-container row">
-
-  <!-- ===== SIDEBAR ===== -->
-  <div class="page-sidebar" id="main-menu">
-    <div class="user-info-wrapper">
-      <!-- Clicking on image or name redirects to profile page -->
-      <a href="/tec-web/application/index.php?page=profilo">
-        <div class="profile-wrapper">
-		  <img src="/tec-web/application/dtml/webarch/assets/img/profiles/<[profile_picture]>" width="69" height="69" alt="Foto Profilo">
-        </div>
-        <div class="user-info">
-          <div class="greeting">Welcome</div>
-          <div class="username"><[username_first]> <span class="semi-bold"><[username_last]></span></div>
-          <div class="status"><span class="status-icon green"></span>Online</div>
-        </div>
-      </a>
-    </div>
-
-    <p class="menu-title">MENU</p>
-    <ul>
-      <li class="start">
-        <a href="/tec-web/application/index.php?page=dashboard"><i class="icon-custom-home"></i><span class="title">Dashboard</span></a>
-      </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=appuntamenti"><i class="icon-calendar"></i><span class="title">Appuntamenti</span></a>
-	  </li>
-	  <li>
-		<a href="/tec-web/application/index.php?page=richieste"><i class="icon-clipboard"></i><span class="title">Richieste</span></a>
-	  </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=disponibilita"><i class="icon-clock"></i><span class="title">Disponibilità</span></a>
-      </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=servizi"><i class="icon-list"></i><span class="title">Servizi</span></a>
-      </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=media"><i class="icon-picture"></i><span class="title">Media</span></a>
-      </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=certificazioni"><i class="icon-file"></i><span class="title">Certificazioni</span></a>
-      </li>
-      <li>
-        <a href="/tec-web/application/index.php?page=messaggi"><i class="icon-envelope"></i><span class="title">Messaggi</span></a>
-      </li>
-      <!-- Removed sidebar Notifiche -->
-    </ul>
-  </div>
-  <!-- ===== END SIDEBAR ===== -->
-
-  <!-- ===== PLACEHOLDER PER IL CONTENUTO ===== -->
-  <[body]>
-  <!-- ===== END PLACEHOLDER ===== -->
-</div>
-<!-- ========== END CONTAINER === -->
-
-<!-- CORE JS -->
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-1.8.3.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/boostrapv3/js/bootstrap.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/breakpoints.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-unveil/jquery.unveil.min.js"></script>
-
-<!-- PAGE LEVEL & TEMPLATE JS -->
-<script src="/tec-web/application/dtml/webarch/assets/plugins/pace/pace.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-ricksaw-chart/js/raphael-min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-ricksaw-chart/js/d3.v2.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-ricksaw-chart/js/rickshaw.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-morris-chart/js/morris.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-easy-pie-chart/js/jquery.easypiechart.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-slider/jquery.sidr.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-jvectormap/js/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-jvectormap/js/jquery-jvectormap-us-lcc-en.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-sparkline/jquery-sparkline.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-flot/jquery.flot.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/jquery-flot/jquery.flot.animator.min.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/plugins/skycons/skycons.js"></script>
-
-<!-- DASHBOARD & CORE -->
-<script src="/tec-web/application/dtml/webarch/assets/js/dashboard.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/js/core.js"></script>
-<script src="/tec-web/application/dtml/webarch/assets/js/demo.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FisioCenter - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/tec-web/application/dtml/webarch/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="sidebar-title">FisioCenter</div>
+        </div>
+        
+        <div class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="index.php?page=dashboard" class="nav-link" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Gestione</div>
+                <div class="nav-item">
+                    <a href="index.php?page=appuntamenti" class="nav-link" data-page="appuntamenti">
+                        <i class="fas fa-calendar-alt nav-icon"></i>
+                        <span class="nav-text">Appuntamenti</span>
+                        <span class="nav-badge"><[count_appuntamenti]></span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=clienti" class="nav-link" data-page="clienti">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span class="nav-text">Servizi</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=servizi" class="nav-link" data-page="servizi">
+                        <i class="fas fa-dumbbell nav-icon"></i>
+                        <span class="nav-text">Macchinari</span>
+                    </a>
+                </div>
+  
+
+            <div class="nav-section">
+                <div class="nav-section-title">Finanziari</div>
+                <div class="nav-item">
+                    <a href="index.php?page=fatturazione" class="nav-link" data-page="fatturazione">
+                        <i class="fas fa-file-invoice-dollar nav-icon"></i>
+                        <span class="nav-text">Fatturazione</span>
+                    </a>
+                </div>
+          
+                
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+           
+                </div>
+                
+                <div class="nav-item">
+                    <a href="index.php?page=messaggi" class="nav-link" data-page="messaggi">
+                        <i class="fas fa-life-ring nav-icon"></i>
+                        <span class="nav-text">Messaggi</span>
+                        <span class="nav-badge"><[count_messaggi]></span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=notifiche" class="nav-link" data-page="notifiche">
+                        <i class="fas fa-bell nav-icon"></i>
+                        <span class="nav-text">Avvisi</span>
+                        <span class="nav-badge badge-danger" id="unread-notifs" style="display: <[notifiche_display]>;"><[count_notifiche]></span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=richieste" class="nav-link" data-page="richieste">
+                        <i class="fas fa-inbox nav-icon"></i>
+                        <span class="nav-text">Richieste</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=disponibilita" class="nav-link" data-page="disponibilita">
+                        <i class="fas fa-clock nav-icon"></i>
+                        <span class="nav-text">Disponibilità</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=media" class="nav-link" data-page="media">
+                        <i class="fas fa-images nav-icon"></i>
+                        <span class="nav-text">Media</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=certificazioni" class="nav-link" data-page="certificazioni">
+                        <i class="fas fa-certificate nav-icon"></i>
+                        <span class="nav-text">Certificazioni</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=profilo" class="nav-link" data-page="profilo">
+                        <i class="fas fa-user nav-icon"></i>
+                        <span class="nav-text">Profilo</span>
+                    </a>
+                </div>
+            </div>
+            
+            
+            <!-- Logout in sidebar -->
+            <div class="nav-section">
+                <div class="nav-item">
+                    <a href="index.php?page=logout" class="nav-link text-danger">
+                        <i class="fas fa-sign-out-alt nav-icon"></i>
+                        <span class="nav-text">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb-modern">
+                    <i class="fas fa-home"></i>
+                    <span>/</span>
+                    <span id="currentPage"><[current_page_name]></span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Cerca...">
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" style="display: <[notifiche_badge_display]>;"></span>
+                    </button>
+                </div>
+                
+                <div class="user-menu dropdown">
+                    <div class="user-menu-trigger" data-bs-toggle="dropdown">
+                        <div class="user-info">
+                            <div class="user-name"><[user_full_name]></div>
+                            <div class="user-role"><[user_role]></div>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="index.php?page=profilo"><i class="fas fa-user me-2"></i>Profilo</a></li>
+                        <li><a class="dropdown-item" href="index.php?page=impostazioni"><i class="fas fa-cog me-2"></i>Impostazioni</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.php?page=logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Placeholder -->
+        <div class="page-content">
+            <[body]>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/tec-web/application/dtml/webarch/assets/js/core.js"></script>
+    <script src="/tec-web/application/dtml/webarch/assets/js/dashboard.js"></script>
+    <script src="/tec-web/application/dtml/webarch/script.js"></script>
+    <link rel="stylesheet" href="/tec-web/application/dtml/webarch/script.js">
+</body>
+</html>

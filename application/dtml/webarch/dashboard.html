@@ -1,186 +1,220 @@
-<!-- DASHBOARD -->
+<!-- Dashboard Content -->
 <section id="dashboard">
-  <div class="page-content">
-    <div class="content">
-
-      <!-- TITOLO PAGINA -->
-      <div class="page-title">
-        <h3>Dashboard</h3>
-      </div>
-
-      <!-- PREVIEW: APPUNTAMENTI DI OGGI E NOTIFICHE NON LETTE -->
-      <div class="row spacing-bottom">
-        <!-- Appuntamenti di oggi -->
-        <div class="col-md-6">
-          <div class="panel">
-            <div class="panel-heading">
-              <h4>Appuntamenti del Giorno</h4>
-            </div>
-            <div class="panel-body">
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Ora</th>
-                    <th>Cliente</th>
-                    <th>Servizio</th>
-                    <th>Stato</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[preview_appuntamenti]>
-                  <!--
-                    Il controller popolerà con al massimo 5 righe di esempio:
-                    <tr>
-                      <td>09:00</td>
-                      <td>Mario Rossi</td>
-                      <td>Fisioterapia Sportiva</td>
-                      <td>Confermato</td>
-                    </tr>
-                  -->
-                </tbody>
-              </table>
-              <a href="index.php?page=appuntamenti" class="btn btn-sm btn-default">
-                Vedi tutti
-              </a>
-            </div>
-          </div>
+    <div class="dashboard-container">
+        <!-- Header della Dashboard -->
+        <div class="page-header">
+            <h1><i class="fas fa-tachometer-alt me-3"></i>Dashboard</h1>
+            <p>Panoramica generale del tuo centro fisioterapico</p>
         </div>
 
-        <!-- Notifiche non lette -->
-        <div class="col-md-6">
-          <div class="panel">
-            <div class="panel-heading">
-              <h4>Notifiche Non Let­te</h4>
+        <!-- Statistiche Principali -->
+        <div class="stats-grid">
+            <div class="stat-card success">
+                <div class="stat-icon success">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-number animate-number" data-value="<[stat_appuntamenti_oggi]>">0</div>
+                <div class="stat-label">Appuntamenti Oggi</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span><[stat_variazione_app_oggi]> rispetto a ieri</span>
+                </div>
             </div>
-            <div class="panel-body">
-              <ul class="list-group" id="preview-notifiche">
-                <[preview_notifiche]>
-                <!--
-                  Il controller popolerà con al massimo 5 elementi:
-                  <li class="list-group-item clearfix unread">
-                    <div class="pull-left">
-                      <i class="fa fa-bell"></i>
-                      <span class="notif-title">Nuova Richiesta</span><br>
-                      <small class="text-muted">03/06/2025 10:15</small>
+
+            <div class="stat-card info">
+                <div class="stat-icon info">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number animate-number" data-value="<[stat_appuntamenti_confermati]>">0</div>
+                <div class="stat-label">Appuntamenti Confermati</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span><[stat_variazione_app_conf]> rispetto a settimana scorsa</span>
+                </div>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number animate-number" data-value="<[stat_richieste_in_attesa]>">0</div>
+                <div class="stat-label">Richieste in Attesa</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span><[stat_variazione_richieste]> rispetto a ieri</span>
+                </div>
+            </div>
+
+            <div class="stat-card danger">
+                <div class="stat-icon danger">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-number animate-number" data-value="<[stat_notifiche_non_lette]>">0</div>
+                <div class="stat-label">Notifiche Non Lette</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span><[stat_variazione_notifiche]> nuova notifica</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenuto Principale -->
+        <div class="content-grid">
+            <!-- Appuntamenti di Oggi -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h4><i class="fas fa-calendar-alt"></i> Appuntamenti del Giorno</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Ora</th>
+                                    <th>Cliente</th>
+                                    <th>Servizio</th>
+                                    <th>Stato</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <[preview_appuntamenti]>
+                                <!--
+                                  Il controller popolerà con al massimo 5 righe di esempio:
+                                  <tr>
+                                    <td><strong>09:00</strong></td>
+                                    <td>Mario Rossi</td>
+                                    <td>Fisioterapia Sportiva</td>
+                                    <td><span class="status-badge status-confermato">Confermato</span></td>
+                                    <td>
+                                        <a href="index.php?page=appuntamenti&action=view&id=XX" class="btn btn-primary-modern btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                  </tr>
+                                -->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="pull-right">
-                      <a href="index.php?page=notifiche&action=view&id=12"
-                         class="btn btn-xs btn-primary">Apri</a>
+                    <div class="text-center">
+                        <a href="index.php?page=appuntamenti" class="btn btn-outline-modern">
+                            <i class="fas fa-list"></i> Vedi Tutti gli Appuntamenti
+                        </a>
                     </div>
-                  </li>
-                -->
-              </ul>
-              <a href="index.php?page=messaggi" class="btn btn-sm btn-default">
-                Vedi tutte
-              </a>
+                </div>
             </div>
-          </div>
+
+            <!-- Colonna Laterale -->
+            <div class="side-column">
+                <!-- Notifiche -->
+                <div class="panel mb-4">
+                    <div class="panel-header">
+                        <h4><i class="fas fa-bell"></i> Notifiche Non Lette</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div id="preview-notifiche">
+                            <[preview_notifiche]>
+                            <!--
+                              Il controller popolerà con al massimo 5 elementi:
+                              <div class="notification-item unread">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>Nuova Richiesta</strong>
+                                        <p class="mb-1">Anna Neri ha richiesto un appuntamento</p>
+                                        <small class="notification-time">03/06/2025 10:15</small>
+                                    </div>
+                                    <a href="index.php?page=notifiche&action=view&id=12" class="btn btn-primary-modern btn-xs">Apri</a>
+                                </div>
+                              </div>
+                            -->
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="index.php?page=messaggi" class="btn btn-outline-modern btn-sm">
+                                <i class="fas fa-envelope"></i> Tutte le Notifiche
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Richieste in Arrivo -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4><i class="fas fa-inbox"></i> Richieste in Arrivo</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Cliente</th>
+                                        <th>Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <[preview_richieste]>
+                                    <!--
+                                      Esempio riga:
+                                      <tr>
+                                        <td><small>02/06</small></td>
+                                        <td>Giulia B.</td>
+                                        <td>
+                                          <a href="index.php?page=richieste&action=view&id=42" class="btn btn-primary-modern btn-xs">
+                                            <i class="fas fa-eye"></i>
+                                          </a>
+                                        </td>
+                                      </tr>
+                                    -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="index.php?page=richieste" class="btn btn-outline-modern btn-sm">
+                                <i class="fas fa-list"></i> Tutte le Richieste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- ➊ STATISTIC TILES (senza carico server) -->
-      <div class="row spacing-bottom 2col">
-        <!-- Tile: Appuntamenti Odierni -->
-        <div class="col-md-4 col-sm-6 spacing-bottom-sm">
-          <div class="tiles green added-margin">
-            <div class="tiles-body">
-              <div class="tiles-title">Appuntamenti Odierni</div>
-              <div class="heading">
-                <span class="animate-number"
-                      data-value="<[stat_appuntamenti_oggi]>"
-                      data-animation-duration="1200">0</span>
-              </div>
-              <div class="description">
-                <i class="icon-custom-down"></i>
-                <span class="text-white mini-description">
-                  &nbsp; <[stat_variazione_app_oggi]> <span class="blend">rispetto a ieri</span>
-                </span>
-              </div>
-            </div>
-          </div>
+        <!-- Azioni Rapide -->
+        <div class="quick-actions">
+            <a href="index.php?page=appuntamenti&action=new" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <strong>Nuovo Appuntamento</strong>
+                <p class="mb-0">Aggiungi un nuovo appuntamento</p>
+            </a>
+            
+            <a href="index.php?page=clienti&action=new" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <strong>Nuovo Cliente</strong>
+                <p class="mb-0">Registra un nuovo cliente</p>
+            </a>
+            
+            <a href="index.php?page=statistiche" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <strong>Statistiche</strong>
+                <p class="mb-0">Visualizza i report</p>
+            </a>
+            
+            <a href="index.php?page=impostazioni" class="quick-action-card">
+                <div class="quick-action-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <strong>Impostazioni</strong>
+                <p class="mb-0">Configura il sistema</p>
+            </a>
         </div>
-
-        <!-- Tile: Appuntamenti Confermati -->
-        <div class="col-md-4 col-sm-6 spacing-bottom-sm">
-          <div class="tiles red added-margin">
-            <div class="tiles-body">
-              <div class="tiles-title">Appuntamenti Confermati</div>
-              <div class="heading">
-                <span class="animate-number"
-                      data-value="<[stat_appuntamenti_confermati]>"
-                      data-animation-duration="1200">0</span>
-              </div>
-              <div class="description">
-                <i class="icon-custom-up"></i>
-                <span class="text-white mini-description">
-                  &nbsp; <[stat_variazione_app_conf]> <span class="blend">rispetto a settimana scorsa</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tile: Richieste in Attesa -->
-        <div class="col-md-4 col-sm-6">
-          <div class="tiles purple added-margin">
-            <div class="tiles-body">
-              <div class="tiles-title">Richieste in Attesa</div>
-              <div class="heading">
-                <span class="animate-number"
-                      data-value="<[stat_richieste_in_attesa]>"
-                      data-animation-duration="1200">0</span>
-              </div>
-              <div class="description">
-                <i class="icon-custom-down"></i>
-                <span class="text-white mini-description">
-                  &nbsp; <[stat_variazione_richieste]> <span class="blend">rispetto a ieri</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ➋ ALTRE SEZIONI RIMOSSE: geolocalizzazione e meteo sono state eliminate -->
-
-      <!-- ➌ SEZIONI AGGIUNTIVE (facoltative) -->
-      <!-- Puoi aggiungere altri widget o statistiche secondo necessità -->
-        <!-- PREVIEW: PRIME 5 RICHIESTE -->
-      <div class="row spacing-bottom">
-        <div class="col-md-6">
-          <div class="panel">
-            <div class="panel-heading">
-              <h4>Richieste in Arrivo</h4>
-            </div>
-            <div class="panel-body">
-              <table class="table table-condensed">
-                <thead>
-                  <tr>
-                    <th>Data Richiesta</th>
-                    <th>Cliente</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[preview_richieste]>
-                  <!--
-                    Esempio riga:
-                    <tr>
-                      <td>2025-06-02 14:35</td>
-                      <td>Giulia Bianchi</td>
-                      <td>
-                        <a href="index.php?page=richieste&action=view&id=42" class="btn btn-xs btn-primary">Apri</a>
-                      </td>
-                    </tr>
-                  -->
-                </tbody>
-              </table>
-              <a href="index.php?page=richieste" class="btn btn-sm btn-default">Vedi tutte</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
 </section>
+
+<!-- Script per animazioni numero (necessario solo per dashboard) -->
+<link rel="stylesheet" href="/tec-web/application/dtml/webarch/script-dashboard.js">

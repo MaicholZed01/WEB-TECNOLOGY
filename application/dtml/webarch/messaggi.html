@@ -1,98 +1,124 @@
-<!-- MESSAGGI -->
-<section id="messaggi">
-  <div class="page-content">
-    <div class="content">
+<!-- messaggi.html -->
+<section id="messaggi" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Messaggi</h1>
+  </div>
 
-      <!-- TITOLO PAGINA -->
-      <div class="page-title">
-        <h3>Messaggi</h3>
+  <!-- Messaggio di esito operazione -->
+  <div class="mb-3">
+    <[messaggio_form]>
+  </div>
+
+  <!-- ELENCO CONVERSAZIONI -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-envelope me-2"></i>
+        <span>Elenco Conversazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Cliente</th>
+              <th>Oggetto</th>
+              <th>Ultimo Messaggio</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_messaggi]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>03/06/2025 14:20</td>
+                <td>Giulia Bianchi</td>
+                <td>Prenotazione Appuntamento</td>
+                <td>Buongiorno, vorrei confermare la data...</td>
+                <td>
+                  <a href="index.php?page=messaggi&action=view&id=27"
+                     class="btn btn-primary-modern btn-xs">
+                    <i class="fas fa-folder-open me-1"></i>Apri
+                  </a>
+                  <a href="index.php?page=messaggi&action=delete&id=27"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Eliminare questa conversazione?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETTAGLIO THREAD E RISPOSTA -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-comments me-2"></i>
+        <span>Dettaglio Conversazione</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+
+      <!-- Selezione thread -->
+      <div class="mb-4">
+        <[messaggio_seleziona_thread]>
       </div>
 
-      <!-- MESSAGGIO DI ESITO -->
-      <div><[messaggio_form]></div>
-
-      <!-- FORM DI RICERCA -->
-      <div class="row spacing-bottom">
-        <div class="col-md-6">
-          <form id="search-form" class="form-inline" onsubmit="return false;">
-            <div class="form-group">
-              <label for="search-input">Cerca messaggi:</label>
-              <input type="text" class="form-control" id="search-input" placeholder="Cerca per cliente, oggetto...">
-            </div>
-            <button type="submit" class="btn btn-primary" id="search-button">Cerca</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- TABELLA CONVERSAZIONI -->
-      <div class="row spacing-bottom">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-              <table class="table table-bordered table-striped table-hover" id="message-table">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Cliente</th>
-                    <th>Oggetto</th>
-                    <th>Ultimo Messaggio</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <[lista_messaggi]>
-                  <!-- Esempio:
-                  <tr>
-                    <td>03/06/2025 14:20</td>
-                    <td>Giulia Bianchi</td>
-                    <td>Prenotazione Appuntamento</td>
-                    <td>Buongiorno, vorrei confermare la data...</td>
-                    <td>
-                      <a href="index.php?page=messaggi&action=view&id=27" class="btn btn-primary btn-xs">Apri</a>
-                      <a href="index.php?page=messaggi&action=delete&id=27" class="btn btn-danger btn-xs"
-                         onclick="return confirm('Eliminare questa conversazione?');">Elimina</a>
-                    </td>
-                  </tr>
-                  -->
-                </tbody>
-              </table>
-            </div>
+      <!-- SOLO SE È PASSATO action=view E ID VALIDO -->
+      <div id="dettaglio-thread">
+        <[dettaglio_thread]>
+        <!--
+          Esempio di markup generato dal controller:
+          <div class="thread-header mb-3">
+            <h4>Conversazione con: Giulia Bianchi</h4>
+            <p><small>Oggetto: Prenotazione Appuntamento</small></p>
           </div>
-        </div>
-      </div>
-
-      <!-- AREA DETTAGLIO THREAD -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel">
-            <div class="panel-body">
-              <div><[messaggio_seleziona_thread]></div>
-              <div id="dettaglio-thread">
-                <[dettaglio_thread]>
+          <hr>
+          <div class="messages-list mb-4">
+            <div class="message from-cliente mb-3">
+              <div class="message-meta mb-1">
+                <strong>Giulia Bianchi</strong>
+                <span class="text-muted">03/06/2025 14:20</span>
+              </div>
+              <div class="message-body p-3 border rounded bg-gray-light">
+                Buongiorno, vorrei confermare la data dell’appuntamento del 05/06…
               </div>
             </div>
+            <div class="message from-fisio mb-3">
+              <div class="message-meta mb-1">
+                <strong>Io</strong>
+                <span class="text-muted">03/06/2025 14:45</span>
+              </div>
+              <div class="message-body p-3 border rounded bg-gray-light">
+                Ciao Giulia, confermo il tuo appuntamento per il 05/06 alle 10:00.
+              </div>
+            </div>
+            <!-- Altri messaggi… -->
           </div>
-        </div>
+          <hr>
+          <!-- FORM PER INVIO RISPOSTA -->
+          <form id="form-risposta" action="index.php?page=messaggi&action=send&id=< [id_thread] >" method="post">
+            <div class="mb-3">
+              <label class="d-block mb-1">Risposta*</label>
+              <textarea class="form-control" rows="4" name="testo" required></textarea>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary-modern btn-xs">
+                <i class="fas fa-paper-plane me-1"></i>Invia Risposta
+              </button>
+            </div>
+          </form>
       </div>
 
     </div>
   </div>
 </section>
-
-<!-- SCRIPT PER FILTRARE I MESSAGGI -->
-<script>
-  document.getElementById('search-button').addEventListener('click', function () {
-    const searchValue = document.getElementById('search-input').value.toLowerCase();
-    const rows = document.querySelectorAll('#message-table tbody tr');
-
-    rows.forEach(row => {
-      const text = row.innerText.toLowerCase();
-      row.style.display = text.includes(searchValue) ? '' : 'none';
-    });
-  });
-
-  // Opzionale: filtraggio in tempo reale durante la digitazione
-  document.getElementById('search-input').addEventListener('input', function () {
-    document.getElementById('search-button').click();
-  });
-</script>
