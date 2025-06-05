@@ -24,11 +24,11 @@ require __DIR__ . '/public/footer_news.php';
 session_start();
 
 // 4. Definizione delle pagine
-$publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti',
+$publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'dettagli_fisioterapista',
                  'form_prenotazione', 'recensioni', 'news-detail', 'fisioterapisti'];
-$privatePages = ['dashboard', 'appuntamenti', 'disponibilita',
-                 'servizi', 'richieste', 'certificazioni', 'media',
-                 'messaggi', 'notifiche', 'profilo', 'login', 'logout'];
+$privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari',
+                 'servizi', 'richieste', 'certificazioni', 'media', 'avvisi2',
+                 'messaggi', 'fatturazione', 'profilo', 'login'];
 
 try {
     $page = $_GET['page'] ?? 'index';
