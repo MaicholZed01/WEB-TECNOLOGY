@@ -1,0 +1,97 @@
+<!-- fissa_appuntamento.html -->
+<section id="fissa_appuntamento" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Fissa Appuntamento</h1>
+  </div>
+
+  <!-- MESSAGGIO ESITO -->
+  <div class="mb-3">
+    <[messaggio_form]>
+  </div>
+
+  <!-- DATI RICHIESTA (sola lettura) -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-info-circle me-2"></i>Dati Richiesta
+      </h4>
+    </div>
+    <div class="panel-body">
+      <!-- Mostriamo tutti i campi della richiesta in readonly (span) -->
+      <div class="row g-3">
+        <div class="col-md-4"><strong>Nome:</strong> <span><[richiesta_nome]></span></div>
+        <div class="col-md-4"><strong>Cognome:</strong> <span><[richiesta_cognome]></span></div>
+        <div class="col-md-4"><strong>E-mail:</strong> <span><[richiesta_email]></span></div>
+        <div class="col-md-4"><strong>Telefono:</strong> <span><[richiesta_telefono]></span></div>
+        <div class="col-md-4"><strong>Data di Nascita:</strong> <span><[richiesta_data_nascita]></span></div>
+        <div class="col-md-4"><strong>Sesso:</strong> <span><[richiesta_sesso]></span></div>
+        <div class="col-md-4"><strong>Servizio richiesto:</strong> <span><[richiesta_servizio]></span></div>
+        <div class="col-md-4"><strong>Fisioterapista (pref.):</strong> <span><[richiesta_fisioterapista]></span></div>
+        <div class="col-md-4"><strong>Data preferita:</strong> <span><[richiesta_data_preferita]></span></div>
+        <div class="col-md-4"><strong>Fascia preferita:</strong> <span><[richiesta_fascia]></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM FISSA APPUNTAMENTO -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-calendar-plus me-2"></i>Nuovo Appuntamento
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-fissa-appuntamento"
+            action="index.php?page=fissa_appuntamento&action=save"
+            method="post">
+
+        <!-- Hidden: ID della richiesta già creata -->
+        <input type="hidden" name="richiesta_id" value="<[richiesta_id]>">
+
+        <!-- Data dell’appuntamento -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Data*</strong></label>
+          <input
+            type="date"
+            class="form-control"
+            name="data"
+            value="<[old_data]>"
+            required
+          >
+        </div>
+
+        <!-- Orario -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Orario*</strong></label>
+          <input
+            type="time"
+            class="form-control"
+            name="orario"
+            value="<[old_orario]>"
+            required
+          >
+        </div>
+
+        <!-- Sala -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Sala*</strong></label>
+          <select class="form-control" name="sala_id" required>
+            <option value="">-- Seleziona Sala --</option>
+            <[lista_sale]>
+          </select>
+        </div>
+
+        <!-- Pulsanti -->
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-save me-1"></i>Salva Appuntamento
+          </button>
+          <a href="index.php?page=richieste" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-times me-1"></i>Annulla
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
