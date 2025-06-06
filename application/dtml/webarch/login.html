@@ -1,229 +1,526 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>Area Riservata – Login / Registrazione</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Area Riservata – Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap 5 e Font Awesome 6 come dashboard -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3730a3;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --dark-color: #2c3e50;
+            --gray-light: #f5f7fa;
+            --border-color: #e5e7eb;
+            --text-muted: #6b7280;
+        }
 
-  <!-- CORE CSS (stessi file usati da Webarch) -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/style.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/extra1.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/webarch/assets/css/extra2.css">
+        * {
+            box-sizing: border-box;
+        }
 
-  <!-- STILI AGGIUNTIVI -->
-  <style>
-    body {
-      background: #f6f8f9; /* coerente con le altre pagine */
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    /* Tasto Home in alto a sinistra */
-    .home-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
-    /* Contenitore flessibile per affiancare i due pannelli */
-    .login-register-wrapper {
-      display: flex;
-      flex-direction: row;
-      gap: 2rem;
-      max-width: 900px;
-      width: 100%;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    /* Panel in stile Webarch */
-    .panel {
-      background: #ffffff;
-      border-radius: .5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
-      width: 100%;
-      max-width: 420px;
-      margin-bottom: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-    /* Header del panel */
-    .panel-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .panel-header h4 {
-      margin: 0;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-    /* Corpo del panel */
-    .panel-body {
-      padding: 1.5rem;
-      flex: 1;
-    }
-    /* Form di registrazione minimalista */
-    .register-minimal .form-label {
-      display: block;
-      margin-bottom: .5rem;
-      font-weight: 500;
-      color: #393939;
-    }
-    .register-minimal .form-control {
-      background: #f9f9f9;
-      border: none;
-      border-radius: 3px;
-      box-shadow: none;
-      font-size: 14px;
-      margin-bottom: 1rem;
-      height: 45px;
-      transition: all ease-in-out .4s;
-    }
-    .register-minimal button#reg-submit {
-      background: #4361ee;
-      color: #ffffff;
-      font-weight: 600;
-      height: 50px;
-    }
-    .register-minimal button#reg-submit:hover {
-      background: #3730a3;
-      color: #ffffff;
-    }
-    /* Messaggi di errore / successo */
-    .mb-3.alert {
-      border-radius: .375rem;
-      padding: .75rem 1rem;
-      font-size: .875rem;
-    }
-    .alert-danger {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-    .alert-success {
-      background: #d1fae5;
-      color: #065f46;
-    }
-    /* Su schermi stretti, i pannelli si dispongono in colonna */
-    @media (max-width: 768px) {
-      .login-register-wrapper {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      .panel {
-        max-width: none;
-      }
-    }
-  </style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f6f8f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background animato */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.03) 0%, transparent 70%);
+            animation: rotate 40s linear infinite reverse;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Home button */
+        .home-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: var(--primary-color);
+        }
+
+        /* Contenitore principale */
+        .login-register-wrapper {
+            display: flex;
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Panel moderno */
+        .panel {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            min-width: 350px;
+            max-width: 420px;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), #667eea);
+        }
+
+        /* Panel header */
+        .panel-header {
+            padding: 2.5rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .panel-header h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .panel-header h4 i {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), #667eea);
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.25);
+        }
+
+        /* Panel body */
+        .panel-body {
+            padding: 1rem 2rem 2.5rem;
+        }
+
+        /* Form styles */
+        .form-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .form-control {
+            width: 100% !important;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 0.9375rem;
+            transition: all 0.3s ease;
+            background-color: #fafbfc;
+            height: 48px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            background-color: white;
+        }
+
+        /* Remember & forgot */
+        .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 0;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .form-check-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .small {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .small:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #667eea);
+            color: white !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+            background: linear-gradient(135deg, var(--primary-color), #667eea);
+            color: white !important;
+        }
+
+        /* Specific button styles */
+        button#reg-submit {
+            background: linear-gradient(135deg, var(--primary-color), #667eea);
+            color: white !important;
+            min-width: 200px;
+        }
+
+        button#reg-submit:hover {
+            background: linear-gradient(135deg, var(--primary-hover), #5a67d8);
+            color: white !important;
+        }
+
+        /* Alert messages */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert i {
+            font-size: 1.25rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-login.loading .btn-text {
+            visibility: hidden;
+        }
+
+        .btn-login.loading .spinner {
+            display: inline-block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Panel body centering for registration */
+        .panel-body.d-flex {
+            min-height: 300px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-register-wrapper {
+                flex-direction: column;
+            }
+
+            .panel {
+                max-width: 100%;
+                min-width: unset;
+                margin-bottom: 1rem;
+            }
+
+            .home-btn {
+                width: 40px;
+                height: 40px;
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel-header {
+                padding: 2rem 1.5rem 1rem;
+            }
+
+            .panel-body {
+                padding: 1rem 1.5rem 2rem;
+            }
+
+            .d-flex.justify-content-center {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .form-check.me-3 {
+                margin-right: 0 !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- TASTO HOME -->
+    <a href="index.php" class="btn btn-light border home-btn">
+        <i class="fa fa-home"></i> Home
+    </a>
 
-  <!-- TASTO HOME -->
-  <a href="index.php" class="btn btn-light border home-btn">
-    <i class="fa fa-home"></i> Home
-  </a>
-
-  <!-- CONTENITORE PRINCIPALE -->
-  <div class="login-register-wrapper">
-    <!-- PANEL: LOGIN -->
-    <div class="panel">
-      <div class="panel-header">
-        <h4><i class="fa fa-lock me-2"></i>Accedi</h4>
-      </div>
-      <div class="panel-body">
-        <form id="login-form" action="index.php?page=process_login" method="post" class="text-center">
-
-          <!-- MESSAGGIO DI ERRORE / SUCCESSO LOGIN -->
-          <div class="mb-3"><[error_login]></div>
-
-          <!-- E-MAIL -->
-          <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-control mx-auto w-75"
-              placeholder="name@example.com"
-              required
-            >
-          </div>
-
-          <!-- PASSWORD -->
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-control mx-auto w-75"
-              placeholder="••••••••"
-              required
-            >
-          </div>
-
-          <!-- RICORDAMI + PASSWORD DIMENTICATA -->
-          <div class="d-flex justify-content-center align-items-center mb-3">
-            <div class="form-check me-3">
-              <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
-              <label class="form-check-label" for="remember">Ricordami</label>
+    <!-- CONTENITORE PRINCIPALE -->
+    <div class="login-register-wrapper">
+        <!-- PANEL: LOGIN -->
+        <div class="panel">
+            <div class="panel-header">
+                <h4><i class="fa fa-lock me-2"></i>Accedi</h4>
             </div>
-            <a href="#" class="small">Password dimenticata?</a>
-          </div>
+            <div class="panel-body">
+                <form id="login-form" action="index.php?page=process_login" method="post" class="text-center">
 
-          <!-- PULSANTE LOGIN -->
-            <div class="d-flex justify-content-center">
-              <button type="submit" class="btn btn-primary">
-              <i class="fa fa-sign-in me-1"></i> Login
-              </button>
+                    <!-- MESSAGGIO DI ERRORE / SUCCESSO LOGIN -->
+                    <div class="mb-3"><[error_login]></div>
+
+                    <!-- E-MAIL -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control mx-auto w-75"
+                            placeholder="name@example.com"
+                            required
+                        >
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control mx-auto w-75"
+                            placeholder=""
+                            required
+                        >
+                    </div>
+
+                    <!-- RICORDAMI + PASSWORD DIMENTICATA -->
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
+                            <label class="form-check-label" for="remember">Ricordami</label>
+                        </div>
+                        <a href="#" class="small">Password dimenticata?</a>
+                    </div>
+
+                    <!-- PULSANTE LOGIN -->
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-sign-in me-1"></i> Login
+                        </button>
+                    </div>
+                </form>
             </div>
-          </form>
-          </div>
         </div>
 
         <!-- PANEL: REGISTRAZIONE -->
         <div class="panel">
-          <div class="panel-header">
-            <h4><i class="fa fa-user-plus me-2"></i>Registrati</h4>
-          </div>
-          <div class="panel-body d-flex align-items-center justify-content-center" style="min-height: 250px;">
-            <form id="register-form-minimal" style="padding-top: 12%;" action="#" method="post" class="text-center w-100">
-              
-              <!-- MESSAGGIO DI ERRORE / SUCCESSO REGISTRAZIONE -->
-              <div class="mb-3"><[error_register]></div>
-              
-              <!-- EMAIL -->
-              <div class="mb-3">
-          <label for="reg_email" class="form-label">Inserisci la tua e-mail</label>
-          <input
-            type="email"
-            id="reg_email"
-            name="email"
-            class="form-control mx-auto w-75"
-            placeholder="nome@dominio.it"
-            required
-          >
-              </div>
-              
-              <!-- PULSANTE RICHIEDI CREDENZIALI -->
-              <div class="d-flex justify-content-center">
-          <button type="submit" id="reg-submit" class="btn btn-primary">
-            <i class="fa fa-envelope me-1"></i> Richiedi Credenziali
-          </button>
-              </div>
-            </form>
-          </div>
+            <div class="panel-header">
+                <h4><i class="fa fa-user-plus me-2"></i>Registrati</h4>
+            </div>
+            <div class="panel-body d-flex align-items-center justify-content-center" style="min-height: 250px;">
+                <form id="register-form-minimal" style="padding-top: 12%;" action="#" method="post" class="text-center w-100">
+                    
+                    <!-- MESSAGGIO DI ERRORE / SUCCESSO REGISTRAZIONE -->
+                    <div class="mb-3"><[error_register]></div>
+                    
+                    <!-- EMAIL -->
+                    <div class="mb-3">
+                        <label for="reg_email" class="form-label">Inserisci la tua e-mail</label>
+                        <input
+                            type="email"
+                            id="reg_email"
+                            name="email"
+                            class="form-control mx-auto w-75"
+                            placeholder="nome@dominio.it"
+                            required
+                        >
+                    </div>
+                    
+                    <!-- PULSANTE RICHIEDI CREDENZIALI -->
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" id="reg-submit" class="btn btn-primary">
+                            <i class="fa fa-envelope me-1"></i> Richiedi Credenziali
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-  </div>
-  <!-- JS CORE (stessi file usati da Webarch) -->
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/js/core.js"></script>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Show loading spinner on form submit
+            $('#login-form').on('submit', function() {
+                $('.btn-login').addClass('loading');
+            });
+
+            // Auto-remove alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // Floating label fix
+            $('.form-control').on('blur', function() {
+                if ($(this).val()) {
+                    $(this).addClass('filled');
+                } else {
+                    $(this).removeClass('filled');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
