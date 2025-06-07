@@ -5,17 +5,11 @@
 session_start();
 
 // 1. Connessione al database
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
-
+$conn->set_charset("utf8");
 // 2. Inizializzo variabili per il template
 $messaggio_form       = '';
 $label_submit         = 'Aggiungi';
@@ -27,8 +21,8 @@ $old_prezzo_base      = '';
 $lista_servizi        = '';
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // 3. Gestione eliminazione (GET action=delete&id=...)
@@ -36,11 +30,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     $del_id = intval($_GET['id']);
     if ($del_id > 0) {
         $sql_del = "DELETE FROM servizi WHERE servizio_id = {$del_id}";
-        if ($mysqli->query($sql_del)) {
+        if ($conn->query($sql_del)) {
             $messaggio_form = '<div class="alert alert-success">Servizio eliminato correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -60,7 +54,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
           WHERE servizio_id = {$edit_id}
           LIMIT 1
         ";
-        if ($res = $mysqli->query($sql_sel)) {
+        if ($res = $conn->query($sql_sel)) {
             if ($res->num_rows === 1) {
                 $row = $res->fetch_assoc();
                 $old_servizio_id   = (int)$row['servizio_id'];
@@ -81,10 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && $_GET['action'] === 'save') 
 {
     $servizio_id      = intval($_POST['servizio_id'] ?? 0);
-    $nome             = esc($mysqli, $_POST['nome'] ?? '');
-    $descrizione      = esc($mysqli, $_POST['descrizione'] ?? '');
+    $nome             = esc($conn, $_POST['nome'] ?? '');
+    $descrizione      = esc($conn, $_POST['descrizione'] ?? '');
     $durata_minuti    = intval($_POST['durata_minuti'] ?? 0);
-    $prezzo_base      = esc($mysqli, $_POST['prezzo_base'] ?? '');
+    $prezzo_base      = esc($conn, $_POST['prezzo_base'] ?? '');
 
     // Validazione di base
     if ($nome === '' || $durata_minuti <= 0 || $prezzo_base === '') {
@@ -110,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
                 prezzo_base   = '{$prezzo_base}'
               WHERE servizio_id = {$servizio_id}
             ";
-            if ($mysqli->query($sql_upd)) {
+            if ($conn->query($sql_upd)) {
                 $messaggio_form = '<div class="alert alert-success">
                     Servizio aggiornato correttamente.
                   </div>';
@@ -124,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
             } else {
                 $messaggio_form = '<div class="alert alert-danger">
                     Errore aggiornamento: '
-                    . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '
+                    . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '
                   </div>';
             }
         } else {
@@ -139,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
                 CURRENT_TIMESTAMP
               )
             ";
-            if ($mysqli->query($sql_ins)) {
+            if ($conn->query($sql_ins)) {
                 $messaggio_form = '<div class="alert alert-success">
                     Servizio aggiunto correttamente.
                   </div>';
@@ -152,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
             } else {
                 $messaggio_form = '<div class="alert alert-danger">
                     Errore inserimento: '
-                    . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '
+                    . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '
                   </div>';
             }
         }
@@ -171,7 +165,7 @@ $sql_list = "
   FROM servizi
   ORDER BY creato_il DESC
 ";
-if ($res = $mysqli->query($sql_list)) {
+if ($res = $conn->query($sql_list)) {
     while ($row = $res->fetch_assoc()) {
         $sid        = (int)$row['servizio_id'];
         $nome_s     = htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8');
@@ -243,5 +237,5 @@ $output = str_replace(
 echo $output;
 
 // 10. Chiusura connessione
-$mysqli->close();
+$conn->close();
 ?>

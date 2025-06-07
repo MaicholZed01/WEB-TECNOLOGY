@@ -3,16 +3,11 @@
 // Controller per appuntamenti.html
 
 // 1. Connessione al database
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
+$conn->set_charset("utf8");
 
 // 2. Inizializzo variabili per template
 $messaggio_form          = '';
@@ -27,15 +22,15 @@ $fisio_filter    = 0;
 $servizio_filter = 0;
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // 3. Costruisco dropdown Fisioterapisti e Servizi
-function buildOptions($mysqli, $table, $idCol, $nameCol, $selectedValue = '') {
+function buildOptions($conn, $table, $idCol, $nameCol, $selectedValue = '') {
     $opts = "";
     $sql = "SELECT `$idCol`, `$nameCol` FROM `$table` ORDER BY `$nameCol` ASC";
-    if ($res = $mysqli->query($sql)) {
+    if ($res = $conn->query($sql)) {
         while ($row = $res->fetch_assoc()) {
             $id   = (int)$row[$idCol];
             $nome = htmlspecialchars($row[$nameCol], ENT_QUOTES, 'UTF-8');
@@ -48,20 +43,20 @@ function buildOptions($mysqli, $table, $idCol, $nameCol, $selectedValue = '') {
 }
 
 $lista_fisioterapisti = "<option value=\"\">Tutti</option>\n" 
-                       . buildOptions($mysqli, 'fisioterapisti', 'fisioterapista_id', 'nome', '');
+                       . buildOptions($conn, 'fisioterapisti', 'fisioterapista_id', 'nome', '');
 $lista_servizi        = "<option value=\"\">Tutti</option>\n" 
-                       . buildOptions($mysqli, 'servizi', 'servizio_id', 'nome', '');
+                       . buildOptions($conn, 'servizi', 'servizio_id', 'nome', '');
 
 // 4. Gestione azioni: delete e updateStato
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
     $del_id = intval($_GET['id']);
     if ($del_id > 0) {
         $sql_del = "DELETE FROM appuntamenti WHERE appuntamento_id = {$del_id}";
-        if ($mysqli->query($sql_del)) {
+        if ($conn->query($sql_del)) {
             $messaggio_form = '<div class="alert alert-success">Appuntamento eliminato correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -72,18 +67,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && $_GET['action'] === 'updateStato') 
 {
     $app_id = intval($_POST['appuntamento_id'] ?? 0);
-    $nuovo_stato = esc($mysqli, $_POST['stato'] ?? '');
+    $nuovo_stato = esc($conn, $_POST['stato'] ?? '');
     if ($app_id > 0 && ($nuovo_stato === 'Prenotato' || $nuovo_stato === 'Completato')) {
         $sql_upd = "
           UPDATE appuntamenti
           SET stato = '{$nuovo_stato}'
           WHERE appuntamento_id = {$app_id}
         ";
-        if ($mysqli->query($sql_upd)) {
+        if ($conn->query($sql_upd)) {
             $messaggio_form = '<div class="alert alert-success">Stato aggiornato correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore aggiornamento stato: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -91,13 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 // 5. Recupero filtri da GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['data_inizio'])) {
-        $data_inizio = esc($mysqli, $_GET['data_inizio']);
+        $data_inizio = esc($conn, $_GET['data_inizio']);
     }
     if (!empty($_GET['data_fine'])) {
-        $data_fine = esc($mysqli, $_GET['data_fine']);
+        $data_fine = esc($conn, $_GET['data_fine']);
     }
     if (!empty($_GET['stato'])) {
-        $stato_filter = esc($mysqli, $_GET['stato']);
+        $stato_filter = esc($conn, $_GET['stato']);
     }
     if (!empty($_GET['fisioterapista_id'])) {
         $fisio_filter = intval($_GET['fisioterapista_id']);
@@ -109,9 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // Ricostruisco dropdown con selezione attuale
 $lista_fisioterapisti = "<option value=\"\">Tutti</option>\n" 
-                       . buildOptions($mysqli, 'fisioterapisti', 'fisioterapista_id', 'nome', $fisio_filter);
+                       . buildOptions($conn, 'fisioterapisti', 'fisioterapista_id', 'nome', $fisio_filter);
 $lista_servizi        = "<option value=\"\">Tutti</option>\n" 
-                       . buildOptions($mysqli, 'servizi', 'servizio_id', 'nome', $servizio_filter);
+                       . buildOptions($conn, 'servizi', 'servizio_id', 'nome', $servizio_filter);
 
 // 6. Costruisco clausole WHERE in base ai filtri
 $where_clauses = [];
@@ -158,7 +153,7 @@ $sql_app = "
   {$where_sql}
   ORDER BY a.prenotato_il DESC
 ";
-$res_app = $mysqli->query($sql_app);
+$res_app = $conn->query($sql_app);
 if ($res_app) {
     while ($row = $res_app->fetch_assoc()) {
         $aid    = (int)$row['appuntamento_id'];
@@ -237,5 +232,5 @@ $output = str_replace(
 echo $output;
 
 // 11. Chiusura connessione
-$mysqli->close();
+$conn->close();
 ?>

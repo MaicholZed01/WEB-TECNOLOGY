@@ -7,16 +7,11 @@ session_start();
 // -----------------------------------------------------------------------------
 // 1. Connessione al database
 // -----------------------------------------------------------------------------
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die('Errore di connessione al database: ' . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset('utf8');
+$conn->set_charset("utf8");
 
 // -----------------------------------------------------------------------------
 // 2. Variabili / funzioni utili
@@ -53,7 +48,7 @@ $sqlApp = "
   ORDER BY a.prenotato_il
   LIMIT 5
 ";
-$res = $mysqli->query($sqlApp);
+$res = $conn->query($sqlApp);
 if ($res && $res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $aid      = (int)$row['appuntamento_id'];
@@ -99,7 +94,7 @@ $sqlRich = "
   ORDER BY r.data_richiesta DESC
   LIMIT 5
 ";
-$res = $mysqli->query($sqlRich);
+$res = $conn->query($sqlRich);
 if ($res && $res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $rid      = (int)$row['richiesta_id'];
@@ -142,7 +137,7 @@ $sqlMsg = "
   ORDER BY m.inviato_il DESC
   LIMIT 5
 ";
-$res = $mysqli->query($sqlMsg);
+$res = $conn->query($sqlMsg);
 if ($res && $res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $mid     = (int)$row['messaggio_id'];
@@ -204,5 +199,5 @@ echo $output;
 // -----------------------------------------------------------------------------
 // 9. Chiudo connessione
 // -----------------------------------------------------------------------------
-$mysqli->close();
+$conn->close();
 ?>

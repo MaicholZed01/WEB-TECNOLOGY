@@ -3,16 +3,11 @@
 // Controller per aggiungi_appuntamento.html
 // Flusso: crea prima la richiesta, poi l’appuntamento
 
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
+$conn->set_charset("utf8");
 
 // Inizializzo variabili per il template
 $old_nome           = '';
@@ -37,15 +32,15 @@ $lista_sale          = '';
 $messaggio_form      = '';
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // Costruisco dropdown
-function buildOptions($mysqli, $table, $idCol, $nameCol, $selected = '') {
+function buildOptions($conn, $table, $idCol, $nameCol, $selected = '') {
     $opt = "";
     $sql = "SELECT `$idCol`, `$nameCol` FROM `$table` ORDER BY `$nameCol` ASC";
-    if ($res = $mysqli->query($sql)) {
+    if ($res = $conn->query($sql)) {
         while ($row = $res->fetch_assoc()) {
             $id   = $row[$idCol];
             $nome = htmlspecialchars($row[$nameCol], ENT_QUOTES, 'UTF-8');
@@ -57,26 +52,26 @@ function buildOptions($mysqli, $table, $idCol, $nameCol, $selected = '') {
     return $opt;
 }
 // Popolo dropdown iniziali senza selezione
-$lista_servizi         = buildOptions($mysqli, 'servizi', 'servizio_id', 'nome', '');
-$lista_fasi_disponibili = buildOptions($mysqli, 'fasce_disponibilita', 'fascia_id', 'inizio', '');
-$lista_sale            = buildOptions($mysqli, 'sale', 'sala_id', 'nome_sala', '');
+$lista_servizi         = buildOptions($conn, 'servizi', 'servizio_id', 'nome', '');
+$lista_fasi_disponibili = buildOptions($conn, 'fasce_disponibilita', 'fascia_id', 'inizio', '');
+$lista_sale            = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', '');
 
 // 1) Se POST action=save, creo richiesta e appuntamento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' 
     && isset($_GET['action']) 
     && $_GET['action'] === 'save') 
 {
-    $nome            = esc($mysqli, $_POST['nome'] ?? '');
-    $cognome         = esc($mysqli, $_POST['cognome'] ?? '');
-    $email           = esc($mysqli, $_POST['email'] ?? '');
-    $telefono        = esc($mysqli, $_POST['telefono'] ?? '');
-    $data_nascita    = esc($mysqli, $_POST['data_nascita'] ?? '');
-    $sesso           = esc($mysqli, $_POST['sesso'] ?? '');
+    $nome            = esc($conn, $_POST['nome'] ?? '');
+    $cognome         = esc($conn, $_POST['cognome'] ?? '');
+    $email           = esc($conn, $_POST['email'] ?? '');
+    $telefono        = esc($conn, $_POST['telefono'] ?? '');
+    $data_nascita    = esc($conn, $_POST['data_nascita'] ?? '');
+    $sesso           = esc($conn, $_POST['sesso'] ?? '');
     $servizio_id     = intval($_POST['servizio_id'] ?? 0);
     $fascia_id       = intval($_POST['fascia_id'] ?? 0);
 
-    $app_data        = esc($mysqli, $_POST['data'] ?? '');
-    $app_orario      = esc($mysqli, $_POST['orario'] ?? '');
+    $app_data        = esc($conn, $_POST['data'] ?? '');
+    $app_orario      = esc($conn, $_POST['orario'] ?? '');
     $sala_id         = intval($_POST['sala_id'] ?? 0);
 
     // Validazioni
@@ -110,12 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
              " . ($sesso !== '' ? "'{$sesso}'" : "NULL") . ",
              {$servizio_id}, {$fascia_id}, CURRENT_TIMESTAMP)
         ";
-        if (!$mysqli->query($sql_ins_req)) {
+        if (!$conn->query($sql_ins_req)) {
             $messaggio_form = '<div class="alert alert-danger">'
                            . 'Errore inserimento richiesta: ' 
-                           . $mysqli->error . '</div>';
+                           . $conn->error . '</div>';
         } else {
-            $new_richiesta_id = $mysqli->insert_id;
+            $new_richiesta_id = $conn->insert_id;
 
             // 1.2) Inserimento in appuntamenti con il nuovo richiesta_id
             $prenotato_il = $app_data . ' ' . $app_orario . ':00';
@@ -127,10 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
               VALUES
                 ({$new_richiesta_id}, 0, {$servizio_id}, {$fascia_id}, '{$stato}', '{$prenotato_il}', {$sala_id})
             ";
-            if (!$mysqli->query($sql_ins_app)) {
+            if (!$conn->query($sql_ins_app)) {
                 $messaggio_form = '<div class="alert alert-danger">'
                                . 'Errore inserimento appuntamento: ' 
-                               . $mysqli->error . '</div>';
+                               . $conn->error . '</div>';
             } else {
                 $messaggio_form = '<div class="alert alert-success">'
                                . 'Appuntamento creato correttamente!</div>';
@@ -151,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     // Ricostruisco i dropdown con eventuali selezioni rimaste
-    $lista_servizi          = buildOptions($mysqli, 'servizi', 'servizio_id', 'nome', $old_servizio);
-    $lista_fasi_disponibili = buildOptions($mysqli, 'fasce_disponibilita', 'fascia_id', 'inizio', $old_fascia);
-    $lista_sale             = buildOptions($mysqli, 'sale', 'sala_id', 'nome_sala', $sala_selezionata);
+    $lista_servizi          = buildOptions($conn, 'servizi', 'servizio_id', 'nome', $old_servizio);
+    $lista_fasi_disponibili = buildOptions($conn, 'fasce_disponibilita', 'fascia_id', 'inizio', $old_fascia);
+    $lista_sale             = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', $sala_selezionata);
 
     // Imposto selezione sesso
     $sel_sesso_Maschio  = ($old_sesso === 'Maschio') ? 'selected' : '';
@@ -208,5 +203,5 @@ $output = str_replace(
 );
 
 echo $output;
-$mysqli->close();
+$conn->close();
 ?>

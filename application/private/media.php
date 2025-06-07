@@ -55,13 +55,21 @@ function handleMedia(bool &$showMedia, string &$bodyHtmlMedia): void {
     }
     $showMedia = true;
 
-    // 1) Fisso $fisioId = 1 per test a scatola chiusa
-    $fisioId = 1;
-
-    // 2) Flash message (successo inserimento/cancellazione)
+        // Avvia la sessione se non è già partita
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
+
+    // Se non siamo loggati, redirigo al login
+    if (empty($_SESSION['fisio'])) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+
+    // Prendo l’ID del fisioterapista dalla sessione
+    $fisioId = (int) $_SESSION['fisio'];
+
+
     $flash = $_SESSION['media_flash'] ?? '';
     unset($_SESSION['media_flash']);
 

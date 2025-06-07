@@ -3,17 +3,11 @@
 // Controller per richieste.html
 
 // 1. Connessione al database
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
-
+$conn->set_charset("utf8");
 // 2. Inizializzo variabili e messaggio di esito
 $messaggio_form   = '';
 $lista_servizi    = '';
@@ -26,15 +20,15 @@ $cognome_filter = '';
 $servizio_filter = 0;
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // 3. Popolo dropdown servizi per il filtro
-function buildOptions($mysqli, $selectedValue = '') {
+function buildOptions($conn, $selectedValue = '') {
     $opts = "";
     $sql = "SELECT servizio_id, nome FROM servizi ORDER BY nome ASC";
-    if ($res = $mysqli->query($sql)) {
+    if ($res = $conn->query($sql)) {
         while ($row = $res->fetch_assoc()) {
             $id   = (int)$row['servizio_id'];
             $nome = htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8');
@@ -51,11 +45,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     $del_id = intval($_GET['id']);
     if ($del_id > 0) {
         $sql_del = "DELETE FROM richieste WHERE richiesta_id = {$del_id}";
-        if ($mysqli->query($sql_del)) {
+        if ($conn->query($sql_del)) {
             $messaggio_form = '<div class="alert alert-success">Richiesta eliminata correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore eliminazione richiesta: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -63,16 +57,16 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
 // 5. Recupero filtri da GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['data_inizio'])) {
-        $data_inizio = esc($mysqli, $_GET['data_inizio']);
+        $data_inizio = esc($conn, $_GET['data_inizio']);
     }
     if (isset($_GET['data_fine'])) {
-        $data_fine = esc($mysqli, $_GET['data_fine']);
+        $data_fine = esc($conn, $_GET['data_fine']);
     }
     if (isset($_GET['nome'])) {
-        $nome_filter = esc($mysqli, $_GET['nome']);
+        $nome_filter = esc($conn, $_GET['nome']);
     }
     if (isset($_GET['cognome'])) {
-        $cognome_filter = esc($mysqli, $_GET['cognome']);
+        $cognome_filter = esc($conn, $_GET['cognome']);
     }
     if (isset($_GET['servizio_id'])) {
         $servizio_filter = intval($_GET['servizio_id']);
@@ -80,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // Ricostruisco dropdown servizi con selezione corrente
-$lista_servizi = buildOptions($mysqli, $servizio_filter);
+$lista_servizi = buildOptions($conn, $servizio_filter);
 
 // 6. Costruisco query per l’elenco delle richieste con filtri
 $where_clauses = [];
@@ -129,7 +123,7 @@ $sql_richieste = "
   ORDER BY r.creato_il DESC
 ";
 
-$res = $mysqli->query($sql_richieste);
+$res = $conn->query($sql_richieste);
 if ($res) {
     while ($row = $res->fetch_assoc()) {
         $rid        = (int)$row['richiesta_id'];
@@ -206,5 +200,5 @@ $output = str_replace(
 echo $output;
 
 // 10. Chiusura connessione
-$mysqli->close();
+$conn->close();
 ?>

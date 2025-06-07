@@ -5,16 +5,11 @@
 session_start();
 
 // 1. Connessione al database
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
+$conn->set_charset("utf8");
 
 // 2. Inizializzo variabili per il template
 $messaggio_form     = '';
@@ -25,8 +20,8 @@ $old_contenuto      = '';
 $lista_annunci      = '';
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // 3. Gestione eliminazione avviso
@@ -34,11 +29,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     $del_id = intval($_GET['id']);
     if ($del_id > 0) {
         $sql_del = "DELETE FROM annunci WHERE annuncio_id = {$del_id}";
-        if ($mysqli->query($sql_del)) {
+        if ($conn->query($sql_del)) {
             $messaggio_form = '<div class="alert alert-success">Avviso eliminato correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore eliminazione avviso: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -59,7 +54,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
           WHERE a.annuncio_id = {$edit_id}
           LIMIT 1
         ";
-        if ($res = $mysqli->query($sql_sel)) {
+        if ($res = $conn->query($sql_sel)) {
             if ($res->num_rows === 1) {
                 $row = $res->fetch_assoc();
                 $old_annuncio_id  = (int)$row['annuncio_id'];
@@ -79,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 {
     // Prelevo dati dal form
     $annuncio_id = intval($_POST['annuncio_id'] ?? 0);
-    $titolo      = esc($mysqli, $_POST['titolo'] ?? '');
-    $contenuto   = esc($mysqli, $_POST['contenuto'] ?? '');
+    $titolo      = esc($conn, $_POST['titolo'] ?? '');
+    $contenuto   = esc($conn, $_POST['contenuto'] ?? '');
 
     // Validazione minima
     if ($titolo === '') {
@@ -100,11 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
               SET titolo = '{$titolo}', contenuto = '{$contenuto}'
               WHERE annuncio_id = {$annuncio_id}
             ";
-            if ($mysqli->query($sql_upd)) {
+            if ($conn->query($sql_upd)) {
                 $messaggio_form = '<div class="alert alert-success">Avviso aggiornato correttamente.</div>';
             } else {
                 $messaggio_form = '<div class="alert alert-danger">Errore aggiornamento: '
-                                  . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
                 $label_submit     = 'Modifica';
                 $old_annuncio_id  = $annuncio_id;
                 $old_titolo       = htmlspecialchars($titolo, ENT_QUOTES, 'UTF-8');
@@ -119,14 +114,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
               INSERT INTO annunci (fisioterapista_id, titolo, contenuto, pubblicato_il)
               VALUES ({$fisioterapista_id}, '{$titolo}', '{$contenuto}', CURRENT_TIMESTAMP)
             ";
-            if ($mysqli->query($sql_ins)) {
+            if ($conn->query($sql_ins)) {
                 $messaggio_form = '<div class="alert alert-success">Avviso aggiunto correttamente.</div>';
                 // Ripristino form vuoto
                 $titolo    = '';
                 $contenuto = '';
             } else {
                 $messaggio_form = '<div class="alert alert-danger">Errore inserimento: '
-                                  . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
             }
         }
     }
@@ -145,7 +140,7 @@ $sql_list = "
     ON a.fisioterapista_id = f.fisioterapista_id
   ORDER BY a.pubblicato_il DESC
 ";
-if ($res = $mysqli->query($sql_list)) {
+if ($res = $conn->query($sql_list)) {
     while ($row = $res->fetch_assoc()) {
         $aid    = (int)$row['annuncio_id'];
         $fisio  = htmlspecialchars($row['fisioterapista_nome'], ENT_QUOTES, 'UTF-8');
@@ -207,5 +202,5 @@ $output = str_replace(
 echo $output;
 
 // 10. Chiusura connessione
-$mysqli->close();
+$conn->close();
 ?>

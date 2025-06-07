@@ -5,16 +5,11 @@
 session_start();
 
 // 1. Connessione al database
-$host     = 'localhost';
-$username = 'TUO_USERNAME';
-$password = 'TUA_PASSWORD';
-$database = 'my_lazzarini21';
-
-$mysqli = new mysqli($host, $username, $password, $database);
-if ($mysqli->connect_errno) {
-    die("Errore di connessione al database: " . $mysqli->connect_error);
+$conn = Db::getConnection();
+if ($conn->connect_error) {
+    die("Errore di connessione al database: " . $conn->connect_error);
 }
-$mysqli->set_charset("utf8");
+$conn->set_charset("utf8");
 
 // 2. Inizializzo variabili per il template
 $messaggio_form     = '';
@@ -34,15 +29,15 @@ $sel_sab            = '';
 $lista_disponibilita = '';
 
 // Funzione di escape
-function esc($mysqli, $val) {
-    return $mysqli->real_escape_string(trim($val));
+function esc($conn, $val) {
+    return $conn->real_escape_string(trim($val));
 }
 
 // 3. Costruisco dropdown sale
-function buildSaleOptions($mysqli, $selectedId = '') {
+function buildSaleOptions($conn, $selectedId = '') {
     $opts = "";
     $sql = "SELECT sala_id, nome_sala FROM sale ORDER BY nome_sala ASC";
-    if ($res = $mysqli->query($sql)) {
+    if ($res = $conn->query($sql)) {
         while ($row = $res->fetch_assoc()) {
             $id   = (int)$row['sala_id'];
             $nome = htmlspecialchars($row['nome_sala'], ENT_QUOTES, 'UTF-8');
@@ -59,11 +54,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     $del_id = intval($_GET['id']);
     if ($del_id > 0) {
         $sql_del = "DELETE FROM fasce_disponibilita WHERE fascia_id = {$del_id}";
-        if ($mysqli->query($sql_del)) {
+        if ($conn->query($sql_del)) {
             $messaggio_form = '<div class="alert alert-success">Disponibilità eliminata correttamente.</div>';
         } else {
             $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
         }
     }
 }
@@ -83,7 +78,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
           WHERE fascia_id = {$edit_id}
           LIMIT 1
         ";
-        if ($res = $mysqli->query($sql_sel)) {
+        if ($res = $conn->query($sql_sel)) {
             if ($res->num_rows === 1) {
                 $row = $res->fetch_assoc();
                 $old_fascia_id  = (int)$row['fascia_id'];
@@ -116,9 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 {
     $fascia_id   = intval($_POST['fascia_id'] ?? 0);
     $sala_id     = intval($_POST['sala_id'] ?? 0);
-    $giorno      = esc($mysqli, $_POST['giorno'] ?? '');
-    $inizio      = esc($mysqli, $_POST['inizio'] ?? '');
-    $fine        = esc($mysqli, $_POST['fine'] ?? '');
+    $giorno      = esc($conn, $_POST['giorno'] ?? '');
+    $inizio      = esc($conn, $_POST['inizio'] ?? '');
+    $fine        = esc($conn, $_POST['fine'] ?? '');
 
     // Validazione minima
     if ($sala_id === 0 || $giorno === '' || $inizio === '' || $fine === '') {
@@ -153,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
                 fine   = '{$fine}:00'
               WHERE fascia_id = {$fascia_id}
             ";
-            if ($mysqli->query($sql_upd)) {
+            if ($conn->query($sql_upd)) {
                 $messaggio_form = '<div class="alert alert-success">Fascia aggiornata correttamente.</div>';
                 // Svuoto i campi
                 $old_fascia_id = '';
@@ -165,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
                 $sel_lun = $sel_mar = $sel_mer = $sel_gio = $sel_ven = $sel_sab = '';
             } else {
                 $messaggio_form = '<div class="alert alert-danger">Errore aggiornamento: '
-                                  . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
             }
         } else {
             // INSERT nuova fascia
@@ -173,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
               INSERT INTO fasce_disponibilita (sala_id, giorno_settimana, inizio, fine)
               VALUES ({$sala_id}, '{$giorno}', '{$inizio}:00', '{$fine}:00')
             ";
-            if ($mysqli->query($sql_ins)) {
+            if ($conn->query($sql_ins)) {
                 $messaggio_form = '<div class="alert alert-success">Fascia aggiunta correttamente.</div>';
                 // Svuoto i campi
                 $old_sala_id = '';
@@ -184,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
                 $sel_lun = $sel_mar = $sel_mer = $sel_gio = $sel_ven = $sel_sab = '';
             } else {
                 $messaggio_form = '<div class="alert alert-danger">Errore inserimento: '
-                                  . htmlspecialchars($mysqli->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
             }
         }
     }
@@ -192,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
 // 7. Costruisco dropdown sale con selezione corrente
 $lista_sale = "<option value=\"\">-- Seleziona Sala --</option>\n" 
-             . buildSaleOptions($mysqli, $old_sala_id);
+             . buildSaleOptions($conn, $old_sala_id);
 
 // 8. Costruisco elenco disponibilità per la tabella
 $sql_list = "
@@ -208,7 +203,7 @@ $sql_list = "
     FIELD(d.giorno_settimana,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'),
     d.inizio
 ";
-if ($res = $mysqli->query($sql_list)) {
+if ($res = $conn->query($sql_list)) {
     while ($row = $res->fetch_assoc()) {
         $fid   = (int)$row['fascia_id'];
         $sala  = htmlspecialchars($row['nome_sala'], ENT_QUOTES, 'UTF-8');
@@ -287,5 +282,5 @@ $output = str_replace(
 echo $output;
 
 // 12. Chiusura connessione
-$mysqli->close();
+$conn->close();
 ?>

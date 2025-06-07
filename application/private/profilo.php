@@ -18,8 +18,22 @@ function handleProfile(&$showForm, &$bodyHtml) {
     }
 
     $db = Db::getConnection();
-    // Per test usiamo id fisso=1, oppure da sessione: $_SESSION['fisio_id']
-    $fisioId = $_SESSION['fisio_id'] ?? 1;
+        // Avvia la sessione se non è già partita
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Se non siamo loggati, redirigo al login
+    if (empty($_SESSION['fisio'])) {
+        header('Location: index.php?page=login');
+        exit;
+    }
+
+    // Prendo l’ID del fisioterapista dalla sessione
+    $fisioId = (int) $_SESSION['fisio'];
+
+
+
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_GET['action'] ?? '') === 'update_info') {
         // Sanitizza input
