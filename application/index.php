@@ -32,6 +32,7 @@ require __DIR__ . '/private/macchinari.php';
 require __DIR__ . '/private/richieste.php';
 require __DIR__ . '/private/fissa_appuntamento.php';
 require __DIR__ . '/private/aggiungi_appuntamento.php';
+require __DIR__ . '/private/registrazione.php';
 
 session_start();
 
@@ -125,6 +126,18 @@ if ($showFix) {
     $base = 'dtml/webarch/frame';
     $main = new Template($base);
     $main->setContent('body', $bodyFix);
+    $main->close();
+    exit;
+}
+// ──────────────── Aggiungi Fisioterapista ───────────────────────
+$showFix = false;
+$bodyFix = '';
+$flashFix = '';
+$errorRegister = handleRegistrazione($showFix, $bodyFix, $flashFix);
+if ($showFix) {
+    $base = 'dtml/webarch/registrazione';
+    $main = new Template($base);
+    $main->setContent('error_register', $errorRegister ?? '');
     $main->close();
     exit;
 }

@@ -187,7 +187,7 @@
                 <[error_register]>
 
                 <!-- Registration form -->
-                <form id="register-form" action="#" method="post" enctype="multipart/form-data">
+                <form id="register-form" action="index.php?page=registrazione&action=save" method="post" enctype="multipart/form-data">
                     <!-- Hidden ID per eventuale modifica -->
                     <input type="hidden" name="fisioterapista_id" value="<[old_fisioterapista_id]>">
 
@@ -200,7 +200,7 @@
                                    id="nome"
                                    name="nome"
                                    value="<[old_nome]>"
-                                   placeholder="Mario"
+                                   placeholder=""
                                    required>
                             <div class="invalid-feedback">Inserisci il nome</div>
                         </div>
@@ -211,18 +211,19 @@
                                    id="cognome"
                                    name="cognome"
                                    value="<[old_cognome]>"
-                                   placeholder="Rossi"
+                                   placeholder=""
                                    required>
                             <div class="invalid-feedback">Inserisci il cognome</div>
                         </div>
                         <div class="form-group">
-                            <label for="telefono" class="form-label">Telefono</label>
+                            <label for="telefono" class="form-label form-label-required">Telefono</label>
                             <input type="tel"
                                    class="form-control"
                                    id="telefono"
                                    name="telefono"
                                    value="<[old_telefono]>"
-                                   placeholder="333 1234567">
+                                   placeholder=""
+                                   required>
                         </div>
                         <div class="form-buttons">
                             <button type="button" class="btn btn-primary" onclick="nextStep()">
@@ -240,7 +241,7 @@
                                    id="email"
                                    name="email"
                                    value="<[old_email]>"
-                                   placeholder="nome@esempio.com"
+                                   placeholder="nome@fisiocenter.it"
                                    required>
                             <div class="invalid-feedback">Inserisci un’email valida</div>
                         </div>
@@ -285,14 +286,14 @@
                                       placeholder="Raccontaci la tua esperienza..."><[old_bio]></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="anni_esperienza" class="form-label form-label-required">Anni di esperienza</label>
+                            <label for="anni_esperienza" class="form-label">Anni di esperienza</label>
                             <input type="number"
                                    class="form-control"
                                    id="anni_esperienza"
                                    name="anni_esperienza"
                                    value="<[old_anni_esperienza]>"
                                    min="0"
-                                   required>
+                                   >
                             <div class="invalid-feedback">Inserisci gli anni di esperienza</div>
                         </div>
                         <div class="form-group">
@@ -302,7 +303,7 @@
                                    id="tariffa_oraria"
                                    name="tariffa_oraria"
                                    value="<[old_tariffa_oraria]>"
-                                   placeholder="50.00">
+                                   placeholder="">
                         </div>
                         <div class="form-group">
                             <label for="url_foto_profilo" class="form-label">Foto Profilo</label>
