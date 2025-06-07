@@ -24,6 +24,10 @@ require __DIR__ . '/public/news-detail.php';
 // 2b) ORA include della gestione dei messaggi (lato privato)
 require __DIR__ . '/private/messaggi.php';
 require __DIR__ . '/private/profilo.php';
+
+
+require __DIR__ . '/private/macchinari.php';
+
 session_start();
 
 // 4. Definizione delle pagine
@@ -111,6 +115,20 @@ if (in_array($page, $privatePages, true)
         $main->close();
         exit;
     }
+
+
+
+$showMach = false; $bodyMach = '';
+handleMacchinari($showMach, $bodyMach);
+if ($showMach) {
+  $base = 'dtml/webarch/frame';
+  $main = new Template($base);
+  $main->setContent('body', $bodyMach);
+  $main->close();
+  exit;
+}
+
+
 
     // ──────────────────────────────────────────────────────────────
     // 4) Media (area privata)
