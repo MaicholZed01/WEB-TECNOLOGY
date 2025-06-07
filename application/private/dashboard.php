@@ -1,203 +1,160 @@
 <?php
-// dashboard.php
-// Controller per dashboard.html
+// application/private/dashboard.php
+// Dashboard controller – mostra riepilogo quotidiano (appuntamenti, richieste, messaggi)
 
-session_start();
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// -----------------------------------------------------------------------------
-// 1. Connessione al database
-// -----------------------------------------------------------------------------
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
+function handleDashboard(bool &$show, string &$bodyHtml): void {
+    $show = false;
+    $bodyHtml = '';
 
-// -----------------------------------------------------------------------------
-// 2. Variabili / funzioni utili
-// -----------------------------------------------------------------------------
-$preview_appuntamenti = '';
-$preview_richieste    = '';
-$preview_messaggi     = '';
-
-/** Escape di sicurezza */
-function esc($str) {
-    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
-}
-
-/** Badge CSS dal testo dello stato */
-function badgeClass($stato) {
-    return 'status-' . strtolower(str_replace(' ', '-', $stato));
-}
-
-// -----------------------------------------------------------------------------
-// 3. Appuntamenti di OGGI  (max 5 righe)
-// -----------------------------------------------------------------------------
-$sqlApp = "
-  SELECT
-    a.appuntamento_id,
-    TIME(a.prenotato_il)                       AS ora_app,
-    r.nome                                     AS nome_cli,
-    r.cognome                                  AS cognome_cli,
-    s.nome                                     AS servizio_nome,
-    a.stato
-  FROM appuntamenti AS a
-  LEFT JOIN richieste AS r ON a.richiesta_id = r.richiesta_id
-  LEFT JOIN servizi     AS s ON a.servizio_id  = s.servizio_id
-  WHERE DATE(a.prenotato_il) = CURDATE()
-  ORDER BY a.prenotato_il
-  LIMIT 5
-";
-$res = $conn->query($sqlApp);
-if ($res && $res->num_rows > 0) {
-    while ($row = $res->fetch_assoc()) {
-        $aid      = (int)$row['appuntamento_id'];
-        $ora      = esc(substr($row['ora_app'], 0, 5));
-        $cliente  = esc($row['nome_cli'] . ' ' . $row['cognome_cli']);
-        $servizio = esc($row['servizio_nome']);
-        $stato    = esc($row['stato']);
-        $badge    = badgeClass($stato);
-
-        $preview_appuntamenti .= "
-          <tr>
-            <td><strong>{$ora}</strong></td>
-            <td>{$cliente}</td>
-            <td>{$servizio}</td>
-            <td><span class=\"status-badge {$badge}\">{$stato}</span></td>
-            <td>
-              <a href=\"index.php?page=appuntamenti&action=view&id={$aid}\" 
-                 class=\"btn btn-primary-modern btn-xs\">
-                <i class=\"fas fa-eye\"></i>
-              </a>
-            </td>
-          </tr>
-        ";
+    if (($_GET['page'] ?? '') !== 'dashboard') {
+        return; // non siamo nella pagina dashboard
     }
-    $res->free();
-} else {
-    $preview_appuntamenti = '
-      <tr><td colspan="5" class="text-center">Nessun appuntamento per oggi.</td></tr>';
-}
+    $show = true;
 
-// -----------------------------------------------------------------------------
-// 4. Richieste in arrivo  (ultime 5)
-// -----------------------------------------------------------------------------
-$sqlRich = "
-  SELECT 
-    r.richiesta_id,
-    DATE_FORMAT(r.data_richiesta,'%d/%m')       AS data_short,
-    r.nome,
-    r.cognome,
-    s.nome                                       AS servizio_nome
-  FROM richieste AS r
-  LEFT JOIN servizi AS s ON r.servizio_id = s.servizio_id
-  ORDER BY r.data_richiesta DESC
-  LIMIT 5
-";
-$res = $conn->query($sqlRich);
-if ($res && $res->num_rows > 0) {
-    while ($row = $res->fetch_assoc()) {
-        $rid      = (int)$row['richiesta_id'];
-        $data     = esc($row['data_short']);
-        $cliente  = esc($row['nome'] . ' ' . mb_substr($row['cognome'], 0, 1) . '.');
-        $servizio = esc($row['servizio_nome']);
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    // (eventuale) controllo login: se vuoi proteggere la dashboard, decommenta
+    // if (empty($_SESSION['fisio'])) { header('Location: index.php?page=login'); exit; }
 
-        $preview_richieste .= "
-          <tr>
-            <td><small>{$data}</small></td>
-            <td>{$cliente}</td>
-            <td>{$servizio}</td>
-            <td>
-              <a href=\"index.php?page=richieste&action=view&id={$rid}\"
-                 class=\"btn btn-primary-modern btn-xs\">
-                <i class=\"fas fa-eye\"></i>
-              </a>
-            </td>
-          </tr>
-        ";
+    // Connessione DB
+    $db = Db::getConnection();
+    $db->set_charset('utf8');
+
+    /*******************************************************************
+     * 1) Appuntamenti di OGGI (max 5)                                 *
+     ******************************************************************/
+    $today = date('Y-m-d');
+    $rowsApp = '';
+    $sqlApp = "SELECT a.appuntamento_id,
+                      a.orario,
+                      a.stato,
+                      r.nome,
+                      r.cognome,
+                      s.nome AS servizio
+               FROM   appuntamenti a
+               JOIN   richieste r ON a.richiesta_id = r.richiesta_id
+               JOIN   servizi   s ON a.servizio_id   = s.servizio_id
+               WHERE  a.data = '$today'
+               ORDER  BY a.orario ASC
+               LIMIT  5";
+    if ($res = $db->query($sqlApp)) {
+        if ($res->num_rows > 0) {
+            while ($row = $res->fetch_assoc()) {
+                $ora = substr($row['orario'], 0, 5);
+                $cliente = htmlspecialchars($row['nome'] . ' ' . $row['cognome'], ENT_QUOTES);
+                $servizio = htmlspecialchars($row['servizio'], ENT_QUOTES);
+                $stato = htmlspecialchars($row['stato'], ENT_QUOTES);
+                $badge = ($stato === 'Prenotato') ? 'status-confermato' : 'status-completato';
+
+                $rowsApp .= "<tr>
+                                <td><strong>{$ora}</strong></td>
+                                <td>{$cliente}</td>
+                                <td>{$servizio}</td>
+                                <td><span class='status-badge {$badge}'>{$stato}</span></td>
+                                <td>
+                                  <a href='index.php?page=appuntamenti&action=view&id={$row['appuntamento_id']}'
+                                     class='btn btn-primary-modern btn-xs'>
+                                     <i class='fas fa-eye'></i>
+                                  </a>
+                                </td>
+                              </tr>";
+            }
+        } else {
+            $rowsApp = "<tr><td colspan='5' class='text-center text-muted'>Nessun appuntamento per oggi.</td></tr>";
+        }
+        $res->free();
+    } else {
+        $rowsApp = "<tr><td colspan='5' class='text-danger'>Errore DB: ".$db->error."</td></tr>";
     }
-    $res->free();
-} else {
-    $preview_richieste = '
-      <tr><td colspan="4" class="text-center">Nessuna richiesta recente.</td></tr>';
-}
 
-// -----------------------------------------------------------------------------
-// 5. Messaggi NON letti  (ultimi 5)
-// -----------------------------------------------------------------------------
-$sqlMsg = "
-  SELECT 
-    m.messaggio_id,
-    m.oggetto,
-    LEFT(m.contenuto, 60)   AS snippet,
-    CONCAT(mittente_nome,' ',mittente_cognome) AS mittente,
-    DATE_FORMAT(m.inviato_il,'%d/%m/%Y %H:%i') AS inviato_il
-  FROM messaggi AS m
-  WHERE m.letto = 0
-  ORDER BY m.inviato_il DESC
-  LIMIT 5
-";
-$res = $conn->query($sqlMsg);
-if ($res && $res->num_rows > 0) {
-    while ($row = $res->fetch_assoc()) {
-        $mid     = (int)$row['messaggio_id'];
-        $mitt    = esc($row['mittente']);
-        $oggetto = esc($row['oggetto']);
-        $snip    = esc($row['snippet']);
-        $time    = esc($row['inviato_il']);
-
-        $preview_messaggi .= "
-          <div class=\"notification-item unread mb-3\">
-            <div class=\"d-flex justify-content-between align-items-start\">
-              <div>
-                <strong>{$oggetto}</strong>
-                <p class=\"mb-1\">{$mitt}: {$snip}…</p>
-                <small class=\"notification-time\">{$time}</small>
-              </div>
-              <a href=\"index.php?page=messaggi&action=view&id={$mid}\" 
-                 class=\"btn btn-primary-modern btn-xs\">Apri</a>
-            </div>
-          </div>
-        ";
+    /*******************************************************************
+     * 2) Ultime richieste NON soddisfatte (max 5)                     *
+     ******************************************************************/
+    $rowsReq = '';
+    $sqlReq = "SELECT r.richiesta_id,
+                      DATE(r.creato_il) AS data_req,
+                      r.nome,
+                      r.cognome,
+                      s.nome AS servizio
+               FROM   richieste r
+               LEFT   JOIN appuntamenti a ON r.richiesta_id = a.richiesta_id
+               JOIN   servizi       s ON r.servizio_id  = s.servizio_id
+               WHERE  a.richiesta_id IS NULL
+               ORDER  BY r.creato_il DESC
+               LIMIT  5";
+    if ($res = $db->query($sqlReq)) {
+        if ($res->num_rows > 0) {
+            while ($row = $res->fetch_assoc()) {
+                $dataBreve = date('d/m', strtotime($row['data_req']));
+                $cliente   = htmlspecialchars($row['nome'].' '.substr($row['cognome'],0,1).'.', ENT_QUOTES);
+                $servizio  = htmlspecialchars($row['servizio'], ENT_QUOTES);
+                $rowsReq  .= "<tr>
+                                <td><small>{$dataBreve}</small></td>
+                                <td>{$cliente}</td>
+                                <td>{$servizio}</td>
+                                <td>
+                                   <a href='index.php?page=richieste&action=view&id={$row['richiesta_id']}'
+                                      class='btn btn-primary-modern btn-xs'><i class='fas fa-eye'></i></a>
+                                </td>
+                              </tr>";
+            }
+        } else {
+            $rowsReq = "<tr><td colspan='4' class='text-center text-muted'>Nessuna nuova richiesta.</td></tr>";
+        }
+        $res->free();
+    } else {
+        $rowsReq = "<tr><td colspan='4' class='text-danger'>Errore DB: ".$db->error."</td></tr>";
     }
-    $res->free();
-} else {
-    $preview_messaggi = '<p class="text-muted mb-0">Nessun messaggio non letto.</p>';
+
+    /*******************************************************************
+     * 3) Ultimi messaggi (tabella messaggi semplificata)              *
+     ******************************************************************/
+    $rowsMsg = '';
+    // Verifico che la tabella esista (nel dump è presente) – se no mostro placeholder
+    $testMsgTbl = $db->query("SHOW TABLES LIKE 'messaggi'");
+    if ($testMsgTbl && $testMsgTbl->num_rows === 1) {
+        $sqlMsg = "SELECT messaggio_id, mittente, contenuto, inviato_il
+                    FROM   messaggi
+                    ORDER  BY messaggio_id DESC
+                    LIMIT  5";
+        if ($resM = $db->query($sqlMsg)) {
+            if ($resM->num_rows > 0) {
+                while ($row = $resM->fetch_assoc()) {
+                    $time = date('d/m/Y H:i', strtotime($row['inviato_il']));
+                    $mitt = htmlspecialchars($row['mittente'], ENT_QUOTES);
+                    $snippet = htmlspecialchars(substr($row['contenuto'], 0, 60).'...', ENT_QUOTES);
+                    $rowsMsg .= "<div class='notification-item'>
+                                     <div class='d-flex justify-content-between align-items-start'>
+                                       <div>
+                                         <strong>{$mitt}</strong>
+                                         <p class='mb-1'>{$snippet}</p>
+                                         <small class='notification-time'>{$time}</small>
+                                       </div>
+                                       <a href='index.php?page=messaggi&action=view&id={$row['messaggio_id']}' class='btn btn-primary-modern btn-xs'>Apri</a>
+                                     </div>
+                                   </div>";
+                }
+            } else {
+                $rowsMsg = "<p class='text-muted text-center mb-0'>Nessun messaggio presente.</p>";
+            }
+            $resM->free();
+        } else {
+            $rowsMsg = "<p class='text-danger text-center mb-0'>Errore DB messaggi: ".$db->error."</p>";
+        }
+    } else {
+        $rowsMsg = "<p class='text-muted text-center mb-0'>Modulo messaggi non disponibile.</p>";
+    }
+
+    /*******************************************************************
+     * 4) Render Template                                              *
+     ******************************************************************/
+    $tpl = new Template('dtml/webarch/dashboard');
+    $tpl->setContent('preview_appuntamenti', $rowsApp);
+    $tpl->setContent('preview_richieste',    $rowsReq);
+    $tpl->setContent('preview_messaggi',     $rowsMsg);
+
+    $bodyHtml = $tpl->get();
 }
-
-// -----------------------------------------------------------------------------
-// 6. Carico il template dashboard.html
-// -----------------------------------------------------------------------------
-$template_path = __DIR__ . '/dashboard.html';
-$template = file_get_contents($template_path);
-if ($template === false) {
-    die('Impossibile caricare il template dashboard.html');
-}
-
-// -----------------------------------------------------------------------------
-// 7. Sostituisco i placeholder
-// -----------------------------------------------------------------------------
-$output = str_replace(
-    [
-      '<[preview_appuntamenti]>',
-      '<[preview_richieste]>',
-      '<[preview_messaggi]>'
-    ],
-    [
-      $preview_appuntamenti,
-      $preview_richieste,
-      $preview_messaggi
-    ],
-    $template
-);
-
-// -----------------------------------------------------------------------------
-// 8. Output finale
-// -----------------------------------------------------------------------------
-echo $output;
-
-// -----------------------------------------------------------------------------
-// 9. Chiudo connessione
-// -----------------------------------------------------------------------------
-$conn->close();
 ?>

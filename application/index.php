@@ -13,6 +13,8 @@ require __DIR__ . '/private/certificazioni.php';
 require __DIR__ . '/private/media.php';
 require __DIR__ . '/public/recensioni.php';
 require __DIR__ . '/public/contatti.php';
+require __DIR__ . '/private/dashboard.php';
+
 
 // 3. INCLUSIONE DELLE DUE NUOVE FUNZIONI PER I FISIOTERAPISTI
 require __DIR__ . '/public/fisioterapisti.php';
@@ -141,6 +143,18 @@ if ($showFix) {
     $main->close();
     exit;
 }
+
+// ──────────────── Dashboard ──────────────────────
+$showDash = false;
+$bodyDash = '';
+handleDashboard($showDash, $bodyDash);
+if ($showDash) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodyDash);
+    $main->close();
+    exit;
+}
+
 
 
 
