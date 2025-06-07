@@ -57,18 +57,19 @@ if (in_array($page, $privatePages, true)
     // ──────────────────────────────────────────────────────────────
     // 1) Prenotazioni
     // ──────────────────────────────────────────────────────────────
-    $showForm = false;
-    $bodyHtml = '';
-    handlePrenotazioneForm($showForm, $bodyHtml, $message);
-    if ($showForm) {
-        $base = 'dtml/2098_health/frame';
-        $main = new Template($base);
-        $footerHtml = getFooterNews(5);
+$showForm = false;
+$bodyHtml = '';
+$message  = '';
+handlePrenotazioneForm($showForm, $bodyHtml, $message);
+if ($showForm) {
+    $base = 'dtml/2098_health/frame';
+    $main = new Template($base);
+    $footerHtml = getFooterNews(5);
     $main->setContent('footer_news', $footerHtml);
-        $main->setContent('body', $bodyHtml);
-        $main->close();
-        exit;
-    }
+    $main->setContent('body', $bodyHtml);
+    $main->close();
+    exit;
+}
 
     // ──────────────────────────────────────────────────────────────
     // 2) Login (GET o POST su process_login)
