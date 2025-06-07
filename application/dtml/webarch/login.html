@@ -444,11 +444,7 @@
 
                     <!-- RICORDAMI + PASSWORD DIMENTICATA -->
                     <div class="d-flex justify-content-center align-items-center mb-3">
-                        <div class="form-check me-3">
-                            <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
-                            <label class="form-check-label" for="remember">Ricordami</label>
-                        </div>
-                        <a href="#" class="small">Password dimenticata?</a>
+                        <a href="index.php?page=recupero_password" class="small">Password dimenticata?</a>
                     </div>
 
                     <!-- PULSANTE LOGIN -->
@@ -457,43 +453,18 @@
                             <i class="fa fa-sign-in me-1"></i> Login
                         </button>
                     </div>
+                    <!-- NON HAI UN ACCOUNT? + TASTO REGISTRATI -->
+                    <div class="mt-3">
+                        <p class="small text-muted">
+                            Non hai un account? 
+                            <a href="index.php?page=registrazione" class="small" data-bs-toggle="modal" data-bs-target="#registerModal">Registrati</a> 
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>
 
-        <!-- PANEL: REGISTRAZIONE -->
-        <div class="panel">
-            <div class="panel-header">
-                <h4><i class="fa fa-user-plus me-2"></i>Registrati</h4>
-            </div>
-            <div class="panel-body d-flex align-items-center justify-content-center" style="min-height: 250px;">
-                <form id="register-form-minimal" style="padding-top: 12%;" action="#" method="post" class="text-center w-100">
-                    
-                    <!-- MESSAGGIO DI ERRORE / SUCCESSO REGISTRAZIONE -->
-                    <div class="mb-3"><[error_register]></div>
-                    
-                    <!-- EMAIL -->
-                    <div class="mb-3">
-                        <label for="reg_email" class="form-label">Inserisci la tua e-mail</label>
-                        <input
-                            type="email"
-                            id="reg_email"
-                            name="email"
-                            class="form-control mx-auto w-75"
-                            placeholder="nome@dominio.it"
-                            required
-                        >
-                    </div>
-                    
-                    <!-- PULSANTE RICHIEDI CREDENZIALI -->
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" id="reg-submit" class="btn btn-primary">
-                            <i class="fa fa-envelope me-1"></i> Richiedi Credenziali
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        
     </div>
 
     <!-- Scripts -->

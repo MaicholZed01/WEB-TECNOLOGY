@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <title>Registrazione – FisioCenter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap 5 e Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3730a3;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --dark-color: #2c3e50;
+            --gray-light: #f5f7fa;
+            --border-color: #e5e7eb;
+            --text-muted: #6b7280;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f6f8f9;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; padding: 2rem 0;
+        }
+        .register-wrapper {
+            width: 100%; max-width: 900px; margin: 0 auto; padding: 0 1rem;
+            position: relative; z-index: 1;
+        }
+        .register-card {
+            background: white; border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            overflow: hidden; display: flex; min-height: 600px;
+        }
+        .register-sidebar {
+            background: linear-gradient(135deg, var(--primary-color), #667eea);
+            padding: 3rem; color: white; flex: 0 0 350px;
+            display: flex; flex-direction: column; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .register-sidebar::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        @keyframes rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+        .sidebar-content { position: relative; z-index:1; }
+        .sidebar-icon {
+            width:80px; height:80px; background:rgba(255,255,255,0.2);
+            border-radius:20px; display:flex; align-items:center;
+            justify-content:center; font-size:2.5rem; margin-bottom:2rem;
+        }
+        .sidebar-title { font-size:2rem; font-weight:700; margin-bottom:1rem; }
+        .sidebar-subtitle { font-size:1.125rem; opacity:.9; margin-bottom:3rem; line-height:1.6; }
+        .sidebar-features { list-style:none; padding:0; margin:0; }
+        .sidebar-features li {
+            display:flex; align-items:center; margin-bottom:1rem; font-size:.9375rem;
+        }
+        .sidebar-features i {
+            width:24px; height:24px; background:rgba(255,255,255,0.2);
+            border-radius:50%; display:flex; align-items:center;
+            justify-content:center; margin-right:1rem; font-size:.75rem;
+        }
+        .register-form-section {
+            flex:1; padding:3rem; overflow-y:auto; position:relative;
+        }
+        .home-btn {
+            position:absolute; top:2rem; right:2rem; width:44px; height:44px;
+            background: var(--gray-light); border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            text-decoration:none; color:var(--dark-color);
+            transition:all .3s; z-index:10;
+        }
+        .home-btn:hover { background:white; box-shadow:0 4px 12px rgba(0,0,0,0.1); color:var(--primary-color); }
+        .form-header { margin-bottom:2rem; }
+        .form-title { font-size:1.5rem; font-weight:700; color:var(--dark-color); margin-bottom:.5rem; }
+        .form-subtitle { color:var(--text-muted); font-size:.875rem; }
+        .progress-steps { display:flex; margin-bottom:2rem; position:relative; }
+        .progress-step { flex:1; text-align:center; position:relative; }
+        .step-number {
+            width:40px; height:40px; background:var(--gray-light);
+            border:2px solid var(--border-color); border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto .5rem; font-weight:600; color:var(--text-muted);
+            position:relative; z-index:2; transition:all .3s;
+        }
+        .progress-step.active .step-number { background:var(--primary-color); border-color:var(--primary-color); color:white; }
+        .progress-step.completed .step-number { background:var(--success-color); border-color:var(--success-color); color:white; }
+        .step-label { font-size:.75rem; color:var(--text-muted); font-weight:500; }
+        .progress-step.active .step-label { color:var(--primary-color); }
+        .progress-step::after {
+            content:''; position:absolute; top:20px; left:50%; width:100%; height:2px;
+            background:var(--border-color); z-index:1;
+        }
+        .progress-step:last-child::after { display:none; }
+        .progress-step.completed::after { background:var(--success-color); }
+        .alert { border:none; border-radius:12px; padding:1rem 1.25rem;
+            margin-bottom:1.5rem; font-size:.875rem; display:flex; align-items:center; gap:.75rem;
+        }
+        .alert-danger { background:#fee2e2; color:#991b1b; }
+        .alert-success { background:#d1fae5; color:#065f46; }
+        .form-step { display:none; animation:fadeIn .3s ease; }
+        .form-step.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateX(20px);} to{opacity:1;transform:translateX(0);} }
+        .form-group { margin-bottom:1.25rem; }
+        .form-label { display:block; color:var(--dark-color); font-size:.875rem; font-weight:600; margin-bottom:.5rem; }
+        .form-label-required::after { content:'*'; color:var(--danger-color); margin-left:.25rem; }
+        .input-wrapper { position:relative; }
+        .form-control {
+            width:100%; border:2px solid var(--border-color); border-radius:12px;
+            padding:.875rem 1rem; padding-right:2.5rem; font-size:.9375rem;
+            transition:all .3s ease; background-color:white;
+        }
+        .form-control:focus { outline:none; border-color:var(--primary-color);
+            box-shadow:0 0 0 4px rgba(67,97,238,0.1);
+        }
+        .input-icon {
+            position:absolute; right:1rem; top:50%; transform:translateY(-50%);
+            color:var(--text-muted); pointer-events:none;
+        }
+        .form-select {
+            appearance:none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat:no-repeat; background-position:right 1rem center; padding-right:3rem;
+        }
+        .form-buttons { display:flex; gap:1rem; margin-top:2rem; }
+        .btn { padding:.875rem 2rem; border:none; border-radius:12px; font-size:.9375rem; font-weight:600; cursor:pointer; transition:all .3s ease; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
+        .btn-primary { background:var(--primary-color); color:white; flex:1; }
+        .btn-primary:hover { background:var(--primary-hover); transform:translateY(-2px); box-shadow:0 10px 25px rgba(67,97,238,0.25); }
+        .btn-secondary { background:white; color:var(--dark-color); border:2px solid var(--border-color); }
+        .btn-secondary:hover { background:var(--gray-light); border-color:var(--primary-color); }
+        .invalid-feedback { display:none; color:var(--danger-color); font-size:.75rem; margin-top:.25rem; }
+        .form-control.is-invalid ~ .invalid-feedback { display:block; }
+        .login-link { text-align:center; margin-top:2rem; padding-top:2rem; border-top:1px solid var(--border-color); font-size:.875rem; color:var(--text-muted); }
+        .login-link a { color:var(--primary-color); text-decoration:none; font-weight:600; }
+        @media(max-width:768px){
+            .register-card{flex-direction:column;}
+            .register-sidebar{flex:none;padding:2rem;text-align:center;}
+            .sidebar-features{display:none;}
+            .register-form-section{padding:2rem;}
+            .form-buttons{flex-direction:column;}
+            .btn{width:100%;}
+            .home-btn{top:1rem;right:1rem;}
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-wrapper">
+        <div class="register-card">
+            <!-- Sidebar -->
+            <div class="register-sidebar">
+                <div class="sidebar-content">
+                    <h2 class="sidebar-title">Benvenuto in FisioCenter</h2>
+                    <p class="sidebar-subtitle">
+                        Registrati per iniziare a gestire i tuoi appuntamenti e il tuo profilo.
+                    </p>
+                    <ul class="sidebar-features">
+                        <li><i class="fas fa-check"></i><span>Completa il tuo profilo</span></li>
+                        <li><i class="fas fa-check"></i><span>Ricevi notifiche e promemoria</span></li>
+                        <li><i class="fas fa-check"></i><span>Gestisci i tuoi dati professionali</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Form section -->
+            <div class="register-form-section">
+                <!-- Home button -->
+                <a href="index.php" class="home-btn" title="Torna alla Home">
+                    <i class="fas fa-home"></i>
+                </a>
+
+                <!-- Form header -->
+                <div class="form-header">
+                    <h1 class="form-title">Crea il tuo account</h1>
+                    <p class="form-subtitle">Inserisci i tuoi dati personali e professionali</p>
+                </div>
+
+                <!-- Error/Success messages -->
+                <[error_register]>
+
+                <!-- Registration form -->
+                <form id="register-form" action="#" method="post" enctype="multipart/form-data">
+                    <!-- Hidden ID per eventuale modifica -->
+                    <input type="hidden" name="fisioterapista_id" value="<[old_fisioterapista_id]>">
+
+                    <!-- Step 1: Dati Anagrafici -->
+                    <div class="form-step active" id="step1">
+                        <div class="form-group">
+                            <label for="nome" class="form-label form-label-required">Nome</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="nome"
+                                   name="nome"
+                                   value="<[old_nome]>"
+                                   placeholder="Mario"
+                                   required>
+                            <div class="invalid-feedback">Inserisci il nome</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cognome" class="form-label form-label-required">Cognome</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="cognome"
+                                   name="cognome"
+                                   value="<[old_cognome]>"
+                                   placeholder="Rossi"
+                                   required>
+                            <div class="invalid-feedback">Inserisci il cognome</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono" class="form-label">Telefono</label>
+                            <input type="tel"
+                                   class="form-control"
+                                   id="telefono"
+                                   name="telefono"
+                                   value="<[old_telefono]>"
+                                   placeholder="333 1234567">
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">
+                                Continua <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Account -->
+                    <div class="form-step" id="step2">
+                        <div class="form-group">
+                            <label for="email" class="form-label form-label-required">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   name="email"
+                                   value="<[old_email]>"
+                                   placeholder="nome@esempio.com"
+                                   required>
+                            <div class="invalid-feedback">Inserisci un’email valida</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="form-label form-label-required">Password</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="password"
+                                   name="password"
+                                   placeholder="Inserisci una password"
+                                   required>
+                            <div class="invalid-feedback">Inserisci una password</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password" class="form-label form-label-required">Conferma Password</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="confirm_password"
+                                   name="confirm_password"
+                                   placeholder="Conferma la password"
+                                   required>
+                            <div class="invalid-feedback">Le password non corrispondono</div>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                                <i class="fas fa-arrow-left me-2"></i>Indietro
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep()">
+                                Continua <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Professionale -->
+                    <div class="form-step" id="step3">
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea class="form-control"
+                                      id="bio"
+                                      name="bio"
+                                      rows="4"
+                                      placeholder="Raccontaci la tua esperienza..."><[old_bio]></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="anni_esperienza" class="form-label form-label-required">Anni di esperienza</label>
+                            <input type="number"
+                                   class="form-control"
+                                   id="anni_esperienza"
+                                   name="anni_esperienza"
+                                   value="<[old_anni_esperienza]>"
+                                   min="0"
+                                   required>
+                            <div class="invalid-feedback">Inserisci gli anni di esperienza</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tariffa_oraria" class="form-label">Tariffa Oraria (€)</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="tariffa_oraria"
+                                   name="tariffa_oraria"
+                                   value="<[old_tariffa_oraria]>"
+                                   placeholder="50.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="url_foto_profilo" class="form-label">Foto Profilo</label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="url_foto_profilo"
+                                   name="url_foto_profilo"
+                                   accept=".jpg,.png">
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                                <i class="fas fa-arrow-left me-2"></i>Indietro
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                Completa Registrazione
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Link a login -->
+                <div class="login-link">
+                    Hai già un account? <a href="index.php?page=login">Accedi ora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      function showStep(n) {
+        document.querySelectorAll('.form-step').forEach((el,i) => {
+          el.classList.toggle('active', i === n);
+        });
+        document.querySelectorAll('.progress-step').forEach((el,i) => {
+          el.classList.toggle('active', i === n);
+          el.classList.toggle('completed', i < n);
+        });
+      }
+      function nextStep() {
+        const steps = [...document.querySelectorAll('.form-step')];
+        const idx = steps.findIndex(el => el.classList.contains('active'));
+        if (idx < steps.length - 1) showStep(idx + 1);
+      }
+      function prevStep() {
+        const steps = [...document.querySelectorAll('.form-step')];
+        const idx = steps.findIndex(el => el.classList.contains('active'));
+        if (idx > 0) showStep(idx - 1);
+      }
+      // Initialize
+      showStep(0);
+    </script>
+</body>
+</html>

@@ -33,8 +33,8 @@ session_start();
 // 4. Definizione delle pagine
 $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'dettagli_fisioterapista', 'carriere',
                  'form_prenotazione', 'condizioni', 'privacy', 'recensioni', 'news-detail', 'fisioterapisti'];
-$privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari',
-                 'servizi', 'richieste', 'certificazioni', 'media', 'avvisi2',
+$privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari', 'registrazione',
+                 'servizi', 'richieste', 'certificazioni', 'media', 'avvisi2', 'recupero_password',
                  'messaggi', 'fatturazioni', 'fissa_appuntamento', 'aggiungi_appuntamento', 'profilo', 'login'];
 
 try {
@@ -272,8 +272,8 @@ if ($showProf) {
     // ──────────────────────────────────────────────────────────────
     // 10) Routing “standard” per tutte le altre pagine
     // ──────────────────────────────────────────────────────────────
-    if ($page === 'login') {
-        $base = 'dtml/webarch/login';
+    if ($page === 'login' || $page === 'registrazione' || $page === 'recupero_password') {
+        $base = "dtml/webarch/$page";
         $body = null;
     } elseif (in_array($page, $privatePages)) {
         $base = 'dtml/webarch/frame';
