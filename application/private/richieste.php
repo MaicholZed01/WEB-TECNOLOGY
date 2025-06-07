@@ -44,21 +44,36 @@ function handleRichieste(&$show, &$bodyHtml, &$flash) {
     }
     $where = $w ? 'WHERE '. implode(' AND ', $w) : '';
 
-    // 3) LISTA RICHIESTE
+    
+    // 3) LISTA RICHIESTE (escludo quelle già fissate in appuntamenti)
     $sql = "
       SELECT
-        r.richiesta_id, r.creato_il,
-        r.nome, r.cognome, r.email, r.telefono,
+        r.richiesta_id,
+        r.creato_il,
+        r.nome,
+        r.cognome,
+        r.email,
+        r.telefono,
         s.nome AS servizio,
         r.data_preferita,
         CONCAT(fd.inizio,' – ',fd.fine) AS fascia
       FROM richieste r
-      LEFT JOIN servizi s   ON r.servizio_id    = s.servizio_id
+      LEFT JOIN appuntamenti ap
+        ON r.richiesta_id = ap.richiesta_id
+      LEFT JOIN servizi s
+        ON r.servizio_id    = s.servizio_id
       LEFT JOIN fasce_disponibilita fd
-                     ON r.fascia_id      = fd.fascia_id
-      $where
+        ON r.fascia_id      = fd.fascia_id
+      WHERE ap.richiesta_id IS NULL
+      " 
+      // se ci sono filtri, li appendo qui dopo l’IS NULL
+      . ( $where
+          ? ' AND ' . substr($where, strlen('WHERE ')) 
+          : '' )
+      . "
       ORDER BY r.creato_il DESC
     ";
+
     $res = $db->query($sql);
     $tbl = '';
     while ($row = $res->fetch_assoc()) {

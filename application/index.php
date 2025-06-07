@@ -25,6 +25,7 @@ require __DIR__ . '/public/news-detail.php';
 require __DIR__ . '/private/messaggi.php';
 require __DIR__ . '/private/profilo.php';
 
+require __DIR__ . '/private/appuntamenti.php';
 
 require __DIR__ . '/private/macchinari.php';
 
@@ -97,6 +98,17 @@ if ($showFix) {
     $base = 'dtml/webarch/frame';
     $main = new Template($base);
     $main->setContent('body', $bodyFix);
+    $main->close();
+    exit;
+}
+
+$showApp   = false;
+$bodyApp   = '';
+handleAppuntamenti($showApp, $bodyApp);
+if ($showApp) {
+    $base = 'dtml/webarch/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyApp);
     $main->close();
     exit;
 }
