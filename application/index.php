@@ -35,7 +35,13 @@ $privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari',
 
 try {
     $page = $_GET['page'] ?? 'index';
-
+if (in_array($page, $privatePages, true)
+    && ! in_array($page, ['login','process_login','logout'], true)
+    && empty($_SESSION['fisio'])
+) {
+    header('Location: index.php?page=login');
+    exit;
+}
     // ──────────────────────────────────────────────────────────────
     // Gestione logout (semplice redirect a login)
     // ──────────────────────────────────────────────────────────────
