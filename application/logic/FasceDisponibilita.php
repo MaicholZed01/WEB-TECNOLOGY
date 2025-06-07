@@ -4,6 +4,14 @@
 require_once __DIR__ . '/../include/dbms.inc.php';
 
 class FasceDisponibilita {
+	public static function getById(int $id): ?array {
+    $db = Db::getConnection();
+    $res = $db->query("SELECT * FROM fasce_disponibilita WHERE fascia_id=$id");
+    return $res ? $res->fetch_assoc() : null;
+}
+
+
+
     public static function byFisio($fid) {
         $c = Db::getConnection();
         $res = $c->query("

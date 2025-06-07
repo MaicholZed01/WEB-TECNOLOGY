@@ -20,6 +20,7 @@
     </div>
     <div class="panel-body">
       <form id="form-filter" action="index.php?page=appuntamenti" method="get" class="row g-3 align-items-end">
+      <input type="hidden" name="page" value="appuntamenti">
         <!-- Data Inizio -->
         <div class="col-md-3">
           <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
@@ -68,9 +69,7 @@
         <div class="col-md-2">
           <label class="d-block mb-1" for="stato_filter">Stato</label>
           <select class="form-control" id="stato_filter" name="stato">
-            <option value="">Tutti</option>
-            <option value="Prenotato">Prenotato</option>
-            <option value="Completato">Completato</option>
+				<[lista_stato]>
           </select>
         </div>
 
@@ -81,6 +80,15 @@
           <select class="form-control" id="servizio_filter" name="servizio_id">
             <option value="">Tutti</option>
             <[lista_servizi]>
+          </select>
+        </div>
+
+        <!-- Sala -->
+        <div class="col-md-2">
+          <label class="d-block mb-1" for="sala_filter">Sala</label>
+          <select class="form-control" id="sala_filter" name="sala_id">
+            <option value="">Tutte</option>
+            <[lista_sala]>
           </select>
         </div>
 
@@ -116,6 +124,7 @@
               <th>Cognome</th>
               <th>Nome</th>
               <th>Servizio</th>
+              <th>Sala</th>
               <th>Stato</th>
               <th>Azioni</th>
             </tr>

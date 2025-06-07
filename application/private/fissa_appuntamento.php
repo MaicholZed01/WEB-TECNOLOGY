@@ -1,194 +1,118 @@
 <?php
-// fissa_appuntamento.php
-// Controller per fissa_appuntamento.html
+// application/private/fissa_appuntamento.php
+// Controller per la pagina "fissa_appuntamento" che trasforma una richiesta in un appuntamento
 
-// 1. Connessione al database
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// 2. Inizializzo variabili per il template
-$richiesta_id             = '';
-$richiesta_nome           = '';
-$richiesta_cognome        = '';
-$richiesta_email          = '';
-$richiesta_telefono       = '';
-$richiesta_data_nascita   = '';
-$richiesta_sesso          = '';
-$richiesta_servizio       = '';
-$richiesta_fisioterapista = '';
-$richiesta_data_preferita = '';
-$richiesta_fascia         = '';
-$old_data                 = '';
-$old_orario               = '';
+function handleFissaAppuntamento(bool &$show, string &$bodyHtml): void {
+    $show = false;
+    $bodyHtml = '';
 
-$lista_sale      = '';
-$messaggio_form  = '';
-
-// Funzione di escape
-function esc($conn, $val) {
-    return $conn->real_escape_string(trim($val));
-}
-
-// Costruisco dropdown "sale"
-function buildOptions($conn, $table, $idCol, $nameCol, $selected = '') {
-    $opt = "";
-    $sql = "SELECT `$idCol`, `$nameCol` FROM `$table` ORDER BY `$nameCol` ASC";
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) {
-            $id   = $row[$idCol];
-            $nome = htmlspecialchars($row[$nameCol], ENT_QUOTES, 'UTF-8');
-            $sel  = ($selected !== '' && $selected == $id) ? ' selected' : '';
-            $opt .= "<option value=\"{$id}\"{$sel}>{$nome}</option>\n";
-        }
-        $res->free();
+    // 1) Verifica pagina
+    if (($_GET['page'] ?? '') !== 'fissa_appuntamento') {
+        return;
     }
-    return $opt;
-}
-$lista_sale = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', '');
+    $show = true;
 
-// 3. Se in GET con richiesta_id, carico i dati della richiesta
-if ($_SERVER['REQUEST_METHOD'] === 'GET' 
-    && isset($_GET['richiesta_id']) 
-    && intval($_GET['richiesta_id']) > 0) 
-{
-    $rid = intval($_GET['richiesta_id']);
-    $sql = "
-      SELECT 
-        r.richiesta_id,
-        r.nome, r.cognome, r.email, r.telefono,
-        r.data_nascita, r.sesso,
-        s.nome      AS servizio,
-        f.nome      AS fisioterapista,
-        r.data_preferita, r.fascia_id
-      FROM richieste AS r
-      LEFT JOIN servizi AS s ON r.servizio_id = s.servizio_id
-      LEFT JOIN fisioterapisti AS f ON r.fisioterapista_id = f.fisioterapista_id
-      WHERE r.richiesta_id = {$rid}
-      LIMIT 1
-    ";
-    if ($res = $conn->query($sql)) {
-        if ($res->num_rows === 1) {
-            $row = $res->fetch_assoc();
-            $richiesta_id             = (int)$row['richiesta_id'];
-            $richiesta_nome           = htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8');
-            $richiesta_cognome        = htmlspecialchars($row['cognome'], ENT_QUOTES, 'UTF-8');
-            $richiesta_email          = htmlspecialchars($row['email'], ENT_QUOTES, 'UTF-8');
-            $richiesta_telefono       = htmlspecialchars($row['telefono'], ENT_QUOTES, 'UTF-8');
-            $richiesta_data_nascita   = $row['data_nascita'] ?? '';
-            $richiesta_sesso          = $row['sesso'] ?? '';
-            $richiesta_servizio       = htmlspecialchars($row['servizio'], ENT_QUOTES, 'UTF-8');
-            $richiesta_fisioterapista = htmlspecialchars($row['fisioterapista'], ENT_QUOTES, 'UTF-8');
-            $richiesta_data_preferita = $row['data_preferita'] ?? '';
-            $richiesta_fascia         = (int)$row['fascia_id'];
-        }
-        $res->free();
+    // 2) Avvia sessione e controlla login (se richiesto)
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    // opzionale: if empty session['fisio'] redirect login
+    // if (empty($_SESSION['fisio'])) { header('Location:index.php?page=login'); exit; }
+
+    // 3) Flash message via session
+    $flash = $_SESSION['fissa_flash'] ?? '';
+    unset($_SESSION['fissa_flash']);
+    $sqlError = $_SESSION['fissa_error'] ?? '';
+    unset($_SESSION['fissa_error']);
+    
+    $reqId = (int)($_REQUEST['richiesta_id'] ?? 0);
+    if ($reqId <= 0) {
+        header('Location: index.php?page=richieste');
+        exit;
     }
-}
 
-// 4. Se POST action=save, creo l’appuntamento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' 
-    && isset($_GET['action']) 
-    && $_GET['action'] === 'save') 
-{
-    $richiesta_id_post   = intval($_POST['richiesta_id'] ?? 0);
-    $app_data            = esc($conn, $_POST['data'] ?? '');
-    $app_orario          = esc($conn, $_POST['orario'] ?? '');
-    $sala_id             = intval($_POST['sala_id'] ?? 0);
+    $db = Db::getConnection();
+    $db->set_charset('utf8');
 
-    if ($richiesta_id_post <= 0 || $app_data === '' || $app_orario === '' || $sala_id === 0) {
-        $messaggio_form = '<div class="alert alert-danger">Dati mancanti per creare l’appuntamento.</div>';
-    } else {
-        // Combino data + orario
-        $prenotato_il = $app_data . ' ' . $app_orario . ':00';
-        $stato        = 'Prenotato';
+    // 4) Recupera richiesta
+    $res = $db->query("SELECT * FROM richieste WHERE richiesta_id=$reqId");
+    $rq = ($res && $res->num_rows===1) ? $res->fetch_assoc() : null;
+    if (!$rq) {
+        header('Location: index.php?page=richieste');
+        exit;
+    }
 
-        // Inserisco in appuntamenti copiando i dati dalla richiesta
-        $sql_ins = "
-          INSERT INTO appuntamenti 
-            (richiesta_id, fisioterapista_id, servizio_id, fascia_id, stato, prenotato_il, sala_id)
-          SELECT 
-            r.richiesta_id,
-            COALESCE(r.fisioterapista_id, 0) AS fisioterapista_id,
-            r.servizio_id,
-            r.fascia_id,
-            '{$stato}',
-            '{$prenotato_il}',
-            {$sala_id}
-          FROM richieste AS r
-          WHERE r.richiesta_id = {$richiesta_id_post}
-          LIMIT 1
-        ";
-        if ($conn->query($sql_ins)) {
-            $messaggio_form = '<div class="alert alert-success">Appuntamento fissato correttamente!</div>';
-            // Reset campi
-            $richiesta_id             = '';
-            $richiesta_nome           = '';
-            $richiesta_cognome        = '';
-            $richiesta_email          = '';
-            $richiesta_telefono       = '';
-            $richiesta_data_nascita   = '';
-            $richiesta_sesso          = '';
-            $richiesta_servizio       = '';
-            $richiesta_fisioterapista = '';
-            $richiesta_data_preferita = '';
-            $richiesta_fascia         = '';
-            $old_data                 = '';
-            $old_orario               = '';
-            // Ricostruisco dropdown sale senza selezione
-            $lista_sale = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', '');
+    // 5) Salvataggio (PRG)
+    $action = $_GET['action'] ?? '';
+    if ($action === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data  = trim($_POST['data'] ?? '');
+        $ora   = trim($_POST['orario'] ?? '');
+        $sala  = (int)($_POST['sala_id'] ?? 0);
+
+        // validazioni
+        if ($data === '' || $ora === '' || $sala <= 0) {
+            $flash = '<div class="alert alert-danger">Compila tutti i campi obbligatori (data, orario, sala).</div>';
         } else {
-            $messaggio_form = '<div class="alert alert-danger">Errore inserimento appuntamento: ' 
-                              . $conn->error . '</div>';
+            // escape
+            $d = $db->real_escape_string($data);
+            $o = $db->real_escape_string($ora);
+            // fisio id da sessione
+            $fisio = (int)($_SESSION['fisio'] ?? $rq['fisioterapista_id']);
+            // inserimento appuntamento
+            $sql = "INSERT INTO appuntamenti
+                        (richiesta_id, fisioterapista_id, servizio_id, data, orario, sala_id, stato, prenotato_il)
+                     VALUES
+                        ($reqId, $fisio, {$rq['servizio_id']}, '$d', '$o', $sala, 'Prenotato', NOW())";
+            if ($db->query($sql)) {
+                $_SESSION['fissa_flash'] = '<div class="alert alert-success">Appuntamento creato correttamente.</div>';
+                // redirect PRG
+                header('Location: index.php?page=fissa_appuntamento&richiesta_id='.$reqId);
+                exit;
+            } else {
+                // SQL error
+                $_SESSION['fissa_error'] = 'Errore SQL: '.htmlspecialchars($db->error, ENT_QUOTES);
+                header('Location: index.php?page=fissa_appuntamento&richiesta_id='.$reqId);
+                exit;
+            }
         }
     }
-}
 
-// 5. Caricamento del template e sostituzione dei placeholder
-$template = file_get_contents(__DIR__ . '/fissa_appuntamento.html');
-if ($template === false) {
-    die("Impossibile caricare il template fissa_appuntamento.html");
-}
-$output = str_replace(
-    [
-      '<[messaggio_form]>',
-      '<[richiesta_id]>',
-      '<[richiesta_nome]>',
-      '<[richiesta_cognome]>',
-      '<[richiesta_email]>',
-      '<[richiesta_telefono]>',
-      '<[richiesta_data_nascita]>',
-      '<[richiesta_sesso]>',
-      '<[richiesta_servizio]>',
-      '<[richiesta_fisioterapista]>',
-      '<[richiesta_data_preferita]>',
-      '<[richiesta_fascia]>',
-      '<[old_data]>',
-      '<[old_orario]>',
-      '<[lista_sale]>',
-    ],
-    [
-      $messaggio_form,
-      htmlspecialchars($richiesta_id, ENT_QUOTES, 'UTF-8'),
-      $richiesta_nome,
-      $richiesta_cognome,
-      $richiesta_email,
-      $richiesta_telefono,
-      $richiesta_data_nascita,
-      $richiesta_sesso,
-      $richiesta_servizio,
-      $richiesta_fisioterapista,
-      $richiesta_data_preferita,
-      $richiesta_fascia,
-      $old_data,
-      $old_orario,
-      $lista_sale,
-    ],
-    $template
-);
-echo $output;
+    // 6) Prepara dropdown sale
+    $optSala = "<option value=''>-- Seleziona Sala --</option>";
+    $rs = $db->query("SELECT sala_id, nome_sala FROM sale ORDER BY nome_sala");
+    if ($rs) {
+        while ($row = $rs->fetch_assoc()) {
+            $sel = ((int)($_POST['sala_id'] ?? 0) === (int)$row['sala_id']) ? ' selected' : '';
+            $optSala .= "<option value='{$row['sala_id']}'$sel>" . htmlspecialchars($row['nome_sala'], ENT_QUOTES) . "</option>";
+        }
+    }
 
-$conn->close();
+    // 7) Carica template fissa_appuntamento.html
+    $tpl = new Template('dtml/webarch/fissa_appuntamento');
+    // flash e errori
+    $tpl->setContent('messaggio_form', $flash . ($sqlError ? '<div class="alert alert-danger">'.$sqlError.'</div>' : ''));
+    // dati read-only
+    $tpl->setContent('richiesta_nome',         htmlspecialchars($rq['nome'], ENT_QUOTES));
+    $tpl->setContent('richiesta_cognome',      htmlspecialchars($rq['cognome'], ENT_QUOTES));
+    $tpl->setContent('richiesta_email',        htmlspecialchars($rq['email'], ENT_QUOTES));
+    $tpl->setContent('richiesta_telefono',     htmlspecialchars($rq['telefono'], ENT_QUOTES));
+    $tpl->setContent('richiesta_data_nascita', htmlspecialchars($rq['data_nascita'], ENT_QUOTES));
+    $tpl->setContent('richiesta_sesso',        htmlspecialchars($rq['sesso'], ENT_QUOTES));
+    // servizio
+    $srv = $db->query("SELECT nome FROM servizi WHERE servizio_id={$rq['servizio_id']}");
+    $servizioNome = ($srv && $srv->num_rows===1) ? $srv->fetch_assoc()['nome'] : '';
+    $tpl->setContent('richiesta_servizio',     htmlspecialchars($servizioNome, ENT_QUOTES));
+    // data preferita e fascia
+    $tpl->setContent('richiesta_data_preferita', htmlspecialchars($rq['data_preferita'], ENT_QUOTES));
+    $fas = $db->query("SELECT CONCAT(inizio,' – ',fine) AS fascia FROM fasce_disponibilita WHERE fascia_id={$rq['fascia_id']}");
+    $tpl->setContent('richiesta_fascia',        htmlspecialchars($fas && $fas->num_rows===1 ? $fas->fetch_assoc()['fascia'] : '', ENT_QUOTES));
+    // hidden e dropdown
+    $tpl->setContent('richiesta_id',            $reqId);
+    $tpl->setContent('lista_sale',              $optSala);
+    $tpl->setContent('old_data',                htmlspecialchars($_POST['data'] ?? '', ENT_QUOTES));
+    $tpl->setContent('old_orario',              htmlspecialchars($_POST['orario'] ?? '', ENT_QUOTES));
+
+    $bodyHtml = $tpl->get();
+}
 ?>

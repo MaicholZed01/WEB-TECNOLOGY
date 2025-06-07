@@ -19,7 +19,11 @@
       </h4>
     </div>
     <div class="panel-body">
-      <form id="form-filter" action="index.php?page=richieste" method="get" class="row g-3 align-items-end">
+      
+     <form id="form-filter" action="index.php" method="get" class="row g-3 align-items-end">
+        <!-- Campo nascosto per mantenere il page=richieste -->
+       <input type="hidden" name="page" value="richieste">
+
 
         <!-- Data Inizio -->
         <div class="col-md-3">

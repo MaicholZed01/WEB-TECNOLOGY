@@ -28,6 +28,9 @@ require __DIR__ . '/private/profilo.php';
 
 require __DIR__ . '/private/macchinari.php';
 
+require __DIR__ . '/private/richieste.php';
+require __DIR__ . '/private/fissa_appuntamento.php';
+
 session_start();
 
 // 4. Definizione delle pagine
@@ -67,6 +70,33 @@ if ($showForm) {
     $footerHtml = getFooterNews(5);
     $main->setContent('footer_news', $footerHtml);
     $main->setContent('body', $bodyHtml);
+    $main->close();
+    exit;
+}
+
+
+// ───────────────── Richieste (area privata) ─────────────────
+$showReq  = false;
+$bodyReq  = '';
+$flashReq = '';
+handleRichieste($showReq, $bodyReq, $flashReq);
+if ($showReq) {
+    $base = 'dtml/webarch/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyReq);
+    $main->close();
+    exit;
+}
+
+// ──────────────── Fissa Appuntamento ───────────────────────
+$showFix = false;
+$bodyFix = '';
+$flashFix = '';
+handleFissaAppuntamento($showFix, $bodyFix, $flashFix);
+if ($showFix) {
+    $base = 'dtml/webarch/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyFix);
     $main->close();
     exit;
 }
