@@ -1,152 +1,152 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Contattaci – Area Pubblica</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- STILE APPLICATO SOLO ALLA FORM -->
-  <style>
-    
-    #contact-form button#cf-submit {
-      width: 100%;
-      border: none;
-    }
-
-    #contact-form label {
-      color: #393939;
-      font-weight: 500;
-    }
-
-    #contact-form .form-control {
-      background: #f9f9f9;
-      border: none;
-      border-radius: 3px;
-      box-shadow: none;
-      font-size: 14px;
-      font-weight: normal;
-      margin-bottom: 15px;
-      transition: all ease-in-out 0.4s;
-    }
-
-    #contact-form input,
-    #contact-form select {
-      height: 45px;
-    }
-
-    #contact-form button#cf-submit {
-      background: #a5c422;
-      color: #ffffff;
-      font-weight: 600;
-      height: 55px;
-    }
-
-    #contact-form button#cf-submit:hover {
-      background: #393939;
-      color: #ffffff;
-    }
-  </style>
-
-</head>
-<body>
-
-  <!-- CONTATTI -->
-  <section id="contact" data-stellar-background-ratio="1">
-    <div class="container">
-      <!-- PRIMA RIGA: “Dove siamo” E FORM -->
-      <div class="row">
-        <!-- COLONNA SINISTRA: INFO “Dove siamo” -->
-        <div class="col-md-6 mb-4">
-          <div class="contact-info shadow-sm p-4" style="background: #fff; border-radius: .5rem;">
-            <div class="section-title mb-3">
-              <h2>Dove siamo</h2>
-            </div>
-            <p class="mb-2"><i class="fa fa-map-marker me-2"></i>Via Fontana murata, 10 – 03025 Monte San Giovanni Campano (FR)</p>
-            <p class="mb-2"><i class="fa fa-phone me-2"></i>333 4455566</p>
-            <p class="mb-0"><i class="fa fa-envelope-o me-2"></i><a href="mailto:info@fisiocenter.it">info@fisiocenter.it</a></p>
-          </div>
-        </div>
-
-        <!-- COLONNA DESTRA: FORM CONTATTI -->
-        <div class="col-md-6 mb-4">
-          <div class="login-card p-4 shadow-sm" style="background: #fff; border-radius: .5rem;">
-            <div class="section-title mb-3 text-center">
-              <h2>Contattaci</h2>
-            </div>
-            <form
-              id="contact-form"
-              role="form"
-              class="appnt-form text-start"
-              action="index.php?page=process_contatto"
-              method="post"
-            >
-              <!-- MESSAGGIO DI ESITO -->
-              <div class="mb-3"><[messaggio_form]></div>
-
-              <div class="mb-3">
-                <label for="mittente">Nome</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="mittente"
-                  name="mittente"
-                  placeholder="Il tuo nome"
-                  required
-                >
-              </div>
-
-              <div class="mb-3">
-                <label for="email">E-mail</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  placeholder="esempio@dominio.it"
-                  required
-                >
-              </div>
-
-              <div class="mb-3">
-                <label for="contenuto">Messaggio</label>
-                <textarea
-                  class="form-control"
-                  rows="5"
-                  id="contenuto"
-                  name="contenuto"
-                  placeholder="Scrivi qui il tuo messaggio..."
-                  required
-                ></textarea>
-              </div>
-
-              <div class="d-grid">
-                <button type="submit" id="cf-submit">Invia</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECONDA RIGA: MAPPA A META' LARGHEZZA CENTRATA -->
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="contact-map shadow-sm" style="border-radius: .5rem; overflow: hidden;">
-            <iframe
-              width="100%"
-              height="340"
-              frameborder="0"
-              style="border:0"
-              src="https://maps.google.com/maps?q=Via%20Fontana%20murata%2010%2003025%20Monte%20San%20Giovanni%20Campano%20FR&output=embed"
-              allowfullscreen>
-            </iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- JS (facoltativi) -->
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Contattaci – Area Pubblica</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- STILE APPLICATO SOLO ALLA FORM -->
+  <style>
+    
+    #contact-form button#cf-submit {
+      width: 100%;
+      border: none;
+    }
+
+    #contact-form label {
+      color: #393939;
+      font-weight: 500;
+    }
+
+    #contact-form .form-control {
+      background: #f9f9f9;
+      border: none;
+      border-radius: 3px;
+      box-shadow: none;
+      font-size: 14px;
+      font-weight: normal;
+      margin-bottom: 15px;
+      transition: all ease-in-out 0.4s;
+    }
+
+    #contact-form input,
+    #contact-form select {
+      height: 45px;
+    }
+
+    #contact-form button#cf-submit {
+      background: #a5c422;
+      color: #ffffff;
+      font-weight: 600;
+      height: 55px;
+    }
+
+    #contact-form button#cf-submit:hover {
+      background: #393939;
+      color: #ffffff;
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- CONTATTI -->
+  <section id="contact" data-stellar-background-ratio="1">
+    <div class="container">
+      <!-- PRIMA RIGA: “Dove siamo” E FORM -->
+      <div class="row">
+        <!-- COLONNA SINISTRA: INFO “Dove siamo” -->
+        <div class="col-md-6 mb-4">
+          <div class="contact-info shadow-sm p-4" style="background: #fff; border-radius: .5rem;">
+            <div class="section-title mb-3">
+              <h2>Dove siamo</h2>
+            </div>
+            <p class="mb-2"><i class="fa fa-map-marker me-2"></i>Via Fontana murata, 10 – 03025 Monte San Giovanni Campano (FR)</p>
+            <p class="mb-2"><i class="fa fa-phone me-2"></i>333 4455566</p>
+            <p class="mb-0"><i class="fa fa-envelope-o me-2"></i><a href="mailto:info@fisiocenter.it">info@fisiocenter.it</a></p>
+          </div>
+        </div>
+
+        <!-- COLONNA DESTRA: FORM CONTATTI -->
+        <div class="col-md-6 mb-4">
+          <div class="login-card p-4 shadow-sm" style="background: #fff; border-radius: .5rem;">
+            <div class="section-title mb-3 text-center">
+              <h2>Contattaci</h2>
+            </div>
+            <form
+              id="contact-form"
+              role="form"
+              class="appnt-form text-start"
+              action="index.php?page=process_contatto"
+              method="post"
+            >
+              <!-- MESSAGGIO DI ESITO -->
+              <div class="mb-3"><[messaggio_form]></div>
+
+              <div class="mb-3">
+                <label for="mittente">Nome</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mittente"
+                  name="mittente"
+                  placeholder="Il tuo nome"
+                  required
+                >
+              </div>
+
+              <div class="mb-3">
+                <label for="email">E-mail</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="esempio@dominio.it"
+                  required
+                >
+              </div>
+
+              <div class="mb-3">
+                <label for="contenuto">Messaggio</label>
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  id="contenuto"
+                  name="contenuto"
+                  placeholder="Scrivi qui il tuo messaggio..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" id="cf-submit">Invia</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECONDA RIGA: MAPPA A META' LARGHEZZA CENTRATA -->
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="contact-map shadow-sm" style="border-radius: .5rem; overflow: hidden;">
+            <iframe
+              width="100%"
+              height="340"
+              frameborder="0"
+              style="border:0"
+              src="https://maps.google.com/maps?q=Via%20Fontana%20murata%2010%2003025%20Monte%20San%20Giovanni%20Campano%20FR&output=embed"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS (facoltativi) -->
+  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
+  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

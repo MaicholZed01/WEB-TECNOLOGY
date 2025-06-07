@@ -23,6 +23,7 @@ require __DIR__ . '/public/footer_news.php';
 require __DIR__ . '/public/news-detail.php';
 // 2b) ORA include della gestione dei messaggi (lato privato)
 require __DIR__ . '/private/messaggi.php';
+require __DIR__ . '/private/profilo.php';
 session_start();
 
 // 4. Definizione delle pagine
@@ -235,7 +236,15 @@ if ($showNewsDetail) {
         exit;
     }
     */
-
+$showProf = false;
+$bodyProf = '';
+handleProfile($showProf, $bodyProf);
+if ($showProf) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodyProf);
+    $main->close();
+    exit;
+}
     // ──────────────────────────────────────────────────────────────
     // 10) Routing “standard” per tutte le altre pagine
     // ──────────────────────────────────────────────────────────────

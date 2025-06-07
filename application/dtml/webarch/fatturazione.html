@@ -1,175 +1,175 @@
-<!-- fatturazioni.html -->
-<section id="fatturazioni" class="dashboard-container">
-  <!-- Titolo Pagina -->
-  <div class="page-header mb-4">
-    <h1>Fatturazioni</h1>
-  </div>
-
-  <!-- FORM AGGIUNGI / MODIFICA FATTURAZIONE -->
-  <div class="panel mb-4">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-file-invoice-dollar me-2"></i>
-        <span><[label_submit]> Fatturazione</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-fatturazioni" action="index.php?page=fatturazioni&action=save" method="post">
-        
-        <!-- Messaggio Esito -->
-        <div class="mb-3">
-          <[messaggio_form]>
-        </div>
-
-        <!-- Selezione Appuntamento -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Appuntamento*</label>
-          <select class="form-control" name="appuntamento_id" required>
-            <option value="">-- Seleziona Appuntamento --</option>
-            <[lista_appuntamenti]>
-          </select>
-        </div>
-
-        <!-- Importo -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Importo (€)*</label>
-          <input
-            type="text"
-            class="form-control"
-            name="importo"
-            value="<[old_importo]>"
-            required
-          >
-        </div>
-
-        <!-- Hidden ID per Modifica -->
-        <input type="hidden" name="pagamento_id" value="<[old_pagamento_id]>">
-
-        <!-- Pulsanti -->
-        <div class="d-flex gap-3">
-          <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-save me-1"></i><span> <[label_submit]></span>
-          </button>
-          <a href="index.php?page=fatturazioni" class="btn btn-outline-modern btn-xs">
-            <i class="fas fa-times me-1"></i>Annulla
-          </a>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- FORM FILTRO FATTURAZIONI PER INTERVALLO E ULTERIORI CAMPI -->
-  <div class="panel mb-4">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-filter me-2"></i>
-        <span>Filtra Fatturazioni</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-filter" action="index.php?page=fatturazioni" method="get" class="row g-3 align-items-end">
-        <!-- Data Inizio (Intervallo) -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
-          <input
-            type="date"
-            class="form-control"
-            id="data_inizio"
-            name="data_inizio"
-          >
-        </div>
-
-        <!-- Data Fine (Intervallo) -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="data_fine">Data Fine</label>
-          <input
-            type="date"
-            class="form-control"
-            id="data_fine"
-            name="data_fine"
-          >
-        </div>
-
-        <!-- Cliente -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="cliente">Cliente</label>
-          <input
-            type="text"
-            class="form-control"
-            id="cliente"
-            name="cliente"
-            placeholder="Nome cliente"
-          >
-        </div>
-
-        <!-- Servizio -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
-          <select
-            class="form-control"
-            id="servizio_filter"
-            name="servizio_id"
-          >
-            <option value="">-- Seleziona Servizio --</option>
-            <[lista_servizi]>
-          </select>
-        </div>
-
-        
-
-        <!-- Pulsante Filtra -->
-        <div class="col-md-3">
-          <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-search me-1"></i>Filtra
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- TABELLA FATTURAZIONI -->
-  <div class="panel">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-list me-2"></i>
-        <span>Elenco Fatturazioni</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <div class="table-responsive">
-        <table class="table-modern">
-          <thead>
-            <tr>
-              <th>Fatturazione&nbsp;ID</th>
-              <th>Cliente</th>
-              <th>Data&nbsp;Appuntamento</th>
-              <th>Servizio</th>
-              <th>Importo (€)</th>
-              <th>Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <[lista_fatturazioni]>
-            <!--
-              Esempio riga generata dal controller:
-              <tr>
-                <td>12</td>
-                <td>Giulia Bianchi</td>
-                <td>2025-06-05 10:00</td>
-                <td>Fisioterapia Ortopedica</td>
-                <td>85.00</td>
-                <td>
-                  <a href="index.php?page=fatturazioni&action=delete&id=12"
-                     class="btn btn-outline-modern btn-xs text-danger"
-                     onclick="return confirm('Eliminare questa fatturazione?');">
-                    <i class="fas fa-trash-alt me-1"></i>Elimina
-                  </a>
-                </td>
-              </tr>
-            -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- fatturazioni.html -->
+<section id="fatturazioni" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Fatturazioni</h1>
+  </div>
+
+  <!-- FORM AGGIUNGI / MODIFICA FATTURAZIONE -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-file-invoice-dollar me-2"></i>
+        <span><[label_submit]> Fatturazione</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-fatturazioni" action="index.php?page=fatturazioni&action=save" method="post">
+        
+        <!-- Messaggio Esito -->
+        <div class="mb-3">
+          <[messaggio_form]>
+        </div>
+
+        <!-- Selezione Appuntamento -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Appuntamento*</label>
+          <select class="form-control" name="appuntamento_id" required>
+            <option value="">-- Seleziona Appuntamento --</option>
+            <[lista_appuntamenti]>
+          </select>
+        </div>
+
+        <!-- Importo -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Importo (€)*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="importo"
+            value="<[old_importo]>"
+            required
+          >
+        </div>
+
+        <!-- Hidden ID per Modifica -->
+        <input type="hidden" name="pagamento_id" value="<[old_pagamento_id]>">
+
+        <!-- Pulsanti -->
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-save me-1"></i><span> <[label_submit]></span>
+          </button>
+          <a href="index.php?page=fatturazioni" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-times me-1"></i>Annulla
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FORM FILTRO FATTURAZIONI PER INTERVALLO E ULTERIORI CAMPI -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-filter me-2"></i>
+        <span>Filtra Fatturazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-filter" action="index.php?page=fatturazioni" method="get" class="row g-3 align-items-end">
+        <!-- Data Inizio (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_inizio"
+            name="data_inizio"
+          >
+        </div>
+
+        <!-- Data Fine (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_fine">Data Fine</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_fine"
+            name="data_fine"
+          >
+        </div>
+
+        <!-- Cliente -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="cliente">Cliente</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cliente"
+            name="cliente"
+            placeholder="Nome cliente"
+          >
+        </div>
+
+        <!-- Servizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
+          <select
+            class="form-control"
+            id="servizio_filter"
+            name="servizio_id"
+          >
+            <option value="">-- Seleziona Servizio --</option>
+            <[lista_servizi]>
+          </select>
+        </div>
+
+        
+
+        <!-- Pulsante Filtra -->
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-search me-1"></i>Filtra
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABELLA FATTURAZIONI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-list me-2"></i>
+        <span>Elenco Fatturazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Fatturazione&nbsp;ID</th>
+              <th>Cliente</th>
+              <th>Data&nbsp;Appuntamento</th>
+              <th>Servizio</th>
+              <th>Importo (€)</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_fatturazioni]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>12</td>
+                <td>Giulia Bianchi</td>
+                <td>2025-06-05 10:00</td>
+                <td>Fisioterapia Ortopedica</td>
+                <td>85.00</td>
+                <td>
+                  <a href="index.php?page=fatturazioni&action=delete&id=12"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Eliminare questa fatturazione?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

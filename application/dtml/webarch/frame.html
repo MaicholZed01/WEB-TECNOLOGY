@@ -1,158 +1,158 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FisioCenter - Admin Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="/tec-web/application/dtml/webarch/assets/css/styles.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-
-    <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-title">FisioCenter</div>
-        </div>
-        
-        <div class="sidebar-nav">
-            <div class="nav-section">
-                <div class="nav-section-title">Menù</div>
-                <div class="nav-item">
-                    <a href="index.php?page=dashboard" class="nav-link" data-page="dashboard">
-                        <i class="fas fa-tachometer-alt nav-icon"></i>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=appuntamenti" class="nav-link" data-page="appuntamenti">
-                        <i class="fas fa-calendar-alt nav-icon"></i>
-                        <span class="nav-text">Appuntamenti</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=servizi" class="nav-link" data-page="clienti">
-                        <i class="fas fa-users nav-icon"></i>
-                        <span class="nav-text">Servizi</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=macchinari" class="nav-link" data-page="servizi">
-                        <i class="fas fa-dumbbell nav-icon"></i>
-                        <span class="nav-text">Macchinari</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=fatturazioni" class="nav-link" data-page="fatturazioni">
-                        <i class="fas fa-file-invoice-dollar nav-icon"></i>
-                        <span class="nav-text">Fatturazioni</span>
-                    </a>
-                </div>
-          
-                
-                
-                <div class="nav-item">
-                    <a href="index.php?page=messaggi" class="nav-link" data-page="messaggi">
-                        <i class="fas fa-life-ring nav-icon"></i>
-                        <span class="nav-text">Messaggi</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=avvisi2" class="nav-link" data-page="notifiche">
-                        <i class="fas fa-bell nav-icon"></i>
-                        <span class="nav-text">Avvisi</span>
-                        <span class="nav-badge badge-danger" id="unread-notifs" style="display: none"><[count_notifiche]></span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=richieste" class="nav-link" data-page="richieste">
-                        <i class="fas fa-inbox nav-icon"></i>
-                        <span class="nav-text">Richieste</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=disponibilita" class="nav-link" data-page="disponibilita">
-                        <i class="fas fa-clock nav-icon"></i>
-                        <span class="nav-text">Disponibilità</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=media" class="nav-link" data-page="media">
-                        <i class="fas fa-images nav-icon"></i>
-                        <span class="nav-text">Media</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=certificazioni" class="nav-link" data-page="certificazioni">
-                        <i class="fas fa-certificate nav-icon"></i>
-                        <span class="nav-text">Certificazioni</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="index.php?page=profilo" class="nav-link" data-page="profilo">
-                        <i class="fas fa-user nav-icon"></i>
-                        <span class="nav-text">Profilo</span>
-                    </a>
-                </div>
-            </div>
-            
-            
-            <!-- Logout in sidebar -->
-            <div class="nav-section">
-                <div class="nav-item">
-                    <a href="index.php?page=logout" class="nav-link text-danger">
-                        <i class="fas fa-sign-out-alt nav-icon"></i>
-                        <span class="nav-text">Logout</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content Wrapper -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <div class="welcome-message">
-                    Benvenuto, <strong><[physio_name]></strong>
-                </div>
-            </div>
-            
-            
-            <div class="header-right">                               
-                <div class="user-menu dropdown">
-                    <div class="user-menu-trigger" data-bs-toggle="dropdown">
-                        <div class="user-info">
-                            <div class="user-name"><[user_full_name]></div>
-                            <div class="user-role"><[user_role]></div>
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="index.php?page=profilo"><i class="fas fa-user me-2"></i>Profilo</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="index.php?page=logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
-
-        <!-- Content Placeholder -->
-        <div class="page-content">
-            <[body]>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="/tec-web/application/dtml/webarch/assets/js/core.js"></script>
-    <script src="/tec-web/application/dtml/webarch/assets/js/dashboard.js"></script>
-    <script src="/tec-web/application/dtml/webarch/script.js"></script>
-    <link rel="stylesheet" href="/tec-web/application/dtml/webarch/script.js">
-</body>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FisioCenter - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/tec-web/application/dtml/webarch/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">FisioCenter</div>
+        </div>
+        
+        <div class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Menù</div>
+                <div class="nav-item">
+                    <a href="index.php?page=dashboard" class="nav-link" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=appuntamenti" class="nav-link" data-page="appuntamenti">
+                        <i class="fas fa-calendar-alt nav-icon"></i>
+                        <span class="nav-text">Appuntamenti</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=servizi" class="nav-link" data-page="clienti">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span class="nav-text">Servizi</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=macchinari" class="nav-link" data-page="servizi">
+                        <i class="fas fa-dumbbell nav-icon"></i>
+                        <span class="nav-text">Macchinari</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=fatturazioni" class="nav-link" data-page="fatturazioni">
+                        <i class="fas fa-file-invoice-dollar nav-icon"></i>
+                        <span class="nav-text">Fatturazioni</span>
+                    </a>
+                </div>
+          
+                
+                
+                <div class="nav-item">
+                    <a href="index.php?page=messaggi" class="nav-link" data-page="messaggi">
+                        <i class="fas fa-life-ring nav-icon"></i>
+                        <span class="nav-text">Messaggi</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=avvisi2" class="nav-link" data-page="notifiche">
+                        <i class="fas fa-bell nav-icon"></i>
+                        <span class="nav-text">Avvisi</span>
+                        <span class="nav-badge badge-danger" id="unread-notifs" style="display: none"><[count_notifiche]></span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=richieste" class="nav-link" data-page="richieste">
+                        <i class="fas fa-inbox nav-icon"></i>
+                        <span class="nav-text">Richieste</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=disponibilita" class="nav-link" data-page="disponibilita">
+                        <i class="fas fa-clock nav-icon"></i>
+                        <span class="nav-text">Disponibilità</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=media" class="nav-link" data-page="media">
+                        <i class="fas fa-images nav-icon"></i>
+                        <span class="nav-text">Media</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=certificazioni" class="nav-link" data-page="certificazioni">
+                        <i class="fas fa-certificate nav-icon"></i>
+                        <span class="nav-text">Certificazioni</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="index.php?page=profilo" class="nav-link" data-page="profilo">
+                        <i class="fas fa-user nav-icon"></i>
+                        <span class="nav-text">Profilo</span>
+                    </a>
+                </div>
+            </div>
+            
+            
+            <!-- Logout in sidebar -->
+            <div class="nav-section">
+                <div class="nav-item">
+                    <a href="index.php?page=logout" class="nav-link text-danger">
+                        <i class="fas fa-sign-out-alt nav-icon"></i>
+                        <span class="nav-text">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <div class="welcome-message">
+                    Benvenuto, <strong><[physio_name]></strong>
+                </div>
+            </div>
+            
+            
+            <div class="header-right">                               
+                <div class="user-menu dropdown">
+                    <div class="user-menu-trigger" data-bs-toggle="dropdown">
+                        <div class="user-info">
+                            <div class="user-name"><[user_full_name]></div>
+                            <div class="user-role"><[user_role]></div>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="index.php?page=profilo"><i class="fas fa-user me-2"></i>Profilo</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.php?page=logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Placeholder -->
+        <div class="page-content">
+            <[body]>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/tec-web/application/dtml/webarch/assets/js/core.js"></script>
+    <script src="/tec-web/application/dtml/webarch/assets/js/dashboard.js"></script>
+    <script src="/tec-web/application/dtml/webarch/script.js"></script>
+    <link rel="stylesheet" href="/tec-web/application/dtml/webarch/script.js">
+</body>
 </html>

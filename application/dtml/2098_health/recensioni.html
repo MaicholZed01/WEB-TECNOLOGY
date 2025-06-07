@@ -1,182 +1,182 @@
-<!-- recensioni.html -->
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Recensioni – Area Pubblica</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- CORE CSS -->
-  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/plugins/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/plugins/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/css/style.css">
-
-  <!-- STILE COPIATO DA form_prenotazione.html, ADATTATO A #recensioni -->
-  <style>
-    #recensioni {
-      padding-top: 100px;
-    }
-
-    #recensioni label {
-      color: #393939;
-      font-weight: 500;
-    }
-
-    #recensioni .form-control {
-      background: #f9f9f9;
-      border: none;
-      border-radius: 3px;
-      box-shadow: none;
-      font-size: 14px;
-      font-weight: normal;
-      margin-bottom: 15px;
-      transition: all ease-in-out 0.4s;
-    }
-
-    #recensioni input,
-    #recensioni select {
-      height: 45px;
-    }
-
-    #recensioni button#cf-submit {
-      background: #a5c422;
-      color: #ffffff;
-      font-weight: 600;
-      height: 55px;
-    }
-
-    #recensioni button#cf-submit:hover {
-      background: #393939;
-      color: #ffffff;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- SEZIONE RECENSIONI: struttura identica a form_prenotazione.html -->
-  <section id="recensioni" data-stellar-background-ratio="3">
-    <div class="container">
-      <div class="row">
-        <!-- Colonna immagine -->
-        <div class="col-md-6 col-sm-6">
-          <img 
-            src="/tec-web/application/dtml/2098_health/images/appointment-image.jpg" 
-            class="img-responsive" 
-            alt="Recensioni"
-          >
-        </div>
-
-        <!-- Colonna form recensioni -->
-        <div class="col-md-6 col-sm-6">
-          <form 
-            id="form-recensioni" 
-            class="appnt-form"
-            action="index.php?page=recensioni&action=save" 
-            method="post"
-          >
-            <!-- TITOLO -->
-            <div class="section-title wow fadeInUp" data-wow-delay="0.4s">
-              <h2>Aggiungi Recensione</h2>
-            </div>
-
-            <!-- MESSAGGIO DI ESITO -->
-            <div class="wow fadeInUp" data-wow-delay="0.6s">
-              <[messaggio_form]>
-            </div>
-
-            <!-- CAMPI RECENSIONE -->
-            <div class="wow fadeInUp" data-wow-delay="0.8s">
-              <div class="row">
-                <!-- NOME CLIENTE -->
-                <div class="col-md-6 col-sm-6">
-                  <label for="nome_cliente">Nome Cliente*</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="nome_cliente" 
-                    name="nome_cliente" 
-                    value="<[old_nome_cliente]>" 
-                    required
-                  >
-                </div>
-
-                <!-- COGNOME CLIENTE -->
-                <div class="col-md-6 col-sm-6">
-                  <label for="cognome_cliente">Cognome Cliente*</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="cognome_cliente" 
-                    name="cognome_cliente" 
-                    value="<[old_cognome_cliente]>" 
-                    required
-                  >
-                </div>
-
-                <!-- APPUNTAMENTO ID -->
-                <div class="col-md-6 col-sm-6">
-                  <label for="appuntamento_id">Appuntamento ID*</label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    id="appuntamento_id" 
-                    name="appuntamento_id" 
-                    value="<[old_appuntamento_id]>" 
-                    min="1" 
-                    required
-                  >
-                  <p class="help-block">
-                    Inserisci solo numeri interi positivi.
-                  </p>
-                </div>
-
-                <!-- VALUTAZIONE -->
-                <div class="col-md-6 col-sm-6">
-                  <label for="valutazione">Valutazione (1-5)*</label>
-                  <select 
-                    class="form-control" 
-                    id="valutazione" 
-                    name="valutazione" 
-                    required
-                  >
-                    <option value="">-- Seleziona Valutazione --</option>
-                    <option value="1" <[sel_val_1]> >1</option>
-                    <option value="2" <[sel_val_2]> >2</option>
-                    <option value="3" <[sel_val_3]> >3</option>
-                    <option value="4" <[sel_val_4]> >4</option>
-                    <option value="5" <[sel_val_5]> >5</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- COMMENTO -->
-              <div class="mb-3">
-                <label for="commento">Commento</label>
-                <textarea 
-                  class="form-control" 
-                  id="commento" 
-                  name="commento" 
-                  rows="4"
-                ><[old_commento]></textarea>
-              </div>
-
-              <!-- PULSANTE INVIO -->
-              <button 
-                type="submit" 
-                id="cf-submit" 
-                class="form-control"
-              >
-                Salva Recensione
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- JS (facoltativi) -->
-  <script src="/tec-web/application/dtml/2098_health/assets/plugins/jquery/jquery.min.js"></script>
-  <script src="/tec-web/application/dtml/2098_health/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
+<!-- recensioni.html -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Recensioni – Area Pubblica</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CORE CSS -->
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/plugins/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/plugins/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/tec-web/application/dtml/2098_health/assets/css/style.css">
+
+  <!-- STILE COPIATO DA form_prenotazione.html, ADATTATO A #recensioni -->
+  <style>
+    #recensioni {
+      padding-top: 100px;
+    }
+
+    #recensioni label {
+      color: #393939;
+      font-weight: 500;
+    }
+
+    #recensioni .form-control {
+      background: #f9f9f9;
+      border: none;
+      border-radius: 3px;
+      box-shadow: none;
+      font-size: 14px;
+      font-weight: normal;
+      margin-bottom: 15px;
+      transition: all ease-in-out 0.4s;
+    }
+
+    #recensioni input,
+    #recensioni select {
+      height: 45px;
+    }
+
+    #recensioni button#cf-submit {
+      background: #a5c422;
+      color: #ffffff;
+      font-weight: 600;
+      height: 55px;
+    }
+
+    #recensioni button#cf-submit:hover {
+      background: #393939;
+      color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- SEZIONE RECENSIONI: struttura identica a form_prenotazione.html -->
+  <section id="recensioni" data-stellar-background-ratio="3">
+    <div class="container">
+      <div class="row">
+        <!-- Colonna immagine -->
+        <div class="col-md-6 col-sm-6">
+          <img 
+            src="/tec-web/application/dtml/2098_health/images/appointment-image.jpg" 
+            class="img-responsive" 
+            alt="Recensioni"
+          >
+        </div>
+
+        <!-- Colonna form recensioni -->
+        <div class="col-md-6 col-sm-6">
+          <form 
+            id="form-recensioni" 
+            class="appnt-form"
+            action="index.php?page=recensioni&action=save" 
+            method="post"
+          >
+            <!-- TITOLO -->
+            <div class="section-title wow fadeInUp" data-wow-delay="0.4s">
+              <h2>Aggiungi Recensione</h2>
+            </div>
+
+            <!-- MESSAGGIO DI ESITO -->
+            <div class="wow fadeInUp" data-wow-delay="0.6s">
+              <[messaggio_form]>
+            </div>
+
+            <!-- CAMPI RECENSIONE -->
+            <div class="wow fadeInUp" data-wow-delay="0.8s">
+              <div class="row">
+                <!-- NOME CLIENTE -->
+                <div class="col-md-6 col-sm-6">
+                  <label for="nome_cliente">Nome Cliente*</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nome_cliente" 
+                    name="nome_cliente" 
+                    value="<[old_nome_cliente]>" 
+                    required
+                  >
+                </div>
+
+                <!-- COGNOME CLIENTE -->
+                <div class="col-md-6 col-sm-6">
+                  <label for="cognome_cliente">Cognome Cliente*</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="cognome_cliente" 
+                    name="cognome_cliente" 
+                    value="<[old_cognome_cliente]>" 
+                    required
+                  >
+                </div>
+
+                <!-- APPUNTAMENTO ID -->
+                <div class="col-md-6 col-sm-6">
+                  <label for="appuntamento_id">Appuntamento ID*</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="appuntamento_id" 
+                    name="appuntamento_id" 
+                    value="<[old_appuntamento_id]>" 
+                    min="1" 
+                    required
+                  >
+                  <p class="help-block">
+                    Inserisci solo numeri interi positivi.
+                  </p>
+                </div>
+
+                <!-- VALUTAZIONE -->
+                <div class="col-md-6 col-sm-6">
+                  <label for="valutazione">Valutazione (1-5)*</label>
+                  <select 
+                    class="form-control" 
+                    id="valutazione" 
+                    name="valutazione" 
+                    required
+                  >
+                    <option value="">-- Seleziona Valutazione --</option>
+                    <option value="1" <[sel_val_1]> >1</option>
+                    <option value="2" <[sel_val_2]> >2</option>
+                    <option value="3" <[sel_val_3]> >3</option>
+                    <option value="4" <[sel_val_4]> >4</option>
+                    <option value="5" <[sel_val_5]> >5</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- COMMENTO -->
+              <div class="mb-3">
+                <label for="commento">Commento</label>
+                <textarea 
+                  class="form-control" 
+                  id="commento" 
+                  name="commento" 
+                  rows="4"
+                ><[old_commento]></textarea>
+              </div>
+
+              <!-- PULSANTE INVIO -->
+              <button 
+                type="submit" 
+                id="cf-submit" 
+                class="form-control"
+              >
+                Salva Recensione
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS (facoltativi) -->
+  <script src="/tec-web/application/dtml/2098_health/assets/plugins/jquery/jquery.min.js"></script>
+  <script src="/tec-web/application/dtml/2098_health/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
