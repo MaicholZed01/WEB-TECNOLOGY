@@ -31,6 +31,7 @@ require __DIR__ . '/private/macchinari.php';
 
 require __DIR__ . '/private/richieste.php';
 require __DIR__ . '/private/fissa_appuntamento.php';
+require __DIR__ . '/private/aggiungi_appuntamento.php';
 
 session_start();
 
@@ -102,6 +103,8 @@ if ($showFix) {
     exit;
 }
 
+// ──────────────── Appuntamenti ───────────────────────
+
 $showApp   = false;
 $bodyApp   = '';
 handleAppuntamenti($showApp, $bodyApp);
@@ -112,6 +115,21 @@ if ($showApp) {
     $main->close();
     exit;
 }
+
+// ──────────────── Aggiungi Appuntamento ───────────────────────
+$showFix = false;
+$bodyFix = '';
+$flashFix = '';
+handleAggiungiAppuntamento($showFix, $bodyFix, $flashFix);
+if ($showFix) {
+    $base = 'dtml/webarch/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyFix);
+    $main->close();
+    exit;
+}
+
+
 
     // ──────────────────────────────────────────────────────────────
     // 2) Login (GET o POST su process_login)

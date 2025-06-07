@@ -1,207 +1,155 @@
 <?php
-// aggiungi_appuntamento.php
-// Controller per aggiungi_appuntamento.html
-// Flusso: crea prima la richiesta, poi l’appuntamento
+// application/private/aggiungi_appuntamento.php
+// Controller per la pagina "aggiungi_appuntamento" che prima crea una richiesta poi fissa un appuntamento
 
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// Inizializzo variabili per il template
-$old_nome           = '';
-$old_cognome        = '';
-$old_email          = '';
-$old_telefono       = '';
-$old_data_nascita   = '';
-$old_sesso          = '';
-$old_servizio       = '';
-$old_fascia         = '';
-$old_data           = '';
-$old_orario         = '';
-$sala_selezionata   = '';
+function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
+    $show     = false;
+    $bodyHtml = '';
 
-$sel_sesso_Maschio  = '';
-$sel_sesso_Femmina  = '';
-$sel_sesso_Altro    = '';
-
-$lista_servizi        = '';
-$lista_fasi_disponibili = '';
-$lista_sale          = '';
-$messaggio_form      = '';
-
-// Funzione di escape
-function esc($conn, $val) {
-    return $conn->real_escape_string(trim($val));
-}
-
-// Costruisco dropdown
-function buildOptions($conn, $table, $idCol, $nameCol, $selected = '') {
-    $opt = "";
-    $sql = "SELECT `$idCol`, `$nameCol` FROM `$table` ORDER BY `$nameCol` ASC";
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) {
-            $id   = $row[$idCol];
-            $nome = htmlspecialchars($row[$nameCol], ENT_QUOTES, 'UTF-8');
-            $sel  = ($selected !== '' && $selected == $id) ? ' selected' : '';
-            $opt .= "<option value=\"{$id}\"{$sel}>{$nome}</option>\n";
-        }
-        $res->free();
+    // 1) Verifica pagina
+    if (($_GET['page'] ?? '') !== 'aggiungi_appuntamento') {
+        return;
     }
-    return $opt;
-}
-// Popolo dropdown iniziali senza selezione
-$lista_servizi         = buildOptions($conn, 'servizi', 'servizio_id', 'nome', '');
-$lista_fasi_disponibili = buildOptions($conn, 'fasce_disponibilita', 'fascia_id', 'inizio', '');
-$lista_sale            = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', '');
+    $show = true;
 
-// 1) Se POST action=save, creo richiesta e appuntamento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' 
-    && isset($_GET['action']) 
-    && $_GET['action'] === 'save') 
-{
-    $nome            = esc($conn, $_POST['nome'] ?? '');
-    $cognome         = esc($conn, $_POST['cognome'] ?? '');
-    $email           = esc($conn, $_POST['email'] ?? '');
-    $telefono        = esc($conn, $_POST['telefono'] ?? '');
-    $data_nascita    = esc($conn, $_POST['data_nascita'] ?? '');
-    $sesso           = esc($conn, $_POST['sesso'] ?? '');
-    $servizio_id     = intval($_POST['servizio_id'] ?? 0);
-    $fascia_id       = intval($_POST['fascia_id'] ?? 0);
+    // 2) Sessione e flash
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $flash     = $_SESSION['aggiungi_flash'] ?? '';
+    unset($_SESSION['aggiungi_flash']);
+    $sqlError  = $_SESSION['aggiungi_error'] ?? '';
+    unset($_SESSION['aggiungi_error']);
 
-    $app_data        = esc($conn, $_POST['data'] ?? '');
-    $app_orario      = esc($conn, $_POST['orario'] ?? '');
-    $sala_id         = intval($_POST['sala_id'] ?? 0);
+    // 3) Connessione DB
+    $db = Db::getConnection();
+    $db->set_charset('utf8');
 
-    // Validazioni
-    if ($nome === '' || $cognome === '' || $email === '' 
-        || $servizio_id === 0 || $fascia_id === 0 
-        || $app_data === '' || $app_orario === '' || $sala_id === 0) 
-    {
-        $messaggio_form = '<div class="alert alert-danger">'
-                       . 'Compila tutti i campi obbligatori.</div>';
-        // Mantengo i valori per ricaricarli nel form
-        $old_nome         = htmlspecialchars($nome, ENT_QUOTES, 'UTF-8');
-        $old_cognome      = htmlspecialchars($cognome, ENT_QUOTES, 'UTF-8');
-        $old_email        = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
-        $old_telefono     = htmlspecialchars($telefono, ENT_QUOTES, 'UTF-8');
-        $old_data_nascita = $data_nascita;
-        $old_sesso        = $sesso;
-        $old_servizio     = $servizio_id;
-        $old_fascia       = $fascia_id;
-        $old_data         = $app_data;
-        $old_orario       = $app_orario;
-        $sala_selezionata = $sala_id;
-    } else {
-        // 1.1) Inserimento in richieste
-        $sql_ins_req = "
-          INSERT INTO `richieste`
-            (`nome`, `cognome`, `email`, `telefono`,
-             `data_nascita`, `sesso`, `servizio_id`, `fascia_id`, `creato_il`)
-          VALUES
-            ('{$nome}', '{$cognome}', '{$email}', '{$telefono}',
-             " . ($data_nascita !== '' ? "'{$data_nascita}'" : "NULL") . ",
-             " . ($sesso !== '' ? "'{$sesso}'" : "NULL") . ",
-             {$servizio_id}, {$fascia_id}, CURRENT_TIMESTAMP)
-        ";
-        if (!$conn->query($sql_ins_req)) {
-            $messaggio_form = '<div class="alert alert-danger">'
-                           . 'Errore inserimento richiesta: ' 
-                           . $conn->error . '</div>';
+    // 4) Recupera eventuali valori POST (form richiamo)
+    $old = [
+        'nome'         => '',
+        'cognome'      => '',
+        'email'        => '',
+        'telefono'     => '',
+        'data_nascita' => '',
+        'sesso'        => '',
+        'servizio_id'  => 0,
+        'data'         => '',
+        'orario'       => '',
+        'sala_id'      => 0,
+        'note'         => ''
+    ];
+    $message = '';
+
+    // 5) Salvataggio (POST + action=save)
+    $action = $_GET['action'] ?? '';
+    if ($action === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Riempi $old
+        foreach ($old as $k => $_) {
+            if (isset($_POST[$k])) {
+                $old[$k] = trim($_POST[$k]);
+            }
+        }
+        $old['servizio_id'] = (int)$old['servizio_id'];
+        $old['sala_id']     = (int)$old['sala_id'];
+
+        // validazioni minime
+        if ($old['nome']==='' || $old['cognome']==='' || $old['email']==='' ||
+            $old['servizio_id']<=0 || $old['data']==='' || $old['orario']==='' || $old['sala_id']<=0) {
+            $message = '<div class="alert alert-danger">Compila tutti i campi obbligatori (*)</div>';
         } else {
-            $new_richiesta_id = $conn->insert_id;
+            // escape
+            $n   = $db->real_escape_string($old['nome']);
+            $c   = $db->real_escape_string($old['cognome']);
+            $e   = $db->real_escape_string($old['email']);
+            $t   = $db->real_escape_string($old['telefono']);
+            $dn  = $old['data_nascita'] ? "'".$db->real_escape_string($old['data_nascita'])."'" : 'NULL';
+            $s   = $old['sesso']        ? "'".$db->real_escape_string($old['sesso'])."'"       : 'NULL';
+            $sid = $old['servizio_id'];
+            $dat = $db->real_escape_string($old['data']);
+            $ora = $db->real_escape_string($old['orario']);
+            $sal = $old['sala_id'];
+            $note= $db->real_escape_string($old['note']);
 
-            // 1.2) Inserimento in appuntamenti con il nuovo richiesta_id
-            $prenotato_il = $app_data . ' ' . $app_orario . ':00';
-            $stato        = 'Prenotato';
+            // 5a) INSERT in richieste
+            $sqlReq = "INSERT INTO richieste
+                (nome, cognome, email, telefono, data_nascita, sesso,
+                 servizio_id, data_preferita, fascia_id, note)
+             VALUES
+                ('{$n}','{$c}','{$e}','{$t}',{$dn},{$s},{$sid},'{$dat}',NULL,'{$note}')";
+            if (! $db->query($sqlReq)) {
+                $_SESSION['aggiungi_error'] = 'Errore SQL insert richiesta: '.htmlspecialchars($db->error, ENT_QUOTES);
+                header('Location: index.php?page=aggiungi_appuntamento');
+                exit;
+            }
+            // recupero il nuovo ID richiesta
+            $newReqId = $db->insert_id;
 
-            $sql_ins_app = "
-              INSERT INTO `appuntamenti`
-                (`richiesta_id`, `fisioterapista_id`, `servizio_id`, `fascia_id`, `stato`, `prenotato_il`, `sala_id`)
-              VALUES
-                ({$new_richiesta_id}, 0, {$servizio_id}, {$fascia_id}, '{$stato}', '{$prenotato_il}', {$sala_id})
-            ";
-            if (!$conn->query($sql_ins_app)) {
-                $messaggio_form = '<div class="alert alert-danger">'
-                               . 'Errore inserimento appuntamento: ' 
-                               . $conn->error . '</div>';
+            // 5b) INSERT in appuntamenti
+            $fisio = (int)($_SESSION['fisio'] ?? 0);
+            $d     = $db->real_escape_string($dat);
+            $o     = $db->real_escape_string($ora);
+            $sqlApp = "INSERT INTO appuntamenti
+                        (richiesta_id, fisioterapista_id, servizio_id, data, orario, sala_id, stato, prenotato_il)
+                      VALUES
+                        ($newReqId, $fisio, $sid, '$d', '$o', $sal, 'Prenotato', NOW())";
+            if ($db->query($sqlApp)) {
+                $_SESSION['aggiungi_flash'] = '<div class="alert alert-success">Richiesta e appuntamento creati.</div>';
+                // INVIO EMAIL DI CONFERMA
+                $to      = $e;
+                $subject = 'Conferma Appuntamento Prenotato';
+                $msg     = "Gentile {$n} {$c},\r\n\r\n".
+                           "Il Suo appuntamento è stato fissato.\r\n".
+                           "Data: {$dat}\r\nOrario: {$ora}\r\nSala: {$sal}\r\n\r\n".
+                           "Grazie.\r\n";
+                $hdr     = "From: CentroFisioterapico <noreply@tuodominio.it>\r\n".
+                           "Reply-To: info@tuodominio.it\r\n";
+                @mail($to,$subject,$msg,$hdr);
+
+                header('Location: index.php?page=aggiungi_appuntamento');
+                exit;
             } else {
-                $messaggio_form = '<div class="alert alert-success">'
-                               . 'Appuntamento creato correttamente!</div>';
-                // Reset form
-                $old_nome         = '';
-                $old_cognome      = '';
-                $old_email        = '';
-                $old_telefono     = '';
-                $old_data_nascita = '';
-                $old_sesso        = '';
-                $old_servizio     = '';
-                $old_fascia       = '';
-                $old_data         = '';
-                $old_orario       = '';
-                $sala_selezionata = '';
+                $_SESSION['aggiungi_error'] = 'Errore SQL insert appuntamento: '.htmlspecialchars($db->error, ENT_QUOTES);
+                header('Location: index.php?page=aggiungi_appuntamento');
+                exit;
             }
         }
     }
 
-    // Ricostruisco i dropdown con eventuali selezioni rimaste
-    $lista_servizi          = buildOptions($conn, 'servizi', 'servizio_id', 'nome', $old_servizio);
-    $lista_fasi_disponibili = buildOptions($conn, 'fasce_disponibilita', 'fascia_id', 'inizio', $old_fascia);
-    $lista_sale             = buildOptions($conn, 'sale', 'sala_id', 'nome_sala', $sala_selezionata);
+    // 6) Popola dropdown servizi
+    $optServ = "<option value=''>-- Seleziona Servizio --</option>";
+    $rs1 = $db->query("SELECT servizio_id, nome FROM servizi ORDER BY nome");
+    while ($r = $rs1->fetch_assoc()) {
+        $sel = ((int)$r['servizio_id'] === $old['servizio_id']) ? ' selected' : '';
+        $optServ .= "<option value='{$r['servizio_id']}'$sel>".
+                    htmlspecialchars($r['nome'], ENT_QUOTES).
+                    "</option>";
+    }
 
-    // Imposto selezione sesso
-    $sel_sesso_Maschio  = ($old_sesso === 'Maschio') ? 'selected' : '';
-    $sel_sesso_Femmina  = ($old_sesso === 'Femmina') ? 'selected' : '';
-    $sel_sesso_Altro    = ($old_sesso === 'Altro') ? 'selected' : '';
+    // 7) Popola dropdown sale
+    $optSala = "<option value=''>-- Seleziona Sala --</option>";
+    $rs2 = $db->query("SELECT sala_id, nome_sala FROM sale ORDER BY nome_sala");
+    while ($r = $rs2->fetch_assoc()) {
+        $sel = ((int)$r['sala_id'] === $old['sala_id']) ? ' selected' : '';
+        $optSala .= "<option value='{$r['sala_id']}'$sel>".
+                    htmlspecialchars($r['nome_sala'], ENT_QUOTES).
+                    "</option>";
+    }
+
+    // 8) Render template
+    $tpl = new Template('dtml/webarch/aggiungi_appuntamento');
+    $tpl->setContent('messaggio_form', $flash . ($sqlError ? '<div class="alert alert-danger">'.$sqlError.'</div>' : '') . $message);
+    // remplaza old values
+    foreach (['nome','cognome','email','telefono','data_nascita','data','orario','note'] as $f) {
+        $tpl->setContent('old_'.$f, htmlspecialchars($old[$f], ENT_QUOTES));
+    }
+    foreach (['Maschio','Femmina','Altro'] as $sex) {
+        $tpl->setContent('sel_sesso_'.$sex, $old['sesso']===$sex ? 'selected' : '');
+    }
+    $tpl->setContent('lista_servizi', $optServ);
+    $tpl->setContent('lista_sale',     $optSala);
+
+    $bodyHtml = $tpl->get();
 }
-
-// 2. Caricamento template e sostituzione placeholder
-$template = file_get_contents(__DIR__ . '/aggiungi_appuntamento.html');
-if ($template === false) {
-    die("Impossibile caricare il template aggiungi_appuntamento.html");
-}
-
-$output = str_replace(
-    [
-      '<[messaggio_form]>',
-      '<[old_nome]>',
-      '<[old_cognome]>',
-      '<[old_email]>',
-      '<[old_telefono]>',
-      '<[old_data_nascita]>',
-      '<[sel_sesso_Maschio]>',
-      '<[sel_sesso_Femmina]>',
-      '<[sel_sesso_Altro]>',
-      '<[lista_servizi]>',
-      '<[old_servizio]>',
-      '<[lista_fasce]>',
-      '<[old_fascia]>',
-      '<[old_data]>',
-      '<[old_orario]>',
-      '<[lista_sale]>',
-    ],
-    [
-      $messaggio_form,
-      htmlspecialchars($old_nome, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_cognome, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_email, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_telefono, ENT_QUOTES, 'UTF-8'),
-      $old_data_nascita,
-      $sel_sesso_Maschio,
-      $sel_sesso_Femmina,
-      $sel_sesso_Altro,
-      $lista_servizi,
-      $old_servizio,
-      $lista_fasi_disponibili,
-      $old_fascia,
-      $old_data,
-      $old_orario,
-      $lista_sale,
-    ],
-    $template
-);
-
-echo $output;
-$conn->close();
 ?>
