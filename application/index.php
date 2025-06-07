@@ -20,6 +20,7 @@ require __DIR__ . '/public/dettagli_fisioterapista.php';
 
 require __DIR__ . '/public/avvisi.php';
 require __DIR__ . '/public/footer_news.php';
+require __DIR__ . '/public/news-detail.php';
 
 session_start();
 
@@ -110,7 +111,7 @@ try {
         $base = 'dtml/2098_health/frame';
         $main = new Template($base);
         $footerHtml = getFooterNews(5);
-    $main->setContent('footer_news', $footerHtml);
+    	$main->setContent('footer_news', $footerHtml);
         $main->setContent('body', $bodyRec);
         $main->close();
         exit;
@@ -185,6 +186,27 @@ if ($showAvvisi) {
     $main->close();
     exit;
 }
+
+// ──────────────────────────────────────────────────────────────
+// AVVISI / NEWS (dettaglio) – pagina “news-detail”
+// ──────────────────────────────────────────────────────────────
+$showNewsDetail     = false;
+$bodyHtmlNewsDetail = '';
+handleNewsDetail($showNewsDetail, $bodyHtmlNewsDetail);
+if ($showNewsDetail) {
+    // Carico il frame pubblico e inietto il template di dettaglio
+    $base = 'dtml/2098_health/frame';
+    $main = new Template($base);
+    $main->setContent('body', $bodyHtmlNewsDetail);
+
+    // Inietto anche le ultime news nel footer (opzionale)
+    $footerHtml = getFooterNews(5);
+    $main->setContent('footer_news', $footerHtml);
+
+    $main->close();
+    exit;
+}
+
 
     // ──────────────────────────────────────────────────────────────
     // 9) (Opzionale) Protezione area privata

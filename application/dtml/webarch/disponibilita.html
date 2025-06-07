@@ -1,130 +1,130 @@
-<!-- disponibilita.html -->
-<section id="disponibilita" class="dashboard-container">
-  <!-- Titolo Pagina -->
-  <div class="page-header mb-4">
-    <h1>Gestione Disponibilità</h1>
-  </div>
-
-  <!-- FORM AGGIUNGI / MODIFICA FASCIA -->
-  <div class="panel mb-4">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-calendar-alt me-2"></i>
-        <span><[label_submit]> Fascia Oraria</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-disponibilita" action="index.php?page=disponibilita&action=save" method="post">
-        
-        <!-- Messaggio di Esito -->
-        <div class="mb-3">
-          <[messaggio_form]>
-        </div>
-
-        <!-- Selezione Sala -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Sala*</label>
-          <select class="form-control" name="sala_id" required>
-            <option value="">-- Seleziona Sala --</option>
-            <[lista_sale]>
-          </select>
-        </div>
-
-        <!-- Giorno della Settimana -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Giorno della Settimana*</label>
-          <select class="form-control" name="giorno" required>
-            <option value="">-- Seleziona Giorno --</option>
-            <option value="Lunedì" <[sel_lun]>>Lunedì</option>
-            <option value="Martedì" <[sel_mar]>>Martedì</option>
-            <option value="Mercoledì" <[sel_mer]>>Mercoledì</option>
-            <option value="Giovedì" <[sel_gio]>>Giovedì</option>
-            <option value="Venerdì" <[sel_ven]>>Venerdì</option>
-            <option value="Sabato" <[sel_sab]>>Sabato</option>
-          </select>
-        </div>
-
-        <!-- Ora Inizio -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Inizio (ora)*</label>
-          <input
-            type="time"
-            class="form-control"
-            name="inizio"
-            value="<[old_inizio]>"
-            required
-          >
-        </div>
-
-        <!-- Ora Fine -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Fine (ora)*</label>
-          <input
-            type="time"
-            class="form-control"
-            name="fine"
-            value="<[old_fine]>"
-            required
-          >
-        </div>
-
-        <!-- Hidden ID per Modifica -->
-        <input type="hidden" name="fascia_id" value="<[old_fascia_id]>">
-
-        <!-- Pulsanti -->
-        <div class="d-flex gap-3">
-          <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-save me-1"></i> <span><[label_submit]></span>
-          </button>
-          <a href="index.php?page=disponibilita" class="btn btn-outline-modern btn-xs">
-            <i class="fas fa-times me-1"></i> Annulla
-          </a>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- TABELLA DISPONIBILITÀ ESISTENTI -->
-  <div class="panel">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-list me-2"></i>
-        <span>Elenco Disponibilità</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <div class="table-responsive">
-        <table class="table-modern">
-          <thead>
-            <tr>
-              <th>Sala</th>
-              <th>Giorno</th>
-              <th>Inizio</th>
-              <th>Fine</th>
-              <th>Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <[lista_disponibilita]>
-            <!--
-              Esempio riga generata dal controller:
-              <tr>
-                <td>Sala 1</td>
-                <td>Lunedì</td>
-                <td>09:00:00</td>
-                <td>12:00:00</td>
-                <td>
-                  <a href="index.php?page=disponibilita&action=delete&id=45"
-                     class="btn btn-outline-modern btn-xs text-danger"
-                     onclick="return confirm('Sei sicuro di voler eliminare?');">
-                    <i class="fas fa-trash-alt me-1"></i>Elimina
-                  </a>
-                </td>
-              </tr>
-            -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- disponibilita.html -->
+<section id="disponibilita" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Gestione Disponibilità</h1>
+  </div>
+
+  <!-- FORM AGGIUNGI / MODIFICA FASCIA -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-calendar-alt me-2"></i>
+        <span><[label_submit]> Fascia Oraria</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-disponibilita" action="index.php?page=disponibilita&action=save" method="post">
+        
+        <!-- Messaggio di Esito -->
+        <div class="mb-3">
+          <[messaggio_form]>
+        </div>
+
+        <!-- Selezione Sala -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Sala*</label>
+          <select class="form-control" name="sala_id" required>
+            <option value="">-- Seleziona Sala --</option>
+            <[lista_sale]>
+          </select>
+        </div>
+
+        <!-- Giorno della Settimana -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Giorno della Settimana*</label>
+          <select class="form-control" name="giorno" required>
+            <option value="">-- Seleziona Giorno --</option>
+            <option value="Lunedì" <[sel_lun]>>Lunedì</option>
+            <option value="Martedì" <[sel_mar]>>Martedì</option>
+            <option value="Mercoledì" <[sel_mer]>>Mercoledì</option>
+            <option value="Giovedì" <[sel_gio]>>Giovedì</option>
+            <option value="Venerdì" <[sel_ven]>>Venerdì</option>
+            <option value="Sabato" <[sel_sab]>>Sabato</option>
+          </select>
+        </div>
+
+        <!-- Ora Inizio -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Inizio (ora)*</label>
+          <input
+            type="time"
+            class="form-control"
+            name="inizio"
+            value="<[old_inizio]>"
+            required
+          >
+        </div>
+
+        <!-- Ora Fine -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Fine (ora)*</label>
+          <input
+            type="time"
+            class="form-control"
+            name="fine"
+            value="<[old_fine]>"
+            required
+          >
+        </div>
+
+        <!-- Hidden ID per Modifica -->
+        <input type="hidden" name="fascia_id" value="<[old_fascia_id]>">
+
+        <!-- Pulsanti -->
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-save me-1"></i> <span><[label_submit]></span>
+          </button>
+          <a href="index.php?page=disponibilita" class="btn btn-outline-modern btn-xs">
+            <i class="fas fa-times me-1"></i> Annulla
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABELLA DISPONIBILITÀ ESISTENTI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-list me-2"></i>
+        <span>Elenco Disponibilità</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Sala</th>
+              <th>Giorno</th>
+              <th>Inizio</th>
+              <th>Fine</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_disponibilita]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>Sala 1</td>
+                <td>Lunedì</td>
+                <td>09:00:00</td>
+                <td>12:00:00</td>
+                <td>
+                  <a href="index.php?page=disponibilita&action=delete&id=45"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Sei sicuro di voler eliminare?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

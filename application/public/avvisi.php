@@ -49,7 +49,7 @@ function handleAvvisi(bool &$showAvvisi, string &$bodyHtmlAvvisi): void {
 
             // Link (potrebbe puntare a una pagina di dettaglio futura; per ora usiamo “#”)
             // Se in futuro si crea un dettaglio, basterà cambiare questo href.
-            $linkCard = "#";
+            $linkCard = "index.php?page=news-detail&id={$id}";
 
             $htmlCards .= "
               <div class=\"col-md-4 col-sm-6 mb-4\">

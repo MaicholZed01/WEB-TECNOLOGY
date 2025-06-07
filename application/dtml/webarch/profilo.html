@@ -1,133 +1,133 @@
-<!-- profilo.html -->
-<section id="profilo" class="dashboard-container">
-  <!-- Titolo Pagina -->
-  <div class="page-header mb-4">
-    <h1>Il Mio Profilo</h1>
-  </div>
-
-  <!-- Messaggio di esito generale -->
-  <div class="mb-3">
-    <[messaggio_form]>
-  </div>
-
-  <!-- Dati Anagrafici -->
-  <div class="panel mb-4">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-user me-2"></i>
-        <span>Dati Anagrafici</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-profilo-anagrafico"
-            action="index.php?page=profilo&action=update_info"
-            method="post"
-            enctype="multipart/form-data">
-        
-        <!-- Nome -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Nome*</label>
-          <input
-            type="text"
-            class="form-control"
-            name="nome"
-            value="<[old_nome]>"
-            required
-          >
-        </div>
-
-        <!-- Cognome -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Cognome*</label>
-          <input
-            type="text"
-            class="form-control"
-            name="cognome"
-            value="<[old_cognome]>"
-            required
-          >
-        </div>
-
-        <!-- E-mail -->
-        <div class="mb-3">
-          <label class="d-block mb-1">E-mail*</label>
-          <input
-            type="email"
-            class="form-control"
-            name="email"
-            value="<[old_email]>"
-            required
-          >
-        </div>
-
-        <!-- Telefono -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Telefono</label>
-          <input
-            type="tel"
-            class="form-control"
-            name="telefono"
-            value="<[old_telefono]>"
-          >
-        </div>
-
-        <!-- Bio -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Bio</label>
-          <textarea
-            class="form-control"
-            rows="4"
-            name="bio"
-          ><[old_bio]></textarea>
-        </div>
-
-        <!-- Tariffa Oraria -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Tariffa Oraria (€)</label>
-          <input
-            type="text"
-            class="form-control"
-            name="tariffa_oraria"
-            value="<[old_tariffa_oraria]>"
-          >
-        </div>
-
-        <!-- Foto Profilo -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Foto Profilo</label>
-          <div class="d-flex align-items-center mb-2">
-            <img
-              src="<[foto_profilo]>"
-              alt="Foto Profilo"
-              class="img-thumbnail"
-              style="max-width:120px; margin-right:1rem;"
-            >
-          </div>
-          <input
-            type="file"
-            class="form-control"
-            name="url_foto_profilo"
-          >
-          <p class="help-block mb-0">Scegli un’immagine JPG o PNG (max 2MB).</p>
-        </div>
-
-        <!-- Hidden ID Fisioterapista -->
-        <input
-          type="hidden"
-          name="fisioterapista_id"
-          value="<[old_fisioterapista_id]>"
-        >
-
-        <!-- Pulsante Salva Modifiche -->
-        <div>
-          <button
-            type="submit"
-            class="btn btn-primary-modern btn-sm"
-          >
-            <i class="fas fa-save me-1"></i>Salva Modifiche
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+<!-- profilo.html -->
+<section id="profilo" class="dashboard-container">
+  <!-- Titolo Pagina -->
+  <div class="page-header mb-4">
+    <h1>Il Mio Profilo</h1>
+  </div>
+
+  <!-- Messaggio di esito generale -->
+  <div class="mb-3">
+    <[messaggio_form]>
+  </div>
+
+  <!-- Dati Anagrafici -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-user me-2"></i>
+        <span>Dati Anagrafici</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-profilo-anagrafico"
+            action="index.php?page=profilo&action=update_info"
+            method="post"
+            enctype="multipart/form-data">
+        
+        <!-- Nome -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Nome*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nome"
+            value="<[old_nome]>"
+            required
+          >
+        </div>
+
+        <!-- Cognome -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Cognome*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="cognome"
+            value="<[old_cognome]>"
+            required
+          >
+        </div>
+
+        <!-- E-mail -->
+        <div class="mb-3">
+          <label class="d-block mb-1">E-mail*</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            value="<[old_email]>"
+            required
+          >
+        </div>
+
+        <!-- Telefono -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Telefono</label>
+          <input
+            type="tel"
+            class="form-control"
+            name="telefono"
+            value="<[old_telefono]>"
+          >
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Bio</label>
+          <textarea
+            class="form-control"
+            rows="4"
+            name="bio"
+          ><[old_bio]></textarea>
+        </div>
+
+        <!-- Tariffa Oraria -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Tariffa Oraria (€)</label>
+          <input
+            type="text"
+            class="form-control"
+            name="tariffa_oraria"
+            value="<[old_tariffa_oraria]>"
+          >
+        </div>
+
+        <!-- Foto Profilo -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Foto Profilo</label>
+          <div class="d-flex align-items-center mb-2">
+            <img
+              src="<[foto_profilo]>"
+              alt="Foto Profilo"
+              class="img-thumbnail"
+              style="max-width:120px; margin-right:1rem;"
+            >
+          </div>
+          <input
+            type="file"
+            class="form-control"
+            name="url_foto_profilo"
+          >
+          <p class="help-block mb-0">Scegli un’immagine JPG o PNG (max 2MB).</p>
+        </div>
+
+        <!-- Hidden ID Fisioterapista -->
+        <input
+          type="hidden"
+          name="fisioterapista_id"
+          value="<[old_fisioterapista_id]>"
+        >
+
+        <!-- Pulsante Salva Modifiche -->
+        <div>
+          <button
+            type="submit"
+            class="btn btn-primary-modern btn-sm"
+          >
+            <i class="fas fa-save me-1"></i>Salva Modifiche
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

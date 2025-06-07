@@ -8,7 +8,7 @@ require_once __DIR__ . '/../include/dbms.inc.php';
  *   - Recupera le ultime $maxItems notizie dalla tabella annunci
  *   - Restituisce un HTML da iniettare in <[footer_news]> del frame
  */
-function getFooterNews(int $maxItems = 3): string {
+function getFooterNews(int $maxItems = 5): string {
     $conn = Db::getConnection();
 
     $res = $conn->query("
@@ -36,7 +36,7 @@ function getFooterNews(int $maxItems = 3): string {
 
         // Link alla sezione avvisi (scorrendo alla card corrispondente)
         // In questo esempio portiamo al render completo della pagina avvisi
-        $linkAvviso = "index.php?page=avvisi#annuncio-{$id}";
+        $linkAvviso = "index.php?page=news-detail&id={$id}";
 
         $html .= "
           <li class=\"mb-2\">
