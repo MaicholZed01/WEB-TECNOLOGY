@@ -1,122 +1,123 @@
-<!-- messaggi.html -->
-<section id="messaggi" class="dashboard-container">
-  <!-- Titolo Pagina -->
-  <div class="page-header mb-4">
-    <h1>Messaggi</h1>
-  </div>
-
-  <!-- Messaggio di esito operazione -->
-  <div class="mb-3">
-    <[messaggio_form]>
-  </div>
-
-  <!-- FORM FILTRO MESSAGGI -->
-  <div class="panel mb-4">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-filter me-2"></i>
-        <span>Filtra Messaggi</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-filter" action="index.php?page=messaggi" method="get" class="row g-3 align-items-end">
-        <!-- Data Inizio -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
-          <input
-            type="date"
-            class="form-control"
-            id="data_inizio"
-            name="data_inizio"
-          >
-        </div>
-        <!-- Data Fine -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="data_fine">Data Fine</label>
-          <input
-            type="date"
-            class="form-control"
-            id="data_fine"
-            name="data_fine"
-          >
-        </div>
-        <!-- Mittente -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="mittente_filter">Mittente</label>
-          <input
-            type="text"
-            class="form-control"
-            id="mittente_filter"
-            name="mittente"
-            placeholder="Nome Mittente"
-          >
-        </div>
-        <!-- Email -->
-        <div class="col-md-3">
-          <label class="d-block mb-1" for="email_filter">Email</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email_filter"
-            name="email"
-            placeholder="esempio@dominio.it"
-          >
-        </div>
-        <!-- Pulsante Filtra -->
-        <div class="col-md-3">
-          <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-search me-1"></i>Filtra
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ELENCO MESSAGGI -->
-  <div class="panel">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-envelope me-2"></i>
-        <span>Elenco Messaggi</span>
-      </h4>
-    </div>
-    <div class="panel-body">
-      <div class="table-responsive">
-        <table class="table-modern">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Mittente</th>
-              <th>Email</th>
-              <th>Contenuto</th>
-              <th>Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <[lista_messaggi]>
-            <!--
-              Esempio riga generata dal controller:
-              <tr>
-                <td>2025-06-04 11:15:22</td>
-                <td>Mario Rossi</td>
-                <td>mario.rossi@example.com</td>
-                <td>Buongiorno, vorrei informazioni sui vostri servizi...</td>
-                <td>
-                  <a href="mailto:mario.rossi@example.com"
-                     class="btn btn-primary-modern btn-xs me-1">
-                    <i class="fas fa-reply me-1"></i>Rispondi
-                  </a>
-                  <a href="index.php?page=messaggi&action=delete&id=5"
-                     class="btn btn-outline-modern btn-xs text-danger"
-                     onclick="return confirm('Eliminare questo messaggio?');">
-                    <i class="fas fa-trash-alt me-1"></i>Elimina
-                  </a>
-                </td>
-              </tr>
-            -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Messaggi – Area Privata</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <section id="messaggi" class="dashboard-container">
+    <!-- Titolo Pagina -->
+    <div class="page-header mb-4">
+      <h1>Messaggi</h1>
+    </div>
+
+    <!-- Messaggio di esito operazione -->
+    <div class="mb-3">
+      <[messaggio_form]>
+    </div>
+
+    <!-- FORM FILTRO MESSAGGI -->
+    <div class="panel mb-4">
+      <div class="panel-header">
+        <h4>
+          <i class="fas fa-filter me-2"></i>
+          <span>Filtra Messaggi</span>
+        </h4>
+      </div>
+      <div class="panel-body">
+        <form id="form-filter" action="index.php" method="get" class="row g-3 align-items-end">
+          <!-- Campo nascosto per indicare page=messaggi -->
+          <input type="hidden" name="page" value="messaggi">
+
+          <!-- Data Inizio -->
+          <div class="col-md-3">
+            <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+            <input 
+              type="date" 
+              class="form-control" 
+              id="data_inizio" 
+              name="data_inizio"
+              value="<[old_data_inizio]>"
+            >
+          </div>
+          <!-- Data Fine -->
+          <div class="col-md-3">
+            <label class="d-block mb-1" for="data_fine">Data Fine</label>
+            <input 
+              type="date" 
+              class="form-control" 
+              id="data_fine" 
+              name="data_fine"
+              value="<[old_data_fine]>"
+            >
+          </div>
+          <!-- Mittente -->
+          <div class="col-md-3">
+            <label class="d-block mb-1" for="mittente_filter">Mittente</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="mittente_filter" 
+              name="mittente" 
+              placeholder="Nome Mittente"
+              value="<[old_mittente]>"
+            >
+          </div>
+          <!-- Email -->
+          <div class="col-md-3">
+            <label class="d-block mb-1" for="email_filter">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              id="email_filter" 
+              name="email" 
+              placeholder="esempio@dominio.it"
+              value="<[old_email]>"
+            >
+          </div>
+          <!-- Pulsante Filtra -->
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-primary-modern btn-xs">
+              <i class="fas fa-search me-1"></i>Filtra
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ELENCO MESSAGGI -->
+    <div class="panel">
+      <div class="panel-header">
+        <h4>
+          <i class="fas fa-envelope me-2"></i>
+          <span>Elenco Messaggi</span>
+        </h4>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table-modern">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Mittente</th>
+                <th>Email</th>
+                <th>Contenuto</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              <[lista_messaggi]>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS del tema privato -->
+  <script src="/tec-web/application/dtml/webarch/assets/plugins/jquery/jquery.min.js"></script>
+  <script src="/tec-web/application/dtml/webarch/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -21,7 +21,8 @@ require __DIR__ . '/public/dettagli_fisioterapista.php';
 require __DIR__ . '/public/avvisi.php';
 require __DIR__ . '/public/footer_news.php';
 require __DIR__ . '/public/news-detail.php';
-
+// 2b) ORA include della gestione dei messaggi (lato privato)
+require __DIR__ . '/private/messaggi.php';
 session_start();
 
 // 4. Definizione delle pagine
@@ -72,6 +73,23 @@ try {
         $main->close();
         exit;
     }
+    
+    // ──────────────────────────────────────────────────────────────
+    //  Gestione MESSAGGI (AREA PRIVATA)
+    // ──────────────────────────────────────────────────────────────
+    $showMessages      = false;
+    $bodyHtmlMessages  = '';
+    $flashMessage      = '';
+    handleMessages($showMessages, $bodyHtmlMessages, $flashMessage);
+    if ($showMessages) {
+        // Layout “privato” (webarch/frame) e inietto messaggi
+        $base = 'dtml/webarch/frame';
+        $main = new Template($base);
+        $main->setContent('body', $bodyHtmlMessages);
+        $main->close();
+        exit;
+    }
+
 
     // ──────────────────────────────────────────────────────────────
     // 3) Certificazioni (area privata)
