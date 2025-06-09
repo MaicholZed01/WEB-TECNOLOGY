@@ -1,286 +1,198 @@
 <?php
-// disponibilita.php
-// Controller per disponibilita.html
+// application/private/disponibilita.php
+// CRUD fasce_disponibilita (gestione disponibilità settimanali delle sale)
+// Regola aggiunta: **non è possibile inserire/modificare una fascia che si sovrappone
+//                  (anche solo parzialmente) ad un’altra fascia nella stessa sala e stesso giorno.**
 
-session_start();
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// 1. Connessione al database
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
+function handleDisponibilita(bool &$show, string &$bodyHtml): void
+{
+    $show     = false;
+    $bodyHtml = '';
 
-// 2. Inizializzo variabili per il template
-$messaggio_form     = '';
-$label_submit       = 'Aggiungi';
-$old_fascia_id      = '';
-$old_sala_id        = '';
-$old_giorno         = '';
-$old_inizio         = '';
-$old_fine           = '';
-$lista_sale         = '';
-$sel_lun            = '';
-$sel_mar            = '';
-$sel_mer            = '';
-$sel_gio            = '';
-$sel_ven            = '';
-$sel_sab            = '';
-$lista_disponibilita = '';
-
-// Funzione di escape
-function esc($conn, $val) {
-    return $conn->real_escape_string(trim($val));
-}
-
-// 3. Costruisco dropdown sale
-function buildSaleOptions($conn, $selectedId = '') {
-    $opts = "";
-    $sql = "SELECT sala_id, nome_sala FROM sale ORDER BY nome_sala ASC";
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) {
-            $id   = (int)$row['sala_id'];
-            $nome = htmlspecialchars($row['nome_sala'], ENT_QUOTES, 'UTF-8');
-            $sel  = ($selectedId !== '' && $selectedId == $id) ? ' selected' : '';
-            $opts .= "<option value=\"{$id}\"{$sel}>{$nome}</option>\n";
-        }
-        $res->free();
+    /* pagina */
+    if (($_GET['page'] ?? '') !== 'disponibilita') {
+        return;
     }
-    return $opts;
-}
+    $show = true;
 
-// 4. Gestione eliminazione disponibilità
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $del_id = intval($_GET['id']);
-    if ($del_id > 0) {
-        $sql_del = "DELETE FROM fasce_disponibilita WHERE fascia_id = {$del_id}";
-        if ($conn->query($sql_del)) {
-            $messaggio_form = '<div class="alert alert-success">Disponibilità eliminata correttamente.</div>';
+    /* sessione + fisioterapista loggato (0 = admin / tutti) */
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $fisioId = (int) ($_SESSION['fisio'] ?? 0);
+
+    /* flash */
+    $flash    = $_SESSION['disp_flash'] ?? '';
+    unset($_SESSION['disp_flash']);
+    $sqlError = $_SESSION['disp_error'] ?? '';
+    unset($_SESSION['disp_error']);
+
+    /* connessione */
+    $db = Db::getConnection();
+    $db->set_charset('utf8');
+
+    /* ───── Mapping giorni enum ⇄ label ───── */
+    $giorniEnum  = ['lun','mar','mer','gio','ven','sab'];
+    $giorniLabel = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+    $enum2lbl    = array_combine($giorniEnum,  $giorniLabel);
+    $lbl2enum    = array_combine($giorniLabel, $giorniEnum);
+
+    /* variabili form */
+    $old_id = $old_sala = 0;
+    $old_giorno = $old_inizio = $old_fine = '';
+    $label_submit = 'Aggiungi';
+    $messaggio    = '';
+
+    /* ───── DELETE ───── */
+    if (($_GET['action'] ?? '') === 'delete' && isset($_GET['id'])) {
+        $id = (int)$_GET['id'];
+        $db->query("DELETE FROM fasce_disponibilita WHERE fascia_id = $id");
+        $_SESSION['disp_flash'] = '<div class="alert alert-success">Disponibilità eliminata.</div>';
+        header('Location: index.php?page=disponibilita');
+        exit;
+    }
+
+    /* ───── EDIT (popola form) ───── */
+    if (($_GET['action'] ?? '') === 'edit' && isset($_GET['id'])) {
+        $id = (int)$_GET['id'];
+        $r  = $db->query("SELECT sala_id, giorno, inizio, fine FROM fasce_disponibilita WHERE fascia_id=$id LIMIT 1")
+                ->fetch_assoc();
+        if ($r) {
+            $old_id     = $id;
+            $old_sala   = (int)$r['sala_id'];
+            $old_giorno = $enum2lbl[$r['giorno']] ?? '';
+            $old_inizio = substr($r['inizio'],0,5);
+            $old_fine   = substr($r['fine'],  0,5);
+            $label_submit = 'Modifica';
+        }
+    }
+
+    /* ───── SAVE (INSERT/UPDATE) ───── */
+    if (($_GET['action'] ?? '') === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $fid    = (int)($_POST['fascia_id'] ?? 0);
+        $sala   = (int)($_POST['sala_id']   ?? 0);
+        $giorno = trim($_POST['giorno']     ?? '');
+        $inizio = trim($_POST['inizio']     ?? '');
+        $fine   = trim($_POST['fine']       ?? '');
+        // aggiunge i secondi se mancano
+        if (strlen($inizio) === 5) $inizio .= ':00';
+        if (strlen($fine)   === 5) $fine   .= ':00';
+
+
+        /* Validazione campi base */
+        if ($sala <= 0 || $giorno === '' || $inizio === '' || $fine === '') {
+            $messaggio = '<div class="alert alert-danger">Compila tutti i campi obbligatori.</div>';
         } else {
-            $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
-        }
-    }
-}
+            $giornoEnum = $lbl2enum[$giorno] ?? null;
+            if (!$giornoEnum) {
+                $messaggio = '<div class="alert alert-danger">Giorno non valido.</div>';
+            } elseif ($inizio >= $fine) {
+                $messaggio = '<div class="alert alert-danger">L\'orario di inizio deve precedere l\'orario di fine.</div>';
+            } else {
+                /* ➜ VERIFICA SOVRAPPOSIZIONE (stessa sala + giorno) */
+                $inSql = $db->real_escape_string($inizio);
+                $fiSql = $db->real_escape_string($fine);
 
-// 5. Se richiesta modifica (GET action=edit&id=...)
-if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-    $edit_id = intval($_GET['id']);
-    if ($edit_id > 0) {
-        $sql_sel = "
-          SELECT 
-            fascia_id,
-            sala_id,
-            giorno_settimana,
-            inizio,
-            fine
-          FROM fasce_disponibilita
-          WHERE fascia_id = {$edit_id}
-          LIMIT 1
-        ";
-        if ($res = $conn->query($sql_sel)) {
-            if ($res->num_rows === 1) {
-                $row = $res->fetch_assoc();
-                $old_fascia_id  = (int)$row['fascia_id'];
-                $old_sala_id    = (int)$row['sala_id'];
-                $old_giorno     = $row['giorno_settimana'];
-                $old_inizio     = substr($row['inizio'], 0, 5);
-                $old_fine       = substr($row['fine'], 0, 5);
-                $label_submit   = 'Modifica';
+                $checkSql = "SELECT 1 FROM fasce_disponibilita
+                              WHERE sala_id = $sala
+                                AND giorno   = '$giornoEnum'
+                                AND fascia_id <> $fid
+                                /* overlap: start < existing_end  AND  end > existing_start */
+                                AND NOT ('$inSql' >= fine OR '$fiSql' <= inizio)
+                              LIMIT 1";
+                $hasOverlap = ($db->query($checkSql)->num_rows > 0);
 
-                // Preparo i "selected" per il dropdown giorno
-                $giorni = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
-                foreach ($giorni as $g) {
-                    $varName = 'sel_' . mb_strtolower(substr($g, 0, 3), 'UTF-8');
-                    if ($g === $old_giorno) {
-                        $$varName = 'selected';
-                    } else {
-                        $$varName = '';
+                if ($hasOverlap) {
+                    $messaggio = '<div class="alert alert-danger">Esiste già una disponibilità per questa sala che si sovrappone all\'intervallo indicato.</div>';
+                } else {
+                    /* Query INSERT o UPDATE */
+                    $exists = false;
+                    if ($fid > 0) {
+                        $result = $db->query("SELECT * FROM fasce_disponibilita WHERE fascia_id = $fid");
+                        $exists = ($result && $result->num_rows > 0);
                     }
+                    if ($exists) {
+                        $sql = "UPDATE fasce_disponibilita
+                                SET sala_id = $sala, giorno = '$giornoEnum', inizio = '$inSql', fine = '$fiSql'
+                                WHERE fascia_id = $fid";
+                    } else {
+                        $sql = "INSERT INTO fasce_disponibilita (fisioterapista_id, sala_id, giorno, inizio, fine)
+                                VALUES ($fisioId, $sala, '$giornoEnum', '$inSql', '$fiSql')";
+                    }
+                    if ($db->query($sql)) {
+                        $_SESSION['disp_flash'] = '<div class="alert alert-success">Disponibilità salvata.</div>';
+                        header('Location: index.php?page=disponibilita');
+                        exit;
+                    }
+                    $messaggio = '<div class="alert alert-danger">Errore SQL: '
+                               . htmlspecialchars($db->error, ENT_QUOTES) . '</div>';
                 }
             }
-            $res->free();
         }
+
+        /* se siamo qui il salvataggio è fallito, mantieni valori */
+        $old_id     = $fid;
+        $old_sala   = $sala;
+        $old_giorno = $giorno;
+        $old_inizio = $inizio;
+        $old_fine   = $fine;
+        $label_submit = $fid ? 'Modifica' : 'Aggiungi';
     }
-}
 
-// 6. Gestione salvataggio (inserimento o aggiornamento)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' 
-    && isset($_GET['action']) 
-    && $_GET['action'] === 'save') 
-{
-    $fascia_id   = intval($_POST['fascia_id'] ?? 0);
-    $sala_id     = intval($_POST['sala_id'] ?? 0);
-    $giorno      = esc($conn, $_POST['giorno'] ?? '');
-    $inizio      = esc($conn, $_POST['inizio'] ?? '');
-    $fine        = esc($conn, $_POST['fine'] ?? '');
-
-    // Validazione minima
-    if ($sala_id === 0 || $giorno === '' || $inizio === '' || $fine === '') {
-        $messaggio_form = '<div class="alert alert-danger">Tutti i campi sono obbligatori.</div>';
-        // Mantengo i valori nei campi del form
-        $old_fascia_id = $fascia_id;
-        $old_sala_id   = $sala_id;
-        $old_giorno    = $giorno;
-        $old_inizio    = $inizio;
-        $old_fine      = $fine;
-        $label_submit  = $fascia_id > 0 ? 'Modifica' : 'Aggiungi';
-
-        // Preparo selezione giorno
-        $giorni = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
-        foreach ($giorni as $g) {
-            $varName = 'sel_' . mb_strtolower(substr($g, 0, 3), 'UTF-8');
-            if ($g === $giorno) {
-                $$varName = 'selected';
-            } else {
-                $$varName = '';
-            }
-        }
-    } else {
-        if ($fascia_id > 0) {
-            // UPDATE fascia esistente
-            $sql_upd = "
-              UPDATE fasce_disponibilita
-              SET 
-                sala_id = {$sala_id},
-                giorno_settimana = '{$giorno}',
-                inizio = '{$inizio}:00',
-                fine   = '{$fine}:00'
-              WHERE fascia_id = {$fascia_id}
-            ";
-            if ($conn->query($sql_upd)) {
-                $messaggio_form = '<div class="alert alert-success">Fascia aggiornata correttamente.</div>';
-                // Svuoto i campi
-                $old_fascia_id = '';
-                $old_sala_id   = '';
-                $old_giorno    = '';
-                $old_inizio    = '';
-                $old_fine      = '';
-                $label_submit  = 'Aggiungi';
-                $sel_lun = $sel_mar = $sel_mer = $sel_gio = $sel_ven = $sel_sab = '';
-            } else {
-                $messaggio_form = '<div class="alert alert-danger">Errore aggiornamento: '
-                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
-            }
-        } else {
-            // INSERT nuova fascia
-            $sql_ins = "
-              INSERT INTO fasce_disponibilita (sala_id, giorno_settimana, inizio, fine)
-              VALUES ({$sala_id}, '{$giorno}', '{$inizio}:00', '{$fine}:00')
-            ";
-            if ($conn->query($sql_ins)) {
-                $messaggio_form = '<div class="alert alert-success">Fascia aggiunta correttamente.</div>';
-                // Svuoto i campi
-                $old_sala_id = '';
-                $old_giorno  = '';
-                $old_inizio  = '';
-                $old_fine    = '';
-                $label_submit = 'Aggiungi';
-                $sel_lun = $sel_mar = $sel_mer = $sel_gio = $sel_ven = $sel_sab = '';
-            } else {
-                $messaggio_form = '<div class="alert alert-danger">Errore inserimento: '
-                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
-            }
-        }
+    /* ───── Dropdown SALE ───── */
+    $lista_sale = '';
+    $rsSale = $db->query("SELECT sala_id, nome_sala FROM sale ORDER BY nome_sala");
+    while ($s = $rsSale->fetch_assoc()) {
+        $sel = ((int)$s['sala_id'] === $old_sala) ? 'selected' : '';
+        $lista_sale .= "<option value='{$s['sala_id']}' $sel>".htmlspecialchars($s['nome_sala'], ENT_QUOTES)."</option>";
     }
-}
 
-// 7. Costruisco dropdown sale con selezione corrente
-$lista_sale = "<option value=\"\">-- Seleziona Sala --</option>\n" 
-             . buildSaleOptions($conn, $old_sala_id);
-
-// 8. Costruisco elenco disponibilità per la tabella
-$sql_list = "
-  SELECT 
-    d.fascia_id,
-    s.nome_sala,
-    d.giorno_settimana,
-    d.inizio,
-    d.fine
-  FROM fasce_disponibilita AS d
-  LEFT JOIN sale AS s ON d.sala_id = s.sala_id
-  ORDER BY 
-    FIELD(d.giorno_settimana,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'),
-    d.inizio
-";
-if ($res = $conn->query($sql_list)) {
-    while ($row = $res->fetch_assoc()) {
-        $fid   = (int)$row['fascia_id'];
-        $sala  = htmlspecialchars($row['nome_sala'], ENT_QUOTES, 'UTF-8');
-        $gior  = htmlspecialchars($row['giorno_settimana'], ENT_QUOTES, 'UTF-8');
-        $ini   = substr($row['inizio'], 0, 5);
-        $fin   = substr($row['fine'], 0, 5);
-
-        $link_delete = "index.php?page=disponibilita&action=delete&id={$fid}";
-
-        $lista_disponibilita .= "
-          <tr>
-            <td>{$sala}</td>
-            <td>{$gior}</td>
-            <td>{$ini}</td>
-            <td>{$fin}</td>
+    /* ───── Lista disponibilità ───── */
+    $lista_disp = '';
+    $whereFisio = $fisioId ? "WHERE f.fisioterapista_id = $fisioId" : '';
+    $sqlList = "SELECT f.fascia_id, s.nome_sala, f.giorno, f.inizio, f.fine
+                FROM   fasce_disponibilita f
+                JOIN   sale s ON f.sala_id = s.sala_id
+                $whereFisio
+                ORDER  BY FIELD(f.giorno,'lun','mar','mer','gio','ven','sab'), f.inizio";
+    $rl = $db->query($sqlList);
+    while ($row = $rl->fetch_assoc()) {
+        $fid = (int)$row['fascia_id'];
+        $lista_disp .= "<tr>
+            <td>".htmlspecialchars($row['nome_sala'], ENT_QUOTES)."</td>
+            <td>".($enum2lbl[$row['giorno']] ?? $row['giorno'])."</td>
+            <td>".substr($row['inizio'],0,5)."</td>
+            <td>".substr($row['fine'],0,5)."</td>
             <td>
-              <a href=\"index.php?page=disponibilita&action=edit&id={$fid}\"
-                 class=\"btn btn-outline-modern btn-xs text-primary me-1\" title=\"Modifica\">
-                <i class=\"fas fa-edit me-1\"></i>Modifica
-              </a>
-              <a href=\"{$link_delete}\"
-                 class=\"btn btn-outline-modern btn-xs text-danger\"
-                 onclick=\"return confirm('Sei sicuro di voler eliminare?');\">
-                <i class=\"fas fa-trash-alt me-1\"></i>Elimina
-              </a>
+              <a href='index.php?page=disponibilita&action=edit&id=$fid' class='btn btn-outline-modern btn-xs me-1'><i class='fas fa-edit'></i></a>
+              <a href='index.php?page=disponibilita&action=delete&id=$fid' class='btn btn-outline-modern btn-xs text-danger' onclick='return confirm(\"Eliminare questa fascia?\");'><i class='fas fa-trash-alt'></i></a>
             </td>
-          </tr>
-        ";
+          </tr>";
     }
-    $res->free();
+    if ($lista_disp === '') {
+        $lista_disp = "<tr><td colspan='5' class='text-center text-muted'>Nessuna disponibilità inserita.</td></tr>";
+    }
+
+    /* ───── Selettori giorno (selected) ───── */
+    $selDay = array_fill_keys($giorniEnum, '');
+    if ($old_giorno !== '' && isset($lbl2enum[$old_giorno])) {
+        $selDay[$lbl2enum[$old_giorno]] = 'selected';
+    }
+
+    /* ───── Template ───── */
+    $tpl = new Template('dtml/webarch/disponibilita');
+    $tpl->setContent('messaggio_form', $messaggio ?: $flash . ($sqlError ? '<div class="alert alert-danger">'.$sqlError.'</div>' : ''));
+    $tpl->setContent('label_submit',   $label_submit);
+    $tpl->setContent('lista_sale',     $lista_sale);
+    foreach ($giorniEnum as $g) {
+        $tpl->setContent('sel_'.$g, $selDay[$g]);
+    }
+    $tpl->setContent('old_inizio', htmlspecialchars($old_inizio, ENT_QUOTES));
+    $tpl->setContent('old_fine',   htmlspecialchars($old_fine,   ENT_QUOTES));
+    $tpl->setContent('old_fascia_id', $old_id);
+    $tpl->setContent('lista_disponibilita', $lista_disp);
+
+    $bodyHtml = $tpl->get();
 }
-
-// 9. Caricamento del template disponibilita.html
-$template_path = __DIR__ . '/disponibilita.html';
-$template = file_get_contents($template_path);
-if ($template === false) {
-    die("Impossibile caricare il template disponibilita.html");
-}
-
-// 10. Sostituzione dei placeholder
-$output = str_replace(
-    [
-      '<[messaggio_form]>',
-      '<[label_submit]>',
-      '<[lista_sale]>',
-      '<[old_fascia_id]>',
-      '<[old_inizio]>',
-      '<[old_fine]>',
-      '<[sel_lun]>',
-      '<[sel_mar]>',
-      '<[sel_mer]>',
-      '<[sel_gio]>',
-      '<[sel_ven]>',
-      '<[sel_sab]>',
-      '<[lista_disponibilita]>'
-    ],
-    [
-      $messaggio_form,
-      $label_submit,
-      $lista_sale,
-      htmlspecialchars($old_fascia_id, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_inizio, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_fine, ENT_QUOTES, 'UTF-8'),
-      $sel_lun,
-      $sel_mar,
-      $sel_mer,
-      $sel_gio,
-      $sel_ven,
-      $sel_sab,
-      $lista_disponibilita
-    ],
-    $template
-);
-
-// 11. Output finale (HTML renderizzato)
-echo $output;
-
-// 12. Chiusura connessione
-$conn->close();
 ?>

@@ -19,8 +19,7 @@ function handleFissaAppuntamento(bool &$show, string &$bodyHtml): void {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    // opzionale: if empty session['fisio'] redirect login
-    // if (empty($_SESSION['fisio'])) { header('Location:index.php?page=login'); exit; }
+    // opzionale: if empty($_SESSION['fisio']) { header('Location:index.php?page=login'); exit; }
 
     // 3) Flash message via session
     $flash    = $_SESSION['fissa_flash'] ?? '';
@@ -48,69 +47,102 @@ function handleFissaAppuntamento(bool &$show, string &$bodyHtml): void {
     // 5) Salvataggio (PRG)
     $action = $_GET['action'] ?? '';
     if ($action === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+
         $data = trim($_POST['data'] ?? '');
         $ora  = trim($_POST['orario'] ?? '');
         $sala = (int) ($_POST['sala_id'] ?? 0);
 
-        // validazioni
+        // aggiunge i secondi mancanti: HH:MM -> HH:MM:SS
+        if ($ora && strlen($ora) === 5) {
+            $ora .= ':00';
+        }
+
         if ($data === '' || $ora === '' || $sala <= 0) {
-            $flash = '<div class="alert alert-danger">Compila tutti i campi obbligatori (data, orario, sala).</div>';
+            $flash = '<div class="alert alert-danger">
+                        Compila tutti i campi obbligatori (data, orario, sala).
+                      </div>';
         } else {
-            // escape
+            // Sanitizzazione
             $d = $db->real_escape_string($data);
             $o = $db->real_escape_string($ora);
-            // fisio id da sessione
-            $fisio = (int) ($_SESSION['fisio'] ?? $rq['fisioterapista_id']);
-            // inserimento appuntamento
-            $sql = "INSERT INTO appuntamenti
-                        (richiesta_id, fisioterapista_id, servizio_id, data, orario, sala_id, stato, prenotato_il)
-                    VALUES
-                        ($reqId, $fisio, {$rq['servizio_id']}, '$d', '$o', $sala, 'Prenotato', NOW())";
-            if ($db->query($sql)) {
-                $_SESSION['fissa_flash'] = '<div class="alert alert-success">Appuntamento creato correttamente.</div>';
-                // 3) INVIO EMAIL DI CONFERMA
-                $to      = $rq['email'];                           // l’indirizzo preso dalla richiesta
-                $subject = 'Conferma Appuntamento Prenotato';
-                // Prepara il corpo (puoi arricchirlo in HTML)
-                $message = "
-                  Gentile {$rq['nome']} {$rq['cognome']},\r\n\r\n
-                  il Suo appuntamento è stato fissato con successo.\r\n
-                  Data: $data\r\n
-                  Orario: $ora\r\n
-                  Sala: " . htmlspecialchars($_POST['sala_id']) . "\r\n\r\n
-                  La ringraziamo e Le auguriamo una buona giornata.\r\n
-                ";
-                // Header per mail in plain-text (o HTML se vuoi)
-                $headers  = "From: CentroFisioterapico <noreply@tuodominio.it>\\r\\n";
-                $headers .= "Reply-To: info@tuodominio.it\\r\\n";
-                // Se vuoi inviare HTML, aggiungi:
-                // $headers .= \"MIME-Version: 1.0\\r\\n\";
-                // $headers .= \"Content-type: text/html; charset=UTF-8\\r\\n\";
 
-                // Esegui l’invio
-                if (mail($to, $subject, $message, $headers)) {
-                    // opzionale: un altro flash in sessione
-                    $_SESSION['fissa_flash'] .= '<div class="alert alert-info">Email di conferma inviata a ' . htmlspecialchars($to) . '.</div>';
-                } 
-				/*ELIMINA APPUNTAMENTO DA ELENCO RICHIESTE
-                $delSql = "DELETE FROM richieste WHERE richiesta_id = $reqId";
-                if (!$db->query($delSql)) {
-                    // opzionale: logga o mostra errore di cancellazione
-                    error_log("Errore eliminazione richiesta $reqId: " . $db->error);
+            /* ──────────────────────────────────────────────
+               ➊ Controllo sala / data / ora già occupata
+            ────────────────────────────────────────────── */
+            $sqlCheck = "SELECT 1
+                         FROM appuntamenti
+                         WHERE sala_id = $sala
+                           AND data    = '$d'
+                           AND orario  = '$o'
+                         LIMIT 1";
+            $resultCheck = $db->query($sqlCheck);
+            $busy = ($resultCheck && $resultCheck->num_rows > 0);
+
+            if ($busy) {
+                $_SESSION['fissa_flash'] = '<div class="alert alert-danger">
+                            La sala selezionata è già occupata per la data e l’orario indicati.
+                          </div>';
+            } else {
+                /* ──────────────────────────────────────────
+                   ➋ Inserimento appuntamento
+                ────────────────────────────────────────── */
+                $fisio = (int) ($_SESSION['fisio'] ?? $rq['fisioterapista_id']);
+                $sql   = "INSERT INTO appuntamenti
+                             (richiesta_id, fisioterapista_id, servizio_id,
+                              data, orario, sala_id, stato, prenotato_il)
+                          VALUES
+                             ($reqId, $fisio, {$rq['servizio_id']},
+                              '$d', '$o', $sala, 'Prenotato', NOW())";
+
+                if ($db->query($sql)) {
+                    $_SESSION['fissa_flash'] =
+                        '<div class="alert alert-success">Appuntamento creato correttamente.</div>';
+
+                    /* –– INVIO EMAIL DI CONFERMA –– */
+                    $to      = $rq['email'];
+                    $subject = 'Conferma Appuntamento Prenotato';
+                    $message = "Gentile {$rq['nome']} {$rq['cognome']},
+                    il Suo appuntamento è stato fissato con successo.
+                    Data: $data
+                    Orario: $ora
+                    Sala: " . htmlspecialchars($_POST['sala_id']) . "
+
+                    La ringraziamo e Le auguriamo una buona giornata.
+                    ";
+                    $headers  = "From: CentroFisioterapico <noreply@tuodominio.it>\r\n";
+                    $headers .= "Reply-To: info@tuodominio.it\r\n";
+
+                    if (mail($to, $subject, $message, $headers)) {
+                        $_SESSION['fissa_flash'] .= '<div class="alert alert-info">Email di conferma inviata a ' . htmlspecialchars($to) . '.</div>';
+                    }
+
+                    /*
+                    // ELIMINA APPUNTAMENTO DA ELENCO RICHIESTE
+                    $delSql = "DELETE FROM richieste WHERE richiesta_id = $reqId";
+                    if (!$db->query($delSql)) {
+                        error_log("Errore eliminazione richiesta $reqId: " . $db->error);
+                    }
+                    */
+
+                    header('Location: index.php?page=fissa_appuntamento&richiesta_id=' . $reqId);
+                    exit;
+                } else {
+                    $_SESSION['fissa_error'] = 'Errore SQL: ' . htmlspecialchars($db->error, ENT_QUOTES);
+                    header('Location: index.php?page=fissa_appuntamento&richiesta_id=' . $reqId);
+                    exit;
                 }
-                // 3) redirect PRG
-                header('Location: index.php?page=fissa_appuntamento&richiesta_id=' . $reqId);
-                exit;
-                else {
-                // SQL error
-                $_SESSION['fissa_error'] = 'Errore SQL: ' . htmlspecialchars($db->error, ENT_QUOTES);
-                header('Location: index.php?page=fissa_appuntamento&richiesta_id=' . $reqId);
-                exit;*/
             }
         }
-     }
-    
-        
+
+        // Preserva i valori nel form in caso di errore
+        $old_data   = htmlspecialchars($data, ENT_QUOTES);
+        $old_ora    = htmlspecialchars(substr($ora, 0, 5), ENT_QUOTES);
+        $old_salaId = $sala;
+
+        header('Location: index.php?page=fissa_appuntamento&richiesta_id=' . $reqId);
+        exit;
+    }
+
 
     // 6) Prepara dropdown sale
     $optSala = "<option value=''>-- Seleziona Sala --</option>";

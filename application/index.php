@@ -1,6 +1,10 @@
 <?php
 // application/index.php
 
+// ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+
+
 // 1. Includo connessione, template engine e logica di base
 require __DIR__ . '/include/dbms.inc.php';
 require __DIR__ . '/include/template2.inc.php';
@@ -31,7 +35,7 @@ require __DIR__ . '/private/appuntamenti.php';
 require __DIR__ . '/private/fatturazioni.php';
 //require __DIR__ . '/private/servizi.php';
 require __DIR__ . '/private/avvisi2.php';
-//require __DIR__ . '/private/disponibilita.php';
+require __DIR__ . '/private/disponibilita.php';
 require __DIR__ . '/private/macchinari.php';
 
 require __DIR__ . '/private/richieste.php';
@@ -168,9 +172,9 @@ if ($showSrv) {
     $main->setContent('body', $bodySrv);
     $main->close();
     exit;
-}
+}*/
 
-/* ──────────────── Disponibilità (area privata) ─────────────────
+// ──────────────── Disponibilità (area privata) ─────────────────
 $showDisp = false;
 $bodyDisp = '';
 handleDisponibilita($showDisp, $bodyDisp);
@@ -179,7 +183,7 @@ if ($showDisp) {
     $main->setContent('body', $bodyDisp);
     $main->close();
     exit;
-}*/
+}
 
 // ──────────────── Avvisi (area privata) ─────────────────
 $showAvvisi = false;

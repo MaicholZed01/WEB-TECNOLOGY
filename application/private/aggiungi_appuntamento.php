@@ -86,10 +86,27 @@ function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
             // recupero il nuovo ID richiesta
             $newReqId = $db->insert_id;
 
-            // 5b) INSERT in appuntamenti
-            $fisio = (int)($_SESSION['fisio'] ?? 0);
-            $d     = $db->real_escape_string($dat);
-            $o     = $db->real_escape_string($ora);
+            // 5b) Controllo se la sala è già occupata
+            $d = $db->real_escape_string($dat);
+            $o = $db->real_escape_string($ora);
+            $sqlCheck = "SELECT 1
+                         FROM appuntamenti
+                         WHERE sala_id = $sal
+                           AND data = '$d'
+                           AND orario = '$o'
+                         LIMIT 1";
+            $resultCheck = $db->query($sqlCheck);
+            if ($resultCheck && $resultCheck->num_rows > 0) {
+                $_SESSION['aggiungi_error'] = '<div class="alert alert-danger">
+                    La sala selezionata è già occupata per la data e l’orario indicati.
+                </div>';
+                $sqlDel = "DELETE FROM richieste WHERE richiesta_id = $newReqId";
+                $db->query($sqlDel);
+                header('Location: index.php?page=aggiungi_appuntamento');
+                exit;
+            }
+            // 5c) Inserimento in appuntamenti
+            $fisio = (int) ($_SESSION['fisio'] ?? 0);
             $sqlApp = "INSERT INTO appuntamenti
                         (richiesta_id, fisioterapista_id, servizio_id, data, orario, sala_id, stato, prenotato_il)
                       VALUES
@@ -99,18 +116,18 @@ function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
                 // INVIO EMAIL DI CONFERMA
                 $to      = $e;
                 $subject = 'Conferma Appuntamento Prenotato';
-                $msg     = "Gentile {$n} {$c},\r\n\r\n".
-                           "Il Suo appuntamento è stato fissato.\r\n".
-                           "Data: {$dat}\r\nOrario: {$ora}\r\nSala: {$sal}\r\n\r\n".
+                $msg     = "Gentile {$n} {$c},\r\n\r\n" .
+                           "Il Suo appuntamento è stato fissato.\r\n" .
+                           "Data: {$dat}\r\nOrario: {$ora}\r\nSala: {$sal}\r\n\r\n" .
                            "Grazie.\r\n";
-                $hdr     = "From: CentroFisioterapico <noreply@tuodominio.it>\r\n".
+                $hdr     = "From: CentroFisioterapico <noreply@tuodominio.it>\r\n" .
                            "Reply-To: info@tuodominio.it\r\n";
-                @mail($to,$subject,$msg,$hdr);
+                @mail($to, $subject, $msg, $hdr);
 
                 header('Location: index.php?page=aggiungi_appuntamento');
                 exit;
             } else {
-                $_SESSION['aggiungi_error'] = 'Errore SQL insert appuntamento: '.htmlspecialchars($db->error, ENT_QUOTES);
+                $_SESSION['aggiungi_error'] = 'Errore SQL insert appuntamento: ' . htmlspecialchars($db->error, ENT_QUOTES);
                 header('Location: index.php?page=aggiungi_appuntamento');
                 exit;
             }
