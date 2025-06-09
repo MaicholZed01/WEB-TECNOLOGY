@@ -1,7 +1,9 @@
 <?php
 // application/private/logout.php
 
-// Solo redirect alla pagina di login, senza distruggere alcuna sessione
+// Redirect alla pagina di login distruggendo la sessione corrente
+session_start();
+session_destroy();
 header('Location: index.php?page=login');
-exit;
+exit();
 ?>

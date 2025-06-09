@@ -47,11 +47,21 @@ function handleMacchinari(bool &$show, string &$bodyTpl): void
         $mod  = $db->real_escape_string(trim($_POST['modello'] ?? ''));
         $mar  = $db->real_escape_string(trim($_POST['marca'] ?? ''));
         $desc = $db->real_escape_string(trim($_POST['descrizione'] ?? ''));
-        $qta  = (int) ($_POST['quantita'] ?? 0);
+        $qta  = (int) ($_POST['quantita'] ?? 1);
         $data = $db->real_escape_string($_POST['data_acquisto'] ?? '');
         $cat  = (int) ($_POST['categoria_macchinario'] ?? 0);
         $sta  = $db->real_escape_string($_POST['stato'] ?? 'Attivo');
         $srv  = array_map('intval', $_POST['servizi_id'] ?? []);
+
+        if (empty($nome)) {
+          $_SESSION['mach_flash'] = '<div class="alert alert-danger">Il nome del macchinario non può essere vuoto.</div>';
+          header('Location: index.php?page=macchinari');
+          exit;
+        }
+
+        if ($qta < 1) {
+            $qta = 1; // quantità minima
+        }
 
         /* INSERT -- UPDATE ------------------------------------------- */
         if ($id > 0) {
