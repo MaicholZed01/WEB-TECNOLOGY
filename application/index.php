@@ -33,7 +33,7 @@ require __DIR__ . '/private/profilo.php';
 
 require __DIR__ . '/private/appuntamenti.php';
 require __DIR__ . '/private/fatturazioni.php';
-//require __DIR__ . '/private/servizi.php';
+require __DIR__ . '/private/servizi.php';
 require __DIR__ . '/private/avvisi2.php';
 require __DIR__ . '/private/disponibilita.php';
 require __DIR__ . '/private/macchinari.php';
@@ -163,7 +163,7 @@ if ($showFat) {
     exit;
 }
 
-/* ──────────────── Servizi (area privata) ─────────────────
+// ──────────────── Servizi (area privata) ─────────────────
 $showSrv = false;
 $bodySrv = '';
 handleServizi($showSrv, $bodySrv);
@@ -172,7 +172,7 @@ if ($showSrv) {
     $main->setContent('body', $bodySrv);
     $main->close();
     exit;
-}*/
+}
 
 // ──────────────── Disponibilità (area privata) ─────────────────
 $showDisp = false;

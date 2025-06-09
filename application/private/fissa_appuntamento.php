@@ -103,6 +103,7 @@ function handleFissaAppuntamento(bool &$show, string &$bodyHtml): void {
                     $subject = 'Conferma Appuntamento Prenotato';
                     $message = "Gentile {$rq['nome']} {$rq['cognome']},
                     il Suo appuntamento è stato fissato con successo.
+                    ID Appuntamento: {$db->insert_id}
                     Data: $data
                     Orario: $ora
                     Sala: " . htmlspecialchars($_POST['sala_id']) . "

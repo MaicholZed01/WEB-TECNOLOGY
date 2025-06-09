@@ -5,79 +5,43 @@
     <h1>Servizi</h1>
   </div>
 
-  <!-- FORM AGGIUNGI / MODIFICA SERVIZIO -->
+  
+  <!-- FORM “AGGIUNGI” (solo SELECT) -->
   <div class="panel mb-4">
     <div class="panel-header">
       <h4>
         <i class="fas fa-cogs me-2"></i>
-        <span><[label_submit]> Servizio</span>
+        <span><[label_submit]> Aggiungi Servizio</span>
       </h4>
     </div>
     <div class="panel-body">
       <form id="form-servizi" action="index.php?page=servizi&action=save" method="post">
-        
         <!-- Messaggio Esito -->
         <div class="mb-3">
           <[messaggio_form]>
         </div>
 
-        <!-- Nome Servizio -->
+        <!-- Elenco servizi -->
         <div class="mb-3">
-          <label class="d-block mb-1">Nome*</label>
-          <input
-            type="text"
-            class="form-control"
-            name="nome"
-            value="<[old_nome]>"
-            required
-          >
+          <label class="d-block mb-1">Servizi presenti</label>
+          <select class="form-control" name="servizio_id" required>
+            <option value="">-- Seleziona Servizio --</option>
+            <[servizi_options]>
+          </select>
         </div>
 
-        <!-- Descrizione -->
+        <!-- Prezzo personalizzato -->
         <div class="mb-3">
-          <label class="d-block mb-1">Descrizione</label>
-          <textarea
-            class="form-control"
-            name="descrizione"
-            rows="3"
-          ><[old_descrizione]></textarea>
+          <label class="d-block mb-1">Prezzo personalizzato</label>
+          <input type="number" class="form-control" name="prezzo_personalizzato" placeholder="<[prezzo_base]>" min="0" step="10">
         </div>
 
-        <!-- Durata (minuti) -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Durata (minuti)*</label>
-          <input
-            type="number"
-            class="form-control"
-            name="durata_minuti"
-            value="<[old_durata_minuti]>"
-            required
-          >
-        </div>
 
-        <!-- Prezzo Base -->
-        <div class="mb-3">
-          <label class="d-block mb-1">Prezzo Base (€)*</label>
-          <input
-            type="text"
-            class="form-control"
-            name="prezzo_base"
-            value="<[old_prezzo_base]>"
-            required
-          >
-        </div>
-
-        <!-- Hidden ID per Modifica -->
-        <input type="hidden" name="servizio_id" value="<[old_servizio_id]>">
-
-        <!-- Pulsanti Salva/Annulla -->
+        <!-- Pulsante submit -->
         <div class="d-flex gap-3">
           <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-save me-1"></i><span> <[label_submit]></span>
+            <i class="fas fa-add me-1"></i> Aggiungi
           </button>
-          <a href="index.php?page=servizi" class="btn btn-outline-modern btn-xs">
-            <i class="fas fa-times me-1"></i>Annulla
-          </a>
         </div>
       </form>
     </div>
@@ -98,35 +62,13 @@
             <tr>
               <th>Nome</th>
               <th>Descrizione</th>
-              <th>Durata (min)</th>
-              <th>Prezzo Base (€)</th>
-              <th>Creato Il</th>
+              <th>Prezzo&nbsp;(€)</th>
+              <th>Categoria</th>
               <th>Azioni</th>
             </tr>
           </thead>
           <tbody>
             <[lista_servizi]>
-            <!--
-              Esempio di riga generata dal controller:
-              <tr>
-                <td>Fisioterapia Ortopedica</td>
-                <td>Trattamento per problematiche muscolo‐scheletriche</td>
-                <td>60</td>
-                <td>50.00</td>
-                <td>2025-06-03 20:19:18</td>
-                <td>
-                  <a href="index.php?page=servizi&action=edit&id=1"
-                     class="btn btn-primary-modern btn-xs">
-                    <i class="fas fa-edit me-1"></i>Modifica
-                  </a>
-                  <a href="index.php?page=servizi&action=delete&id=1"
-                     class="btn btn-outline-modern btn-xs text-danger"
-                     onclick="return confirm('Eliminare questo servizio?');">
-                    <i class="fas fa-trash-alt me-1"></i>Elimina
-                  </a>
-                </td>
-              </tr>
-            -->
           </tbody>
         </table>
       </div>

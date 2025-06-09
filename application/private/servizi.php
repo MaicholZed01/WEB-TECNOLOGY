@@ -1,241 +1,133 @@
 <?php
-// servizi.php
-// Controller per servizi.html
+// application/private/servizi.php
+// Lista / aggiunta servizi del fisioterapista loggato
+// Template: dtml/webarch/servizi.html
 
-session_start();
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// 1. Connessione al database
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
-// 2. Inizializzo variabili per il template
-$messaggio_form       = '';
-$label_submit         = 'Aggiungi';
-$old_servizio_id      = '';
-$old_nome             = '';
-$old_descrizione      = '';
-$old_durata_minuti    = '';
-$old_prezzo_base      = '';
-$lista_servizi        = '';
+function handleServizi(bool &$show, string &$bodyHtml): void {
 
-// Funzione di escape
-function esc($conn, $val) {
-    return $conn->real_escape_string(trim($val));
-}
+    /* pagina corrente? ---------------------------------------------------- */
+    if (($_GET['page'] ?? '') !== 'servizi') { $show = false; return; }
+    $show = true;
 
-// 3. Gestione eliminazione (GET action=delete&id=...)
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $del_id = intval($_GET['id']);
-    if ($del_id > 0) {
-        $sql_del = "DELETE FROM servizi WHERE servizio_id = {$del_id}";
-        if ($conn->query($sql_del)) {
-            $messaggio_form = '<div class="alert alert-success">Servizio eliminato correttamente.</div>';
+    /* sessione e fisioterapista loggato ---------------------------------- */
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $fisioId = (int) ($_SESSION['fisio'] ?? 0);
+    if ($fisioId === 0) { header('Location: index.php?page=login'); exit; }
+
+    /* DB & flash ---------------------------------------------------------- */
+    $db = Db::getConnection();  $db->set_charset('utf8');
+    $flash = $_SESSION['srv_flash'] ?? ''; unset($_SESSION['srv_flash']);
+
+    /**********************************************************************
+     * 1) DELETE  – rimuove la relazione dal ponte
+     *********************************************************************/
+    if (($_GET['action'] ?? '') === 'delete' && isset($_GET['id'])) {
+        $sid = (int) $_GET['id'];
+        $db->query("DELETE FROM servizi_fisioterapista
+                    WHERE fisioterapista_id = $fisioId AND servizio_id = $sid");
+        $_SESSION['srv_flash'] =
+            '<div class="alert alert-success">Servizio rimosso dal tuo profilo.</div>';
+        header('Location: index.php?page=servizi'); exit;
+    }
+
+    /**********************************************************************
+     * 2) SAVE  – aggiunge un nuovo servizio al profilo
+     *********************************************************************/
+    if (($_GET['action'] ?? '') === 'save' && $_SERVER['REQUEST_METHOD']==='POST') {
+        $sid  = (int) ($_POST['servizio_id'] ?? 0);
+        $pp   = trim($_POST['prezzo_personalizzato'] ?? '');
+        $pp   = $pp === '' ? 'NULL' : "'" . str_replace(',','.', $db->real_escape_string($pp)) . "'";
+
+        if ($sid <= 0) {
+            $flash = '<div class="alert alert-danger">Seleziona un servizio.</div>';
         } else {
-            $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
+            $db->query("INSERT IGNORE INTO servizi_fisioterapista
+                        (fisioterapista_id, servizio_id, prezzo_personalizzato)
+                        VALUES ($fisioId, $sid, $pp)");
+            $_SESSION['srv_flash'] =
+                '<div class="alert alert-success">Servizio aggiunto al tuo profilo.</div>';
+            header('Location: index.php?page=servizi'); exit;
         }
     }
-}
 
-// 4. Gestione modifica (GET action=edit&id=...)
-if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-    $edit_id = intval($_GET['id']);
-    if ($edit_id > 0) {
-        $sql_sel = "
-          SELECT 
-            servizio_id,
-            nome,
-            descrizione,
-            durata_minuti,
-            prezzo_base
-          FROM servizi
-          WHERE servizio_id = {$edit_id}
-          LIMIT 1
-        ";
-        if ($res = $conn->query($sql_sel)) {
-            if ($res->num_rows === 1) {
-                $row = $res->fetch_assoc();
-                $old_servizio_id   = (int)$row['servizio_id'];
-                $old_nome          = htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8');
-                $old_descrizione   = htmlspecialchars($row['descrizione'], ENT_QUOTES, 'UTF-8');
-                $old_durata_minuti = (int)$row['durata_minuti'];
-                $old_prezzo_base   = htmlspecialchars($row['prezzo_base'], ENT_QUOTES, 'UTF-8');
-                $label_submit      = 'Modifica';
-            }
-            $res->free();
-        }
+    /**********************************************************************
+     * 3) DROPDOWN  – servizi NON ancora collegati al fisio
+     *********************************************************************/
+    $servizi_options = '';
+    $rsOpt = $db->query("
+        SELECT s.servizio_id, s.nome
+        FROM servizi s
+        WHERE s.servizio_id NOT IN
+              (SELECT servizio_id
+                 FROM servizi_fisioterapista
+                 WHERE fisioterapista_id = $fisioId)
+        ORDER BY s.nome
+    ");
+    while ($r = $rsOpt->fetch_assoc()) {
+        $servizi_options .= "<option value='{$r['servizio_id']}'>"
+                          . htmlspecialchars($r['nome'], ENT_QUOTES) . "</option>";
     }
-}
 
-// 5. Gestione salvataggio (POST action=save)
-if ($_SERVER['REQUEST_METHOD'] === 'POST'
-    && isset($_GET['action'])
-    && $_GET['action'] === 'save') 
-{
-    $servizio_id      = intval($_POST['servizio_id'] ?? 0);
-    $nome             = esc($conn, $_POST['nome'] ?? '');
-    $descrizione      = esc($conn, $_POST['descrizione'] ?? '');
-    $durata_minuti    = intval($_POST['durata_minuti'] ?? 0);
-    $prezzo_base      = esc($conn, $_POST['prezzo_base'] ?? '');
-
-    // Validazione di base
-    if ($nome === '' || $durata_minuti <= 0 || $prezzo_base === '') {
-        $messaggio_form = '<div class="alert alert-danger">
-            I campi Nome, Durata e Prezzo Base sono obbligatori, e Durata deve essere maggiore di zero.
-          </div>';
-        // Mantengo i valori nel form
-        $old_servizio_id   = $servizio_id;
-        $old_nome          = htmlspecialchars($nome, ENT_QUOTES, 'UTF-8');
-        $old_descrizione   = htmlspecialchars($descrizione, ENT_QUOTES, 'UTF-8');
-        $old_durata_minuti = $durata_minuti;
-        $old_prezzo_base   = htmlspecialchars($prezzo_base, ENT_QUOTES, 'UTF-8');
-        $label_submit      = ($servizio_id > 0 ? 'Modifica' : 'Aggiungi');
-    } else {
-        if ($servizio_id > 0) {
-            // UPDATE servizio esistente
-            $sql_upd = "
-              UPDATE servizi
-              SET 
-                nome          = '{$nome}',
-                descrizione   = '{$descrizione}',
-                durata_minuti = {$durata_minuti},
-                prezzo_base   = '{$prezzo_base}'
-              WHERE servizio_id = {$servizio_id}
-            ";
-            if ($conn->query($sql_upd)) {
-                $messaggio_form = '<div class="alert alert-success">
-                    Servizio aggiornato correttamente.
-                  </div>';
-                // Reset campi
-                $old_servizio_id   = '';
-                $old_nome          = '';
-                $old_descrizione   = '';
-                $old_durata_minuti = '';
-                $old_prezzo_base   = '';
-                $label_submit      = 'Aggiungi';
-            } else {
-                $messaggio_form = '<div class="alert alert-danger">
-                    Errore aggiornamento: '
-                    . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '
-                  </div>';
-            }
-        } else {
-            // INSERT nuovo servizio
-            $sql_ins = "
-              INSERT INTO servizi (nome, descrizione, durata_minuti, prezzo_base, creato_il)
-              VALUES (
-                '{$nome}',
-                '{$descrizione}',
-                {$durata_minuti},
-                '{$prezzo_base}',
-                CURRENT_TIMESTAMP
-              )
-            ";
-            if ($conn->query($sql_ins)) {
-                $messaggio_form = '<div class="alert alert-success">
-                    Servizio aggiunto correttamente.
-                  </div>';
-                // Reset campi
-                $old_servizio_id   = '';
-                $old_nome          = '';
-                $old_descrizione   = '';
-                $old_durata_minuti = '';
-                $old_prezzo_base   = '';
-            } else {
-                $messaggio_form = '<div class="alert alert-danger">
-                    Errore inserimento: '
-                    . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '
-                  </div>';
-            }
-        }
-    }
-}
-
-// 6. Costruisco elenco servizi per la tabella
-$sql_list = "
-  SELECT 
-    servizio_id,
-    nome,
-    descrizione,
-    durata_minuti,
-    prezzo_base,
-    DATE_FORMAT(creato_il, '%Y-%m-%d %H:%i:%s') AS creato_il_formatted
-  FROM servizi
-  ORDER BY creato_il DESC
-";
-if ($res = $conn->query($sql_list)) {
-    while ($row = $res->fetch_assoc()) {
-        $sid        = (int)$row['servizio_id'];
-        $nome_s     = htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8');
-        $descr_s    = htmlspecialchars($row['descrizione'], ENT_QUOTES, 'UTF-8');
-        $durata     = (int)$row['durata_minuti'];
-        $prezzo     = htmlspecialchars($row['prezzo_base'], ENT_QUOTES, 'UTF-8');
-        $creato_il  = htmlspecialchars($row['creato_il_formatted'], ENT_QUOTES, 'UTF-8');
-
-        $link_edit   = "index.php?page=servizi&action=edit&id={$sid}";
-        $link_delete = "index.php?page=servizi&action=delete&id={$sid}";
+    /**********************************************************************
+     * 4) TABELLINA  – servizi del fisioterapista (con prezzo e categoria)
+     *********************************************************************/
+    $sqlList = "
+        SELECT  s.servizio_id,
+                s.nome,
+                s.descrizione,
+                COALESCE(sf.prezzo_personalizzato, s.prezzo_base)   AS prezzo,
+                GROUP_CONCAT(DISTINCT c.nome_categoria
+                             ORDER BY c.nome_categoria
+                             SEPARATOR ', ')                         AS categoria
+        FROM    servizi_fisioterapista sf
+        JOIN    servizi s            ON s.servizio_id = sf.servizio_id
+        LEFT JOIN servizi_categorie sc ON sc.servizio_id = s.servizio_id
+        LEFT JOIN categorie_servizi  c ON c.categoria_id = sc.categoria_id
+        WHERE   sf.fisioterapista_id = $fisioId
+          AND   sf.attivo = 1
+        GROUP BY s.servizio_id, s.nome, s.descrizione, prezzo
+        ORDER BY s.nome
+    ";
+    $lista_servizi = '';
+    $rs = $db->query($sqlList);
+    while ($row = $rs->fetch_assoc()) {
+        $sid  = (int) $row['servizio_id'];
+        $prz  = number_format($row['prezzo'], 2, ',', '.');
 
         $lista_servizi .= "
           <tr>
-            <td>{$nome_s}</td>
-            <td>{$descr_s}</td>
-            <td>{$durata}</td>
-            <td>{$prezzo}</td>
-            <td>{$creato_il}</td>
+            <td>" . htmlspecialchars($row['nome'], ENT_QUOTES)           . "</td>
+            <td>" . htmlspecialchars($row['descrizione'], ENT_QUOTES)    . "</td>
+            <td>{$prz}</td>
+            <td>" . htmlspecialchars($row['categoria'] ?? '-', ENT_QUOTES) . "</td>
             <td>
-              <a href=\"{$link_edit}\"
-                 class=\"btn btn-primary-modern btn-xs me-1\">
-                <i class=\"fas fa-edit me-1\"></i>Modifica
-              </a>
-              <a href=\"{$link_delete}\"
-                 class=\"btn btn-outline-modern btn-xs text-danger\"
-                 onclick=\"return confirm('Eliminare questo servizio?');\">
-                <i class=\"fas fa-trash-alt me-1\"></i>Elimina
+              <a href='index.php?page=servizi&action=delete&id={$sid}'
+                 class='btn btn-outline-modern btn-xs text-danger'
+                 onclick=\"return confirm('Rimuovere questo servizio?');\">
+                 <i class='fas fa-trash-alt me-1'></i>Elimina
               </a>
             </td>
-          </tr>
-        ";
+          </tr>";
     }
-    $res->free();
+    if ($lista_servizi === '') {
+        $lista_servizi = "
+          <tr><td colspan='6' class='text-center text-muted'>
+            Nessun servizio associato al tuo profilo.
+          </td></tr>";
+    }
+
+    /**********************************************************************
+     * 5) RENDER TEMPLATE
+     *********************************************************************/
+    $tpl = new Template('dtml/webarch/servizi');
+    $tpl->setContent('label_submit',    'Aggiungi');
+    $tpl->setContent('messaggio_form',  $flash);
+    $tpl->setContent('servizi_options', $servizi_options);
+    $tpl->setContent('lista_servizi',   $lista_servizi);
+
+    $bodyHtml = $tpl->get();
 }
-
-// 7. Caricamento del template servizi.html
-$template_path = __DIR__ . '/servizi.html';
-$template = file_get_contents($template_path);
-if ($template === false) {
-    die("Impossibile caricare il template servizi.html");
-}
-
-// 8. Sostituzione dei placeholder
-$output = str_replace(
-    [
-      '<[messaggio_form]>',
-      '<[label_submit]>',
-      '<[old_nome]>',
-      '<[old_descrizione]>',
-      '<[old_durata_minuti]>',
-      '<[old_prezzo_base]>',
-      '<[old_servizio_id]>',
-      '<[lista_servizi]>'
-    ],
-    [
-      $messaggio_form,
-      $label_submit,
-      htmlspecialchars($old_nome, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_descrizione, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_durata_minuti, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_prezzo_base, ENT_QUOTES, 'UTF-8'),
-      htmlspecialchars($old_servizio_id, ENT_QUOTES, 'UTF-8'),
-      $lista_servizi
-    ],
-    $template
-);
-
-// 9. Output finale (HTML renderizzato)
-echo $output;
-
-// 10. Chiusura connessione
-$conn->close();
 ?>

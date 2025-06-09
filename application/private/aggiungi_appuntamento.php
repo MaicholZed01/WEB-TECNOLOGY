@@ -118,11 +118,14 @@ function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
                 $subject = 'Conferma Appuntamento Prenotato';
                 $msg     = "Gentile {$n} {$c},\r\n\r\n" .
                            "Il Suo appuntamento è stato fissato.\r\n" .
+                           "ID Appuntamento: {$db->insert_id}\r\n" .
                            "Data: {$dat}\r\nOrario: {$ora}\r\nSala: {$sal}\r\n\r\n" .
                            "Grazie.\r\n";
                 $hdr     = "From: CentroFisioterapico <noreply@tuodominio.it>\r\n" .
                            "Reply-To: info@tuodominio.it\r\n";
-                @mail($to, $subject, $msg, $hdr);
+                if (mail($to, $subject, $message, $headers)) {
+                        $_SESSION['fissa_flash'] .= '<div class="alert alert-info">Email di conferma inviata a ' . htmlspecialchars($to) . '.</div>';
+                    }
 
                 header('Location: index.php?page=aggiungi_appuntamento');
                 exit;
