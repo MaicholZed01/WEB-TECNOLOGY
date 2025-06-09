@@ -89,12 +89,30 @@
           >
         </div>
 
+        <!-- Lista Servizi -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Servizi collegati</label>
+          <div class="d-flex flex-wrap">
+            <[lista_servizi_macchinario]>
+          </div>
+        </div>
+
+
         <!-- Stato -->
         <div class="mb-3">
           <label class="d-block mb-1">Stato*</label>
           <select class="form-control" name="stato" required>
             <option value="">-- Seleziona Stato --</option>
             <[lista_stati_macchinario]>
+          </select>
+        </div>
+
+        <!-- Categoria Macchinario -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Categoria Macchinario*</label>
+          <select class="form-control" name="categoria_macchinario" required>
+            <option value="">-- Seleziona Categoria --</option>
+            <[lista_categorie_macchinario]>
           </select>
         </div>
 
@@ -133,8 +151,8 @@
               <th>Descrizione</th>
               <th>Data Acquisto</th>
               <th>Quantità</th>
+              <th>Categoria</th>
               <th>Stato</th>
-              <th>Creato Il</th>
               <th>Azioni</th>
             </tr>
           </thead>
