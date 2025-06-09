@@ -14,16 +14,20 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
     }
     $show = true;
 
+    // Avvia sessione e controlla login
     if (session_status() === PHP_SESSION_NONE) session_start();
-    // (eventuale) controllo login: se vuoi proteggere la dashboard, decommenta
-    // if (empty($_SESSION['fisio'])) { header('Location: index.php?page=login'); exit; }
+    $fisioId = $_SESSION['fisio'] ?? 0;
+    if ($fisioId <= 0) {
+        header('Location: index.php?page=login');
+        exit;
+    }
 
     // Connessione DB
     $db = Db::getConnection();
     $db->set_charset('utf8');
 
     /*******************************************************************
-     * 1) Appuntamenti di OGGI (max 5)                                 *
+     * 1) Appuntamenti di OGGI (max 5) – solo del fisioterapista loggato *
      ******************************************************************/
     $today = date('Y-m-d');
     $rowsApp = '';
@@ -37,6 +41,7 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
                JOIN   richieste r ON a.richiesta_id = r.richiesta_id
                JOIN   servizi   s ON a.servizio_id   = s.servizio_id
                WHERE  a.data = '$today'
+                 AND  a.fisioterapista_id = $fisioId
                ORDER  BY a.orario ASC
                LIMIT  5";
     if ($res = $db->query($sqlApp)) {
@@ -66,7 +71,7 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
         }
         $res->free();
     } else {
-        $rowsApp = "<tr><td colspan='5' class='text-danger'>Errore DB: ".$db->error."</td></tr>";
+        $rowsApp = "<tr><td colspan='5' class='text-danger'>Errore DB: " . htmlspecialchars($db->error, ENT_QUOTES) . "</td></tr>";
     }
 
     /*******************************************************************
@@ -88,7 +93,7 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
         if ($res->num_rows > 0) {
             while ($row = $res->fetch_assoc()) {
                 $dataBreve = date('d/m', strtotime($row['data_req']));
-                $cliente   = htmlspecialchars($row['nome'].' '.substr($row['cognome'],0,1).'.', ENT_QUOTES);
+                $cliente   = htmlspecialchars($row['nome'] . ' ' . substr($row['cognome'],0,1) . '.', ENT_QUOTES);
                 $servizio  = htmlspecialchars($row['servizio'], ENT_QUOTES);
                 $rowsReq  .= "<tr>
                                 <td><small>{$dataBreve}</small></td>
@@ -105,14 +110,13 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
         }
         $res->free();
     } else {
-        $rowsReq = "<tr><td colspan='4' class='text-danger'>Errore DB: ".$db->error."</td></tr>";
+        $rowsReq = "<tr><td colspan='4' class='text-danger'>Errore DB: " . htmlspecialchars($db->error, ENT_QUOTES) . "</td></tr>";
     }
 
     /*******************************************************************
      * 3) Ultimi messaggi (tabella messaggi semplificata)              *
      ******************************************************************/
     $rowsMsg = '';
-    // Verifico che la tabella esista (nel dump è presente) – se no mostro placeholder
     $testMsgTbl = $db->query("SHOW TABLES LIKE 'messaggi'");
     if ($testMsgTbl && $testMsgTbl->num_rows === 1) {
         $sqlMsg = "SELECT messaggio_id, mittente, contenuto, inviato_il
@@ -124,7 +128,7 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
                 while ($row = $resM->fetch_assoc()) {
                     $time = date('d/m/Y H:i', strtotime($row['inviato_il']));
                     $mitt = htmlspecialchars($row['mittente'], ENT_QUOTES);
-                    $snippet = htmlspecialchars(substr($row['contenuto'], 0, 60).'...', ENT_QUOTES);
+                    $snippet = htmlspecialchars(mb_substr($row['contenuto'],0,60,'UTF-8') . '...', ENT_QUOTES);
                     $rowsMsg .= "<div class='notification-item'>
                                      <div class='d-flex justify-content-between align-items-start'>
                                        <div>
@@ -141,7 +145,7 @@ function handleDashboard(bool &$show, string &$bodyHtml): void {
             }
             $resM->free();
         } else {
-            $rowsMsg = "<p class='text-danger text-center mb-0'>Errore DB messaggi: ".$db->error."</p>";
+            $rowsMsg = "<p class='text-danger text-center mb-0'>Errore DB messaggi: " . htmlspecialchars($db->error, ENT_QUOTES) . "</p>";
         }
     } else {
         $rowsMsg = "<p class='text-muted text-center mb-0'>Modulo messaggi non disponibile.</p>";
