@@ -28,7 +28,7 @@ require __DIR__ . '/private/messaggi.php';
 require __DIR__ . '/private/profilo.php';
 
 require __DIR__ . '/private/appuntamenti.php';
-
+require __DIR__ . '/private/fatturazioni.php';
 require __DIR__ . '/private/macchinari.php';
 
 require __DIR__ . '/private/richieste.php';
@@ -48,7 +48,7 @@ $privatePages = ['dashboard', 'appuntamenti', 'disponibilita', 'macchinari', 're
 try {
     $page = $_GET['page'] ?? 'index';
 if (in_array($page, $privatePages, true)
-    && ! in_array($page, ['login','process_login','logout'], true)
+    && ! in_array($page, ['login','process_login','logout', 'registrazione'], true)
     && empty($_SESSION['fisio'])
 ) {
     header('Location: index.php?page=login');
@@ -144,6 +144,20 @@ if ($showFix) {
     exit;
 }
 
+// ──────────────── Fatturazioni (area privata) ─────────────────
+$showFat = false;
+$bodyFat = ''; 
+$flashFat = '';
+handleFatturazioni($showFat, $bodyFat, $flashFat);
+if ($showFat) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodyFat);
+    $main->close();
+    exit;
+}
+
+
+
 // ──────────────── Dashboard ──────────────────────
 $showDash = false;
 $bodyDash = '';
@@ -155,6 +169,17 @@ if ($showDash) {
     exit;
 }
 
+/* ──────────────── Registrazione ────────────────────────────
+$showReg = false;
+$bodyReg = '';
+$errorRegister = handleRegistrazione($showReg, $bodyReg);
+if ($$page === 'registrazione') {
+    $base = 'dtml/webarch/registrazione';
+    $main = new Template($base);
+    $main->setContent('error_login', $errorRegister ?? '');
+    $main->close();
+    exit;
+}*/
 
 
 

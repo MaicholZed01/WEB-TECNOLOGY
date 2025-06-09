@@ -1,314 +1,187 @@
 <?php
-// fatturazioni.php
-// Controller per fatturazioni.html
+// application/private/fatturazioni.php
+// Gestione pagina “fatturazioni”
 
-session_start();
+require_once __DIR__ . '/../include/dbms.inc.php';
+require_once __DIR__ . '/../include/template2.inc.php';
 
-// 1. Connessione al database
-$conn = Db::getConnection();
-if ($conn->connect_error) {
-    die("Errore di connessione al database: " . $conn->connect_error);
-}
-$conn->set_charset("utf8");
-
-// 2. Inizializzo variabili per template
-$messaggio_form         = '';
-$label_submit           = 'Aggiungi';
-$old_pagamento_id       = '';
-$old_appuntamento_id    = '';
-$old_importo            = '';
-$lista_appuntamenti     = '';
-$lista_servizi_filter   = '';
-$lista_servizi_dropdown = '';
-$lista_fatturazioni     = '';
-
-$data_inizio   = '';
-$data_fine     = '';
-$cliente_filt  = '';
-$servizio_filt = '';
-
-// Funzione di escape
-function esc($conn, $val) {
-    return $conn->real_escape_string(trim($val));
-}
-
-// 3. Costruisco dropdown Servizi per filtro e per form
-function buildOptions($conn, $table, $idCol, $nameCol, $selectedValue = '') {
-    $opts = "";
-    $sql = "SELECT `$idCol`, `$nameCol` FROM `$table` ORDER BY `$nameCol` ASC";
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) {
-            $id   = (int)$row[$idCol];
-            $nome = htmlspecialchars($row[$nameCol], ENT_QUOTES, 'UTF-8');
-            $sel  = ($selectedValue !== '' && $selectedValue == $id) ? ' selected' : '';
-            $opts .= "<option value=\"{$id}\"{$sel}>{$nome}</option>\n";
-        }
-        $res->free();
-    }
-    return $opts;
-}
-
-// Popolo dropdown servizi per filtro
-$lista_servizi_filter = "<option value=\"\">-- Seleziona Servizio --</option>\n" 
-                      . buildOptions($conn, 'servizi', 'servizio_id', 'nome', '');
-
-// 4. Costruisco dropdown Appuntamenti per form Aggiungi/Modifica
-function buildAppuntamentiDropdown($conn, $selected = '') {
-    $opts = "";
-    // Unisco appuntamenti, richieste (nome/cognome), servizi, per mostrare opzione: "ID - Cliente (Data Ora) - Servizio"
-    $sql = "
-      SELECT 
-        a.appuntamento_id,
-        r.nome AS cliente_nome,
-        r.cognome AS cliente_cognome,
-        DATE_FORMAT(a.prenotato_il,'%Y-%m-%d %H:%i') AS dt,
-        s.nome AS servizio_nome
-      FROM appuntamenti AS a
-      LEFT JOIN richieste AS r ON a.richiesta_id = r.richiesta_id
-      LEFT JOIN servizi  AS s ON a.servizio_id = s.servizio_id
-      ORDER BY a.prenotato_il DESC
-    ";
-    if ($res = $conn->query($sql)) {
-        while ($row = $res->fetch_assoc()) {
-            $id    = (int)$row['appuntamento_id'];
-            $cliente = htmlspecialchars($row['cliente_nome'] . ' ' . $row['cliente_cognome'], ENT_QUOTES, 'UTF-8');
-            $dt    = htmlspecialchars($row['dt'], ENT_QUOTES, 'UTF-8');
-            $serv  = htmlspecialchars($row['servizio_nome'], ENT_QUOTES, 'UTF-8');
-            $label = "{$id} - {$cliente} ({$dt}) - {$serv}";
-            $sel   = ($selected !== '' && $selected == $id) ? ' selected' : '';
-            $opts .= "<option value=\"{$id}\"{$sel}>{$label}</option>\n";
-        }
-        $res->free();
-    }
-    return $opts;
-}
-
-// 5. Gestione azioni: delete
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $del_id = intval($_GET['id']);
-    if ($del_id > 0) {
-        $sql_del = "DELETE FROM pagamenti WHERE pagamento_id = {$del_id}";
-        if ($conn->query($sql_del)) {
-            $messaggio_form = '<div class="alert alert-success">Fatturazione eliminata correttamente.</div>';
-        } else {
-            $messaggio_form = '<div class="alert alert-danger">Errore eliminazione: '
-                              . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
-        }
-    }
-}
-
-// 6. Se si sta modificando un pagamento (GET action=edit&id=...)
-if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-    $edit_id = intval($_GET['id']);
-    if ($edit_id > 0) {
-        $sql_sel = "
-          SELECT 
-            p.pagamento_id,
-            p.appuntamento_id,
-            p.importo
-          FROM pagamenti AS p
-          WHERE p.pagamento_id = {$edit_id}
-          LIMIT 1
-        ";
-        if ($res = $conn->query($sql_sel)) {
-            if ($res->num_rows === 1) {
-                $row = $res->fetch_assoc();
-                $old_pagamento_id     = (int)$row['pagamento_id'];
-                $old_appuntamento_id  = (int)$row['appuntamento_id'];
-                $old_importo          = htmlspecialchars($row['importo'], ENT_QUOTES, 'UTF-8');
-                $label_submit         = 'Modifica';
-            }
-            $res->free();
-        }
-    }
-}
-
-// 7. Gestione salvataggio (POST action=save)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' 
-    && isset($_GET['action']) 
-    && $_GET['action'] === 'save') 
+/**
+ *  Visualizza / inserisce / cancella fatturazioni.
+ *  - $show   → true se la pagina deve essere renderizzata
+ *  - $body   → HTML già pronto (template compilato)
+ *  - $flash  → eventuale messaggio (success / error) da mostrare
+ */
+function handleFatturazioni(bool &$show, string &$body, string &$flash): void
 {
-    $pagamento_id      = intval($_POST['pagamento_id'] ?? 0);
-    $appuntamento_id   = intval($_POST['appuntamento_id'] ?? 0);
-    $importo           = esc($conn, $_POST['importo'] ?? '');
+    $show  = false;
+    $body  = '';
+    $flash = '';
 
-    // Validazione: appuntamento e importo obbligatori
-    if ($appuntamento_id === 0 || $importo === '') {
-        $messaggio_form = '<div class="alert alert-danger">Selezionare un appuntamento e specificare l\'importo.</div>';
-        // Mantengo i valori nel form
-        $old_pagamento_id    = $pagamento_id;
-        $old_appuntamento_id = $appuntamento_id;
-        $old_importo         = htmlspecialchars($importo, ENT_QUOTES, 'UTF-8');
-        $label_submit        = ($pagamento_id > 0 ? 'Modifica' : 'Aggiungi');
-    } else {
-        if ($pagamento_id > 0) {
-            // UPDATE
-            $sql_upd = "
-              UPDATE pagamenti
-              SET appuntamento_id = {$appuntamento_id},
-                  importo = '{$importo}'
-              WHERE pagamento_id = {$pagamento_id}
-            ";
-            if ($conn->query($sql_upd)) {
-                $messaggio_form = '<div class="alert alert-success">Fatturazione aggiornata correttamente.</div>';
-                // Reset campi
-                $old_pagamento_id    = '';
-                $old_appuntamento_id = '';
-                $old_importo         = '';
-                $label_submit        = 'Aggiungi';
-            } else {
-                $messaggio_form = '<div class="alert alert-danger">Errore aggiornamento: '
-                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
-            }
+    /* ─────────────────────────────
+       1) Questa logica gira solo su page=fatturazioni
+    ───────────────────────────── */
+    if (($_GET['page'] ?? '') !== 'fatturazioni') {
+        return;
+    }
+    $show = true;
+
+    /* ─────────────────────────────
+       2) Connessione + charset
+    ───────────────────────────── */
+    $db = Db::getConnection();
+    $db->set_charset('utf8');
+
+    /* ─────────────────────────────
+       3) DELETE
+    ───────────────────────────── */
+    if (($_GET['action'] ?? '') === 'delete' && isset($_GET['id'])) {
+        $id = (int)$_GET['id'];
+        $db->query("DELETE FROM fatturazioni WHERE fatturazione_id = $id");
+        header('Location: index.php?page=fatturazioni');
+        exit;
+    }
+
+    /* ─────────────────────────────
+       4) SAVE (INSERT / UPDATE)
+    ───────────────────────────── */
+    if (($_GET['action'] ?? '') === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $fatId   = (int)($_POST['pagamento_id'] ?? 0);          // hidden del form
+        $appId   = (int)($_POST['appuntamento_id'] ?? 0);
+        $importo = trim($_POST['importo'] ?? '');
+
+        // validazione minima
+        if ($appId <= 0 || $importo === '') {
+            $flash = '<div class="alert alert-danger">Compila correttamente i campi obbligatori.</div>';
         } else {
-            // INSERT
-            $sql_ins = "
-              INSERT INTO pagamenti (appuntamento_id, importo, pagato_il)
-              VALUES ({$appuntamento_id}, '{$importo}', CURRENT_TIMESTAMP)
-            ";
-            if ($conn->query($sql_ins)) {
-                $messaggio_form = '<div class="alert alert-success">Fatturazione aggiunta correttamente.</div>';
-                // Reset campi
-                $old_pagamento_id    = '';
-                $old_appuntamento_id = '';
-                $old_importo         = '';
+            $impSql = $db->real_escape_string($importo);
+
+            if ($fatId > 0) {
+                // UPDATE
+                $sql = "UPDATE fatturazioni
+                        SET appuntamento_id = $appId, importo = '$impSql'
+                        WHERE fatturazione_id = $fatId";
             } else {
-                $messaggio_form = '<div class="alert alert-danger">Errore inserimento: '
-                                  . htmlspecialchars($conn->error, ENT_QUOTES, 'UTF-8') . '</div>';
+                // INSERT
+                $sql = "INSERT INTO fatturazioni (appuntamento_id, importo)
+                        VALUES ($appId, '$impSql')";
             }
+
+            if ($db->query($sql)) {
+                $_SESSION['fat_flash'] = '<div class="alert alert-success">Operazione completata.</div>';
+                header('Location: index.php?page=fatturazioni');
+                exit;
+            }
+            $flash = '<div class="alert alert-danger">Errore SQL: '
+                   . htmlspecialchars($db->error, ENT_QUOTES) . '</div>';
         }
     }
-}
 
-// 8. Recupero filtri da GET (per elenco Fatturazioni)
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    /* ─────────────────────────────
+       5) Filtri (solo colonne realmente presenti!)
+    ───────────────────────────── */
+    $where = [];
     if (!empty($_GET['data_inizio'])) {
-        $data_inizio = esc($conn, $_GET['data_inizio']);
+        $d0 = $db->real_escape_string($_GET['data_inizio']);
+        $where[] = "a.data >= '$d0'";
     }
     if (!empty($_GET['data_fine'])) {
-        $data_fine = esc($conn, $_GET['data_fine']);
+        $d1 = $db->real_escape_string($_GET['data_fine']);
+        $where[] = "a.data <= '$d1'";
     }
     if (!empty($_GET['cliente'])) {
-        $cliente_filt = esc($conn, $_GET['cliente']);
+        $cl = $db->real_escape_string($_GET['cliente']);
+        $where[] = "CONCAT(r.nome,' ',r.cognome) LIKE '%$cl%'";
     }
     if (!empty($_GET['servizio_id'])) {
-        $servizio_filt = intval($_GET['servizio_id']);
+        $sid = (int)$_GET['servizio_id'];
+        $where[] = "a.servizio_id = $sid";
     }
-}
+    $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
-// Ricostruisco dropdown Servizi con selezione attuale
-$lista_servizi_filter = "<option value=\"\">-- Seleziona Servizio --</option>\n" 
-                      . buildOptions($conn, 'servizi', 'servizio_id', 'nome', $servizio_filt);
+    /* ─────────────────────────────
+       6) Lista fatturazioni
+    ───────────────────────────── */
+    $sqlList = "
+        SELECT  f.fatturazione_id,
+                r.nome,
+                r.cognome,
+                CONCAT(a.data,' ',TIME_FORMAT(a.orario,'%H:%i')) AS data_appuntamento,
+                s.nome AS servizio,
+                f.importo
+        FROM    fatturazioni f
+        JOIN    appuntamenti a ON f.appuntamento_id = a.appuntamento_id
+        JOIN    richieste     r ON a.richiesta_id   = r.richiesta_id
+        JOIN    servizi       s ON a.servizio_id    = s.servizio_id
+        $whereSql
+        ORDER BY f.fatturazione_id DESC
+    ";
 
-// 9. Preparo dropdown Appuntamenti nella form (aggiungi/modifica)
-$lista_appuntamenti = "<option value=\"\">-- Seleziona Appuntamento --</option>\n"
-                    . buildAppuntamentiDropdown($conn, $old_appuntamento_id);
-
-// 10. Costruisco clausole WHERE per filtro elenco
-$where_clauses = [];
-
-if ($data_inizio !== '') {
-    $where_clauses[] = "DATE(p.pagato_il) >= '{$data_inizio}'";
-}
-if ($data_fine !== '') {
-    $where_clauses[] = "DATE(p.pagato_il) <= '{$data_fine}'";
-}
-if ($cliente_filt !== '') {
-    // Cerco in nome e cognome del cliente (da tabella richieste)
-    $cf = esc($conn, $cliente_filt);
-    $where_clauses[] = "(r.nome LIKE '%{$cf}%' OR r.cognome LIKE '%{$cf}%')";
-}
-if ($servizio_filt > 0) {
-    $where_clauses[] = "a.servizio_id = {$servizio_filt}";
-}
-
-$where_sql = '';
-if (!empty($where_clauses)) {
-    $where_sql = 'WHERE ' . implode(' AND ', $where_clauses);
-}
-
-// 11. Query per elenco Fatturazioni
-$sql_list = "
-  SELECT 
-    p.pagamento_id,
-    r.nome AS cliente_nome,
-    r.cognome AS cliente_cognome,
-    DATE_FORMAT(a.prenotato_il, '%Y-%m-%d %H:%i') AS dt_app,
-    s.nome AS servizio_nome,
-    FORMAT(p.importo, 2) AS importo
-  FROM pagamenti AS p
-  LEFT JOIN appuntamenti AS a 
-    ON p.appuntamento_id = a.appuntamento_id
-  LEFT JOIN richieste AS r 
-    ON a.richiesta_id = r.richiesta_id
-  LEFT JOIN servizi AS s 
-    ON a.servizio_id = s.servizio_id
-  {$where_sql}
-  ORDER BY p.pagato_il DESC
-";
-if ($res = $conn->query($sql_list)) {
-    while ($row = $res->fetch_assoc()) {
-        $pid    = (int)$row['pagamento_id'];
-        $cliente = htmlspecialchars($row['cliente_nome'] . ' ' . $row['cliente_cognome'], ENT_QUOTES, 'UTF-8');
-        $dt_app  = htmlspecialchars($row['dt_app'], ENT_QUOTES, 'UTF-8');
-        $serv    = htmlspecialchars($row['servizio_nome'], ENT_QUOTES, 'UTF-8');
-        $imp     = htmlspecialchars($row['importo'], ENT_QUOTES, 'UTF-8');
-
-        $link_delete = "index.php?page=fatturazioni&action=delete&id={$pid}";
-
-        $lista_fatturazioni .= "
-          <tr>
-            <td>{$pid}</td>
-            <td>{$cliente}</td>
-            <td>{$dt_app}</td>
-            <td>{$serv}</td>
-            <td>{$imp}</td>
-            <td>
-              <a href=\"{$link_delete}\"
-                 class=\"btn btn-outline-modern btn-xs text-danger\"
-                 onclick=\"return confirm('Eliminare questa fatturazione?');\">
-                <i class=\"fas fa-trash-alt me-1\"></i>Elimina
-              </a>
-            </td>
-          </tr>
-        ";
+    $tbl = '';
+    if ($res = $db->query($sqlList)) {
+        while ($row = $res->fetch_assoc()) {
+            $tbl .= "<tr>
+                       <td>{$row['fatturazione_id']}</td>
+                       <td>{$row['nome']} {$row['cognome']}</td>
+                       <td>{$row['data_appuntamento']}</td>
+                       <td>{$row['servizio']}</td>
+                       <td>{$row['importo']}</td>
+                       <td>
+                         <a href='index.php?page=fatturazioni&action=delete&id={$row['fatturazione_id']}'
+                            class='btn btn-outline-modern btn-xs text-danger'
+                            onclick=\"return confirm('Eliminare questa fatturazione?');\">
+                           <i class='fas fa-trash-alt me-1'></i>Elimina
+                         </a>
+                       </td>
+                     </tr>";
+        }
     }
-    $res->free();
+
+    /* ─────────────────────────────
+       7) Dropdown appuntamenti (data + ora)
+    ───────────────────────────── */
+    $optApp = "<option value=''>-- Seleziona Appuntamento --</option>";
+    $ra = $db->query("
+        SELECT a.appuntamento_id,
+               r.nome,
+               r.cognome,
+               a.data,
+               TIME_FORMAT(a.orario,'%H:%i') AS orario
+        FROM   appuntamenti a
+        JOIN   richieste r ON a.richiesta_id = r.richiesta_id
+        ORDER  BY a.data DESC, a.orario DESC
+    ");
+    if ($ra) {
+        while ($r = $ra->fetch_assoc()) {
+            $sel   = ((int)($_POST['appuntamento_id'] ?? 0) === (int)$r['appuntamento_id']) ? 'selected' : '';
+            $label = "{$r['appuntamento_id']} – {$r['nome']} {$r['cognome']} ({$r['data']} {$r['orario']})";
+            $optApp .= "<option value='{$r['appuntamento_id']}' $sel>"
+                     . htmlspecialchars($label, ENT_QUOTES) . "</option>";
+        }
+    }
+
+    /* ─────────────────────────────
+       8) Dropdown servizi per filtro
+    ───────────────────────────── */
+    $optSrv = '';
+    $qs = $db->query("SELECT servizio_id, nome FROM servizi ORDER BY nome");
+    while ($s = $qs->fetch_assoc()) {
+        $sel = ((int)($_GET['servizio_id'] ?? 0) === (int)$s['servizio_id']) ? 'selected' : '';
+        $optSrv .= "<option value='{$s['servizio_id']}' $sel>"
+                 . htmlspecialchars($s['nome'], ENT_QUOTES) . "</option>";
+    }
+
+    /* ─────────────────────────────
+       9) Template
+    ───────────────────────────── */
+    $tpl = new Template('dtml/webarch/fatturazioni');
+    $tpl->setContent('messaggio_form', $flash);
+    $tpl->setContent('label_submit',   isset($_POST['pagamento_id']) && $_POST['pagamento_id'] ? 'Modifica' : 'Aggiungi');
+    $tpl->setContent('old_importo',    htmlspecialchars($_POST['importo'] ?? '', ENT_QUOTES));
+    $tpl->setContent('old_pagamento_id', (int)($_POST['pagamento_id'] ?? 0));
+    $tpl->setContent('lista_appuntamenti', $optApp);
+    $tpl->setContent('lista_servizi',      $optSrv);
+    $tpl->setContent('lista_fatturazioni', $tbl);
+
+    $body = $tpl->get();
 }
-
-// 12. Caricamento del template fatturazioni.html
-$template_path = __DIR__ . '/fatturazioni.html';
-$template = file_get_contents($template_path);
-if ($template === false) {
-    die("Impossibile caricare il template fatturazioni.html");
-}
-
-// 13. Sostituzione dei placeholder
-$output = str_replace(
-    [
-      '<[messaggio_form]>',
-      '<[label_submit]>',
-      '<[lista_appuntamenti]>',
-      '<[old_importo]>',
-      '<[old_pagamento_id]>',
-      '<[lista_servizi]>',
-      '<[lista_fatturazioni]>'
-    ],
-    [
-      $messaggio_form,
-      $label_submit,
-      $lista_appuntamenti,
-      $old_importo,
-      htmlspecialchars($old_pagamento_id, ENT_QUOTES, 'UTF-8'),
-      $lista_servizi_filter,
-      $lista_fatturazioni
-    ],
-    $template
-);
-
-// 14. Output finale (HTML renderizzato)
-echo $output;
-
-// 15. Chiusura connessione
-$conn->close();
 ?>
