@@ -1,37 +1,29 @@
 <?php
 // application/private/macchinari.php
-// Gestione macchinari + servizi (many-to-many)
-
 require_once __DIR__ . '/../include/dbms.inc.php';
 require_once __DIR__ . '/../include/template2.inc.php';
 
-/**
- *  entry-point richiamato da index.php
- *  ----------------------------------------------------------------
- *  $show    → true  se page=macchinari, altrimenti false
- *  $bodyTpl → HTML già renderizzato (viene iniettato nel frame)
- */
-function handleMacchinari(bool &$show, string &$bodyTpl): void
+function handleMacchinari(bool &$show, string &$body)
 {
-    /* pagina sbagliata? non faccio nulla */
-    if (($_GET['page'] ?? '') !== 'macchinari') { $show = false; return; }
+    if (($_GET['page'] ?? '') !== 'macchinari') {
+        $show = false;
+        return;
+    }
     $show = true;
+    session_start();
 
-    /* ----------------------------------------------------------------- */
     $db = Db::getConnection();
     $db->set_charset('utf8');
 
-    /* flash */
-    session_start();
+    // flash message
     $flash = $_SESSION['mach_flash'] ?? '';
     unset($_SESSION['mach_flash']);
 
-    /* azione */
     $action = $_GET['action'] ?? '';
 
-    /* -------------------------------------------------- DELETE ------- */
+    // ---- DELETE ----
     if ($action === 'delete' && isset($_GET['id'])) {
-        $id = (int) $_GET['id'];
+        $id = (int)$_GET['id'];
         $db->query("DELETE FROM macchinari WHERE macchinario_id = $id");
         $db->query("DELETE FROM macchinari_servizi WHERE macchinario_id = $id");
         $_SESSION['mach_flash'] = '<div class="alert alert-success">Macchinario eliminato.</div>';
@@ -39,234 +31,204 @@ function handleMacchinari(bool &$show, string &$bodyTpl): void
         exit;
     }
 
-    /* -------------------------------------------------- SAVE ---------- */
+    // ---- SAVE (INSERT / UPDATE) ----
     if ($action === 'save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id         = (int)($_POST['macchinario_id'] ?? 0);
+        $nome       = trim($_POST['nome_macchinario'] ?? '');
+        $modello    = trim($_POST['modello'] ?? '');
+        $marca      = trim($_POST['marca'] ?? '');
+        $descr      = trim($_POST['descrizione'] ?? '');
+        $quantita   = (int)($_POST['quantita'] ?? 0);
+        $dataAcq    = $_POST['data_acquisto'] ?? '';
+        $stato      = $_POST['stato'] ?? '';
+        $categoria  = (int)($_POST['categoria_macchinario'] ?? 0);
+        $serviziSel = array_map('intval', $_POST['servizi_id'] ?? []);
 
-        $id   = (int) ($_POST['macchinario_id'] ?? 0);
-        $nome = $db->real_escape_string(trim($_POST['nome_macchinario'] ?? ''));
-        $mod  = $db->real_escape_string(trim($_POST['modello'] ?? ''));
-        $mar  = $db->real_escape_string(trim($_POST['marca'] ?? ''));
-        $desc = $db->real_escape_string(trim($_POST['descrizione'] ?? ''));
-        $qta  = (int) ($_POST['quantita'] ?? 1);
-        $data = $db->real_escape_string($_POST['data_acquisto'] ?? '');
-        $cat  = (int) ($_POST['categoria_macchinario'] ?? 0);
-        $sta  = $db->real_escape_string($_POST['stato'] ?? 'Attivo');
-        $srv  = array_map('intval', $_POST['servizi_id'] ?? []);
-
-        if (empty($nome)) {
-          $_SESSION['mach_flash'] = '<div class="alert alert-danger">Il nome del macchinario non può essere vuoto.</div>';
-          header('Location: index.php?page=macchinari');
-          exit;
+        // validazioni
+        if ($nome === '' || $dataAcq === '' || $quantita < 1 || $stato === '' || $categoria <= 0) {
+            $_SESSION['mach_flash'] = "<div class='alert alert-danger'>
+                Compila tutti i campi obbligatori (quantità ≥1, nome, data acquisto, stato, categoria).</div>";
+            header('Location: index.php?page=macchinari');
+            exit;
         }
 
-        if ($qta < 1) {
-            $qta = 1; // quantità minima
-        }
+        // esc
+        $nomeEsc     = $db->real_escape_string($nome);
+        $modEsc      = $db->real_escape_string($modello);
+        $marcaEsc    = $db->real_escape_string($marca);
+        $descrEsc    = $db->real_escape_string($descr);
+        $statoEsc    = $db->real_escape_string($stato);
 
-        /* INSERT -- UPDATE ------------------------------------------- */
+        // costruisco SQL
         if ($id > 0) {
-            $sql = "
-              UPDATE macchinari SET
-                nome_macchinario = '$nome',
-                modello          = '$mod',
-                marca            = '$mar',
-                descrizione      = '$desc',
-                quantita         = $qta,
-                data_acquisto    = " . ($data ? "'$data'" : 'NULL') . ",
-                categoria_id     = $cat,
-                stato            = '$sta'
-              WHERE macchinario_id = $id
-            ";
+            $sql = "UPDATE macchinari SET
+                        nome_macchinario = '$nomeEsc',
+                        modello          = '$modEsc',
+                        marca            = '$marcaEsc',
+                        descrizione      = '$descrEsc',
+                        quantita         = $quantita,
+                        data_acquisto    = '$dataAcq',
+                        stato            = '$statoEsc',
+                        categoria_id     = $categoria
+                    WHERE macchinario_id = $id";
             $ok = $db->query($sql);
         } else {
-            $sql = "
-              INSERT INTO macchinari
-                (nome_macchinario, modello, marca, descrizione,
-                 quantita, data_acquisto, categoria_id, stato)
-              VALUES
-                ('$nome', '$mod', '$mar', '$desc',
-                 $qta, " . ($data ? "'$data'" : 'NULL') . ", $cat, '$sta')
-            ";
+            $sql = "INSERT INTO macchinari
+                        (nome_macchinario, modello, marca, descrizione,
+                         quantita, data_acquisto, stato, categoria_id)
+                    VALUES
+                        ('$nomeEsc', '$modEsc', '$marcaEsc', '$descrEsc',
+                         $quantita, '$dataAcq', '$statoEsc', $categoria)";
             $ok = $db->query($sql);
-            if ($ok) $id = $db->insert_id;
+            if ($ok) {
+                $id = $db->insert_id;
+            }
         }
 
-        /* sincronizzo tabella ponte */
         if ($ok) {
-            /* svuoto relazioni non più valide */
+            // sincronizzo pivot tutti i servizi selezionati
             $db->query("DELETE FROM macchinari_servizi WHERE macchinario_id = $id");
-            /* reinserisco quelle spuntate */
-            if ($srv) {
-                foreach ($srv as $s) {
-                    $db->query("INSERT IGNORE INTO macchinari_servizi (macchinario_id, servizio_id)
-                                VALUES ($id, $s)");
-                }
+            foreach ($serviziSel as $sid) {
+                $sid = (int)$sid;
+                $db->query("INSERT IGNORE INTO macchinari_servizi (macchinario_id, servizio_id)
+                            VALUES ($id, $sid)");
             }
             $_SESSION['mach_flash'] = '<div class="alert alert-success">Macchinario salvato.</div>';
         } else {
-            $_SESSION['mach_flash'] = '<div class="alert alert-danger">Errore SQL: '
-                                     . htmlspecialchars($db->error, ENT_QUOTES) . '</div>';
+            $_SESSION['mach_flash'] = '<div class="alert alert-danger">
+                Errore SQL: '.htmlspecialchars($db->error,ENT_QUOTES).'</div>';
         }
+
         header('Location: index.php?page=macchinari');
         exit;
     }
 
-    /* -------------------------------------------------- FORM (edit) --- */
-    $form   = [
-        'macchinario_id'=>0,'nome_macchinario'=>'','modello'=>'','marca'=>'',
-        'descrizione'=>'','quantita'=>'','data_acquisto'=>'',
-        'categoria_id'=>0,'stato'=>'Attivo'
+    // ---- PREPARO FORM (edit) ----
+    $form = [
+        'macchinario_id'=>0,
+        'nome_macchinario'=>'',
+        'modello'=>'',
+        'marca'=>'',
+        'descrizione'=>'',
+        'quantita'=>1,
+        'data_acquisto'=>date('Y-m-d'),
+        'stato'=>'',
+        'categoria_id'=>0
     ];
-    $srvSel = [];
-    $label  = 'Aggiungi';
+    $serviti = [];
+    $label   = 'Aggiungi';
 
     if ($action === 'edit' && isset($_GET['id'])) {
-        $rid = (int) $_GET['id'];
-        $r   = $db->query("SELECT * FROM macchinari WHERE macchinario_id = $rid");
-        if ($r && $r->num_rows) {
-            $form  = $r->fetch_assoc();
+        $rid = (int)$_GET['id'];
+        $res = $db->query("SELECT * FROM macchinari WHERE macchinario_id = $rid");
+        if ($res && $res->num_rows) {
+            $form = $res->fetch_assoc();
             $label = 'Modifica';
         }
         $rs = $db->query("SELECT servizio_id FROM macchinari_servizi WHERE macchinario_id = $rid");
-        while ($row = $rs->fetch_assoc()) $srvSel[] = (int) $row['servizio_id'];
+        while ($r = $rs->fetch_assoc()) {
+            $serviti[] = (int)$r['servizio_id'];
+        }
     }
 
-    /* --- dropdown stati --------------------------------------------- */
-    $stati = ['Attivo','In Manutenzione','Fuori Servizio'];
+    // ---- STATI e CATEGORIE ----
     $optStati = '';
-    foreach ($stati as $s)
-        $optStati .= "<option value=\"$s\"".($form['stato']===$s?' selected':'').">$s</option>";
-
-    /* --- dropdown categorie ----------------------------------------- */
-    $optCat = '';
-    $rc = $db->query("SELECT categoria_id, nome_categoria
-                      FROM categorie_macchinari ORDER BY nome_categoria");
-    while ($c = $rc->fetch_assoc()) {
-        $sel = ((int)$c['categoria_id']===(int)$form['categoria_id'])?' selected':'';
-        $optCat .= "<option value=\"{$c['categoria_id']}\"$sel>"
-                 . htmlspecialchars($c['nome_categoria'],ENT_QUOTES)."</option>";
+    foreach (['Attivo','In Manutenzione','Fuori Servizio'] as $s) {
+        $sel = ($form['stato'] === $s) ? ' selected' : '';
+        $optStati .= "<option value=\"$s\"$sel>$s</option>";
     }
 
-    /* --- checkbox servizi ------------------------------------------- */
+    $optCat = "<option value=''>-- Seleziona Categoria --</option>";
+    $rc = $db->query("SELECT categoria_id, nome_categoria FROM categorie_macchinari ORDER BY nome_categoria");
+    while ($c = $rc->fetch_assoc()) {
+        $sel = ((int)$c['categoria_id'] === (int)$form['categoria_id']) ? ' selected' : '';
+        $optCat .= "<option value=\"{$c['categoria_id']}\"$sel>"
+                 .htmlspecialchars($c['nome_categoria'],ENT_QUOTES)."</option>";
+    }
+
+    // ---- CHECKBOX SERVIZI ----
     $chkServ = '';
     $rsAll = $db->query("SELECT servizio_id, nome FROM servizi ORDER BY nome");
     while ($s = $rsAll->fetch_assoc()) {
         $sid     = (int)$s['servizio_id'];
-        $checked = in_array($sid, $srvSel, true) ? ' checked' : '';
+        $checked = in_array($sid, $serviti, true) ? ' checked' : '';
         $chkServ .= "
-          <div class=\"form-check form-check-inline me-3 mb-2\">
-            <input class=\"form-check-input\" type=\"checkbox\"
-                   id=\"srv_$sid\" name=\"servizi_id[]\"
-                   value=\"$sid\"$checked>
-            <label class=\"form-check-label\" for=\"srv_$sid\">"
-                . htmlspecialchars($s['nome'],ENT_QUOTES) . "
-            </label>
-          </div>";
+        <div class=\"form-check form-check-inline me-3 mb-2\">
+          <input class=\"form-check-input\" type=\"checkbox\"
+                 id=\"srv_$sid\" name=\"servizi_id[]\" value=\"$sid\"$checked>
+          <label class=\"form-check-label\" for=\"srv_$sid\">"
+             .htmlspecialchars($s['nome'],ENT_QUOTES).
+          "</label>
+        </div>";
     }
 
-    /* --- lista macchinari (tabella) ---------------------------------- */
-    $sqlList = "
-      SELECT m.*, c.nome_categoria,
-             GROUP_CONCAT(DISTINCT s.nome ORDER BY s.nome SEPARATOR ', ') AS servizi
-      FROM macchinari m
-      LEFT JOIN categorie_macchinari c ON c.categoria_id = m.categoria_id
-      LEFT JOIN macchinari_servizi   ms ON ms.macchinario_id = m.macchinario_id
-      LEFT JOIN servizi              s  ON s.servizio_id    = ms.servizio_id
-      GROUP BY m.macchinario_id
-      ORDER BY m.creato_il DESC";
+    // ---- TABELLA MACCHINARI ----
     $tbl = '';
-    $rl  = $db->query($sqlList);
+    /* --- TABELLA MACCHINARI ----------------------------------------- */
+  /* ↑↑  AGGIUNGI QUESTA RIGA  ↑↑ */
+  $db->query("SET SESSION group_concat_max_len = 1000000");
+
+  /* query con GROUP_CONCAT */
+  $sql = "
+    SELECT m.macchinario_id,
+          m.nome_macchinario,
+          m.modello,
+          m.marca,
+          m.descrizione,
+          m.quantita,
+          DATE_FORMAT(m.data_acquisto,'%d/%m/%Y') AS data_acq,
+          m.stato,
+          c.nome_categoria,
+          GROUP_CONCAT(s.nome ORDER BY s.nome SEPARATOR ', ') AS servizi
+    FROM macchinari m
+    LEFT JOIN categorie_macchinari c ON c.categoria_id = m.categoria_id
+    LEFT JOIN macchinari_servizi ms ON ms.macchinario_id = m.macchinario_id
+    LEFT JOIN servizi             s ON s.servizio_id    = ms.servizio_id
+    GROUP BY m.macchinario_id
+    ORDER BY m.macchinario_id DESC";
+
+    $rl = $db->query($sql);
     while ($row = $rl->fetch_assoc()) {
-        $tbl .= "
-          <tr>
-            <td>".htmlspecialchars($row['nome_macchinario'],ENT_QUOTES)."</td>
-            <td>".htmlspecialchars($row['modello'],ENT_QUOTES)."</td>
-            <td>".htmlspecialchars($row['marca'],ENT_QUOTES)."</td>
-            <td>".htmlspecialchars($row['descrizione'],ENT_QUOTES)."</td>
-            <td>".($row['data_acquisto']?date('d/m/Y',strtotime($row['data_acquisto'])):'-')."</td>
-            <td>{$row['quantita']}</td>
-            <td>".htmlspecialchars($row['servizi'] ?: '-',ENT_QUOTES)."</td>
-            <td>".htmlspecialchars($row['nome_categoria'] ?: '-',ENT_QUOTES)."</td>
-            <td>{$row['stato']}</td>
-            <td>
-              <a href=\"index.php?page=macchinari&action=edit&id={$row['macchinario_id']}\"
-                 class=\"btn btn-outline-modern btn-xs me-1\"><i class=\"fas fa-edit\"></i></a>
-              <a href=\"index.php?page=macchinari&action=delete&id={$row['macchinario_id']}\"
-                 class=\"btn btn-outline-modern btn-xs text-danger\"
-                 onclick=\"return confirm('Eliminare questo macchinario?');\">
-                 <i class=\"fas fa-trash-alt\"></i></a>
-            </td>
-          </tr>";
+        $tbl .= "<tr>
+          <td>".htmlspecialchars($row['nome_macchinario'],ENT_QUOTES)."</td>
+          <td>".htmlspecialchars($row['modello'],ENT_QUOTES)."</td>
+          <td>".htmlspecialchars($row['marca'],ENT_QUOTES)."</td>
+          <td>".htmlspecialchars($row['descrizione'],ENT_QUOTES)."</td>
+          <td>".($row['data_acquisto']?date('d/m/Y',strtotime($row['data_acquisto'])):'-')."</td>
+          <td>{$row['quantita']}</td>
+          <td>".htmlspecialchars($row['servizi'] ?: '-',ENT_QUOTES)."</td>
+          <td>".htmlspecialchars($row['nome_categoria'] ?: '-',ENT_QUOTES)."</td>
+          <td>".htmlspecialchars($row['stato'],ENT_QUOTES)."</td>
+          <td>
+            <a href=\"index.php?page=macchinari&action=edit&id={$row['macchinario_id']}\" 
+               class=\"btn btn-outline-modern btn-xs me-1\"><i class=\"fas fa-edit\"></i></a>
+            <a href=\"index.php?page=macchinari&action=delete&id={$row['macchinario_id']}\" 
+               class=\"btn btn-outline-modern btn-xs text-danger\" 
+               onclick=\"return confirm('Eliminare questo macchinario?');\">
+               <i class=\"fas fa-trash-alt\"></i>
+            </a>
+          </td>
+        </tr>";
     }
-    if ($tbl==='') {
+    if ($tbl === '') {
         $tbl = "<tr><td colspan='10' class='text-center text-muted'>Nessun macchinario inserito.</td></tr>";
     }
 
-    /* --- carico template -------------------------------------------- */
-    $template = file_get_contents(__DIR__.'/../dtml/webarch/macchinari.html');
+    // ---- RENDER TEMPLATE ----
+    $tpl = new Template('dtml/webarch/macchinari');
+    $tpl->setContent('messaggio_form',           $flash);
+    $tpl->setContent('label_submit',             $label);
+    $tpl->setContent('old_macchinario_id',       $form['macchinario_id']);
+    $tpl->setContent('old_nome_macchinario',     htmlspecialchars($form['nome_macchinario'],ENT_QUOTES));
+    $tpl->setContent('old_modello',              htmlspecialchars($form['modello'],ENT_QUOTES));
+    $tpl->setContent('old_marca',                htmlspecialchars($form['marca'],ENT_QUOTES));
+    $tpl->setContent('old_descrizione',          htmlspecialchars($form['descrizione'],ENT_QUOTES));
+    $tpl->setContent('old_quantita',             $form['quantita']);
+    $tpl->setContent('old_data_acquisto',        $form['data_acquisto']);
+    $tpl->setContent('lista_servizi_macchinario',$chkServ);
+    $tpl->setContent('lista_stati_macchinario',  $optStati);
+    $tpl->setContent('lista_categorie_macchinario',$optCat);
+    $tpl->setContent('lista_macchinari',         $tbl);
 
-    $bodyTpl = str_replace(
-        [
-          '<[messaggio_form]>',       '<[label_submit]>',
-          '<[old_macchinario_id]>',   '<[old_nome_macchinario]>', '<[old_modello]>',
-          '<[old_marca]>',            '<[old_descrizione]>',      '<[old_quantita]>',
-          '<[old_data_acquisto]>',    '<[lista_servizi_macchinario]>',
-          '<[lista_stati_macchinario]>','<[lista_categorie_macchinario]>',
-          '<[lista_macchinari]>'
-        ],
-        [
-          $flash,
-          $label,
-          $form['macchinario_id'],
-          htmlspecialchars($form['nome_macchinario'],ENT_QUOTES),
-          htmlspecialchars($form['modello'],ENT_QUOTES),
-          htmlspecialchars($form['marca'],ENT_QUOTES),
-          htmlspecialchars($form['descrizione'],ENT_QUOTES),
-          $form['quantita'],
-          $form['data_acquisto'],
-          $chkServ,
-          $optStati,
-          $optCat,
-          $tbl
-        ],
-        $template
-    );
+    $body = $tpl->get();
 }
-
-/* ---------------------------------------------------- HELPERS ------ */
-
-/** checkbox list (per form) */
-function buildServiziCheckboxes(PDO $pdo, array $selected=[]): string {
-    $html='';
-    foreach ($pdo->query('SELECT servizio_id, nome FROM servizi ORDER BY nome') as $s) {
-        $sid=(int)$s['servizio_id'];
-        $chk=in_array($sid,$selected,true)?' checked':'';
-        $html.="<div class='form-check form-check-inline me-3 mb-2'>
-                  <input class='form-check-input' type='checkbox'
-                         id='srv_$sid' name='servizi_id[]'
-                         value='$sid'$chk>
-                  <label class='form-check-label' for='srv_$sid'>"
-                    .htmlspecialchars($s['nome'],ENT_QUOTES)."</label>
-                </div>";
-    }
-    return $html;
-}
-
-/** dropdown stati */
-function buildStatiOptions(string $current=''): string{
-    $out=''; $stati=['Attivo','In Manutenzione','Fuori Servizio'];
-    foreach($stati as $s) $out.="<option value='$s'\".($current===$s?' selected':'').\">$s</option>";
-    return $out;
-}
-
-/** dropdown categorie */
-function buildCategorieOptions(PDO $pdo, ?int $current=null): string {
-    $out='';
-    foreach ($pdo->query('SELECT categoria_id, nome_categoria FROM categorie_macchinari ORDER BY nome_categoria') as $c) {
-        $sel=((int)$c['categoria_id']===$current)?' selected':'';
-        $out.="<option value='{$c['categoria_id']}'$sel>"
-             .htmlspecialchars($c['nome_categoria'],ENT_QUOTES)."</option>";
-    }
-    return $out;
-}
-?>
