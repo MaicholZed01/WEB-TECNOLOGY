@@ -29,6 +29,9 @@ require __DIR__ . '/private/profilo.php';
 
 require __DIR__ . '/private/appuntamenti.php';
 require __DIR__ . '/private/fatturazioni.php';
+//require __DIR__ . '/private/servizi.php';
+require __DIR__ . '/private/avvisi2.php';
+//require __DIR__ . '/private/disponibilita.php';
 require __DIR__ . '/private/macchinari.php';
 
 require __DIR__ . '/private/richieste.php';
@@ -152,6 +155,39 @@ handleFatturazioni($showFat, $bodyFat, $flashFat);
 if ($showFat) {
     $main = new Template('dtml/webarch/frame');
     $main->setContent('body', $bodyFat);
+    $main->close();
+    exit;
+}
+
+/* ──────────────── Servizi (area privata) ─────────────────
+$showSrv = false;
+$bodySrv = '';
+handleServizi($showSrv, $bodySrv);
+if ($showSrv) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodySrv);
+    $main->close();
+    exit;
+}
+
+/* ──────────────── Disponibilità (area privata) ─────────────────
+$showDisp = false;
+$bodyDisp = '';
+handleDisponibilita($showDisp, $bodyDisp);
+if ($showDisp) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodyDisp);
+    $main->close();
+    exit;
+}*/
+
+// ──────────────── Avvisi (area privata) ─────────────────
+$showAvvisi = false;
+$bodyAvvisi = '';
+handleAvvisi2($showAvvisi, $bodyAvvisi);
+if ($showAvvisi) {
+    $main = new Template('dtml/webarch/frame');
+    $main->setContent('body', $bodyAvvisi);
     $main->close();
     exit;
 }
