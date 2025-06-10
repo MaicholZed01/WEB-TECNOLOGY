@@ -61,8 +61,8 @@ function handleDettagliFisio(bool &$showDetail, string &$bodyHtmlDetail): void {
 
     // Se non esiste foto, puoi mettere un placeholder
     $srcFoto = $urlFoto !== ''
-        ? "/tec-web/application/{$urlFoto}"
-        : "/tec-web/application/upload/fisioterapisti/placeholder.jpg";
+        ? "{$urlFoto}"
+        : "/tec-web/application/upload/placeholder.jpg";
 
     // 3) Recupero le recensioni associate a questo fisioterapista
     $recRes = $conn->query("

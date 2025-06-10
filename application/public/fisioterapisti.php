@@ -1,9 +1,7 @@
 <?php
 // application/public/fisioterapisti.php
-
-require_once __DIR__ . '/../include/dbms.inc.php';
-require_once __DIR__ . '/../include/template2.inc.php';
-
+require_once DIR . '/../include/dbms.inc.php';
+require_once DIR . '/../include/template2.inc.php';
 /**
  * handleFisioterapisti(&$showList, &$bodyHtmlList)
  *   - Se $_GET['page']=='fisioterapisti', imposta $showList=true.
@@ -12,14 +10,11 @@ require_once __DIR__ . '/../include/template2.inc.php';
 function handleFisioterapisti(bool &$showList, string &$bodyHtmlList): void {
     $showList      = false;
     $bodyHtmlList  = '';
-
     if (!isset($_GET['page']) || $_GET['page'] !== 'fisioterapisti') {
         return;
     }
     $showList = true;
-
     $conn = Db::getConnection();
-
     // 1) Recupero tutti i fisioterapisti
     $res = $conn->query("
         SELECT 
@@ -45,15 +40,12 @@ function handleFisioterapisti(bool &$showList, string &$bodyHtmlList): void {
             $telefono = htmlspecialchars($row['telefono'], ENT_QUOTES);
             $email    = htmlspecialchars($row['email'], ENT_QUOTES);
             $foto     = htmlspecialchars($row['url_foto_profilo'], ENT_QUOTES);
-
             // Se l'immagine non fosse presente, puoi usare un placeholder
             $imgTag = $foto !== ''
-                ? "<img src=\"/tec-web/application/{$foto}\" class=\"img-responsive\" alt=\"Foto di {$nome} {$cognome}\">"
-                : "<img src=\"/tec-web/application/upload/fisioterapisti/placeholder.jpg\" class=\"img-responsive\" alt=\"Placeholder\">";
-
+                ? "<img src=\"{$foto}\" class=\"img-responsive\" alt=\"Foto di {$nome} {$cognome}\">"
+                : "<img src=\"/tec-web/application/upload/placeholder.jpg\" class=\"img-responsive\" alt=\"Placeholder\">";
             // Link alla pagina di dettaglio: index.php?page=dettagli_fisioterapista&id=X
             $linkDettagli = "index.php?page=dettagli_fisioterapista&id={$id}";
-
             $htmlCards .= "
                 <div class=\"col-md-4 col-sm-6 mb-4\">
                   <div class=\"team-thumb shadow-sm\" style=\"border-radius:.5rem; overflow:hidden;\">
@@ -76,7 +68,6 @@ function handleFisioterapisti(bool &$showList, string &$bodyHtmlList): void {
             $htmlCards = '<div class="col-12"><div class="alert alert-info">Nessun fisioterapista disponibile al momento.</div></div>';
         }
     }
-
     // 3) Carico il template 'fisioterapisti.html' e sostituisco <[lista_fisioterapisti]>
     $tpl = new Template('dtml/2098_health/fisioterapisti');
     $tpl->setContent('lista_fisioterapisti', $htmlCards);

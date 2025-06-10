@@ -1,6 +1,5 @@
 <?php
 // application/private/logout.php
-
 // Redirect alla pagina di login distruggendo la sessione corrente
 session_start();
 session_destroy();
