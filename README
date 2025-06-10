@@ -1,35 +1,73 @@
-<h1>Struttura progetto</h1>
+# FisioCenter – Web Application
 
-application/
-├── public/                   ← Controller lato pubblico
-│   ├── index.php
-│   ├── prenota.php
-│   └── contatti.php
-├── private/                  ← Controller lato privato
-│   ├── dashboard.php
-│   ├── appuntamenti.php
-│   └── profilo.php
-├── dtml/
-│   ├── pubblico_theme/       ← Template Nicepage per l’area pubblica
-│   │   ├── index.html
-│   │   ├── assets/
-│   │   └── ... (altri file HTML/CSS/JS)
-│   └── privato_theme/        ← Template ThemeForest dashboard privata
-│       ├── dashboard.html
-│       ├── assets/
-│       └── ... (componenti HTML)
-├── include/
-│   ├── template2.inc.php
-│   ├── dbms.inc.php
-│   └── tags/
-│       └── form.inc.php
-├── logic/
-│   ├── appuntamenti.php
-│   ├── utenti.php
-│   └── servizi.php
+**Overview**
+FisioCenter is a full‑stack, database‑driven web application for the daily workflow of a private physiotherapy centre. It offers a public area for patients and a private back‑office for physiotherapists and staff.
 
-Elemento	            Descrizione
-dtml/pubblico_theme/	Template HTML completo per l’area pubblica
-dtml/privato_theme/	    Template HTML per la dashboard dei fisioterapisti
-public/, private/	    Controllano input, selezionano i dati, caricano il template
-include/tags/	        Componenti HTML riutilizzabili (form, box, ecc.)
+---
+
+## 1. Public Area (Patients)
+
+| Feature                 | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **Static pages**        | Home, Chi Siamo, News, Contatti.                                                    |
+| **Service request**     | A form stores patient requests in **`richieste`** (service, preferred date & time). |
+| **Therapist catalogue** | List & detail pages (data from **`fisioterapisti`**, media, certifications).        |
+| **Reviews & Messages**  | Patients leave reviews (**`recensioni`**) and send messages (**`messaggi`**).       |
+
+---
+
+## 2. Private Area (Staff)
+
+| Module            | Main Tables                                                                   | Key Use‑Cases                                                          |
+| ----------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Dashboard**     | `appuntamenti`, `richieste`, `messaggi`                                       | Today’s appointments, pending requests, unread messages.               |
+| **Requests**      | `richieste`, `servizi`, `fasce_disponibilita`                                 | Filter; convert a request → appointment.                               |
+| **Appointments**  | `appuntamenti`, `sale`                                                        | CRUD with clash‑detection for sala + date + time; e‑mail confirmation. |
+| **Availability**  | `fasce_disponibilita`                                                         | Weekly slots per sala; prevents overlaps.                              |
+| **Services**      | `servizi`, `servizi_fisioterapista`, `servizi_categorie`, `categorie_servizi` | Each physio selects provided services; personalised price.             |
+| **Equipment**     | `macchinari`, `macchinari_servizi`, `categorie_macchinari`                    | Many‑to‑many: machines ↔ services.                                     |
+| **Billing**       | `fatturazioni`, `appuntamenti`                                                | Invoice linked to appointment, filters & export.                       |
+| **Announcements** | `annunci`                                                                     | Fisio‑specific notices.                                                |
+| **Media & Certs** | `media`, `certificazioni`                                                     | CRUD for photos, docs, certificates.                                   |
+| **Messaging**     | `messaggi`                                                                    | Internal inbox with read/unread status.                                |
+
+---
+
+## 3. Business Rules & Constraints
+
+* **No double‑booking**: one sala cannot host two appointments at the same date‑time.
+* **No overlapping availability** on the same sala + day.
+* **Pivot tables** ensure many‑to‑many links:
+
+  * `servizi_fisioterapista` ← therapists ↔ services
+  * `macchinari_servizi`     ← machines  ↔ services
+* **PRG pattern** on every POST, with flash messages in `$_SESSION`.
+* Passwords hashed, private pages protected via session checks in `index.php`.
+
+---
+
+## 4. Tech Stack
+
+* **PHP 8.x** (plain, no framework) – each page has its own controller.
+* **MySQL / MariaDB** – InnoDB tables with FK where supported.
+* **Templates** – simple placeholder replacement in HTML files stored under `dtml/webarch/` for private and `dtml/2098_health/` for public.
+* **JS/CSS** – Bootstrap 5 & FontAwesome for UI; minimal vanilla JS.
+
+---
+
+## 5. E‑mail Notifications
+
+* Automatic confirmation sent to patient when an appointment is booked.
+
+---
+
+## 6. Setup
+
+1. Import all `*.sql` files in `/database/schema/`.
+2. Update DB credentials in `application/include/dbms.inc.php`.
+3. Configure mail settings in `php.ini` or use an SMTP library.
+4. Deploy the `application/` folder on Apache or Nginx with PHP.
+
+---
+
+© 2025 FisioCenter – Internal use only.

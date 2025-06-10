@@ -1,96 +1,176 @@
-<!-- fissa_appuntamento.html -->
-<section id="fissa_appuntamento" class="dashboard-container">
+<!-- fatturazioni.html -->
+<section id="fatturazioni" class="dashboard-container">
   <!-- Titolo Pagina -->
   <div class="page-header mb-4">
-    <h1>Fissa Appuntamento</h1>
+    <h1>Fatturazioni</h1>
   </div>
 
-  <!-- MESSAGGIO ESITO -->
-  <div class="mb-3">
-    <[messaggio_form]>
-  </div>
-
-  <!-- DATI RICHIESTA (sola lettura) -->
+  <!-- FORM AGGIUNGI / MODIFICA FATTURAZIONE -->
   <div class="panel mb-4">
     <div class="panel-header">
       <h4>
-        <i class="fas fa-info-circle me-2"></i>Dati Richiesta
+        <i class="fas fa-file-invoice-dollar me-2"></i>
+        <span><[label_submit]> Fatturazione</span>
       </h4>
     </div>
     <div class="panel-body">
-      <!-- Mostriamo tutti i campi della richiesta in readonly (span) -->
-      <div class="row g-3">
-        <div class="col-md-4"><strong>Nome:</strong> <span><[richiesta_nome]></span></div>
-        <div class="col-md-4"><strong>Cognome:</strong> <span><[richiesta_cognome]></span></div>
-        <div class="col-md-4"><strong>E-mail:</strong> <span><[richiesta_email]></span></div>
-        <div class="col-md-4"><strong>Telefono:</strong> <span><[richiesta_telefono]></span></div>
-        <div class="col-md-4"><strong>Data di Nascita:</strong> <span><[richiesta_data_nascita]></span></div>
-        <div class="col-md-4"><strong>Sesso:</strong> <span><[richiesta_sesso]></span></div>
-        <div class="col-md-4"><strong>Servizio richiesto:</strong> <span><[richiesta_servizio]></span></div>
-        <div class="col-md-4"><strong>Data preferita:</strong> <span><[richiesta_data_preferita]></span></div>
-        <div class="col-md-4"><strong>Fascia preferita:</strong> <span><[richiesta_fascia]></span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FORM FISSA APPUNTAMENTO -->
-  <div class="panel">
-    <div class="panel-header">
-      <h4>
-        <i class="fas fa-calendar-plus me-2"></i>Nuovo Appuntamento
-      </h4>
-    </div>
-    <div class="panel-body">
-      <form id="form-fissa-appuntamento"
-            action="index.php?page=fissa_appuntamento&action=save"
-            method="post">
-
-        <!-- Hidden: ID della richiesta già creata -->
-        <input type="hidden" name="richiesta_id" value="<[richiesta_id]>">
-
-        <!-- Data dell’appuntamento -->
+      <form id="form-fatturazioni" action="index.php?page=fatturazioni&action=save" method="post">
+        
+        <!-- Messaggio Esito -->
         <div class="mb-3">
-          <label class="form-label"><strong>Data*</strong></label>
-          <input
-            type="date"
-            class="form-control"
-            name="data"
-            value="<[old_data]>"
-            required
-          >
+          <[messaggio_form]>
         </div>
 
-        <!-- Orario -->
+        <!-- Selezione Appuntamento -->
         <div class="mb-3">
-          <label class="form-label"><strong>Orario*</strong></label>
-          <input
-            type="time"
-            class="form-control"
-            name="orario"
-            value="<[old_orario]>"
-            required
-          >
-        </div>
-
-        <!-- Sala -->
-        <div class="mb-3">
-          <label class="form-label"><strong>Sala*</strong></label>
-          <select class="form-control" name="sala_id" required>
-            <option value="">-- Seleziona Sala --</option>
-            <[lista_sale]>
+          <label class="d-block mb-1">Appuntamento*</label>
+          <select class="form-control" name="appuntamento_id" required>
+            <option value="">-- Seleziona Appuntamento --</option>
+            <[lista_appuntamenti]>
           </select>
         </div>
+
+        <!-- Importo -->
+        <div class="mb-3">
+          <label class="d-block mb-1">Importo (€)*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="importo"
+            value="<[old_importo]>"
+            required
+          >
+        </div>
+
+        <!-- Hidden ID per Modifica -->
+        <input type="hidden" name="pagamento_id" value="<[old_pagamento_id]>">
 
         <!-- Pulsanti -->
         <div class="d-flex gap-3">
           <button type="submit" class="btn btn-primary-modern btn-xs">
-            <i class="fas fa-save me-1"></i>Salva Appuntamento
+            <i class="fas fa-save me-1"></i><span> <[label_submit]></span>
           </button>
-          <a href="index.php?page=richieste" class="btn btn-outline-modern btn-xs">
+          <a href="index.php?page=fatturazioni" class="btn btn-outline-modern btn-xs">
             <i class="fas fa-times me-1"></i>Annulla
           </a>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- FORM FILTRO FATTURAZIONI PER INTERVALLO E ULTERIORI CAMPI -->
+  <div class="panel mb-4">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-filter me-2"></i>
+        <span>Filtra Fatturazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <form id="form-filter" action="index.php?page=fatturazioni" method="get" class="row g-3 align-items-end">
+      <input type="hidden" name="page" value="fatturazioni">
+        <!-- Data Inizio (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_inizio">Data Inizio</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_inizio"
+            name="data_inizio"
+          >
+        </div>
+
+        <!-- Data Fine (Intervallo) -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="data_fine">Data Fine</label>
+          <input
+            type="date"
+            class="form-control"
+            id="data_fine"
+            name="data_fine"
+          >
+        </div>
+
+        <!-- Cliente -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="cliente">Cliente</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cliente"
+            name="cliente"
+            placeholder="Nome cliente"
+          >
+        </div>
+
+        <!-- Servizio -->
+        <div class="col-md-3">
+          <label class="d-block mb-1" for="servizio_filter">Servizio</label>
+          <select
+            class="form-control"
+            id="servizio_filter"
+            name="servizio_id"
+          >
+            <option value="">-- Seleziona Servizio --</option>
+            <[lista_servizi]>
+          </select>
+        </div>
+
+        
+
+        <!-- Pulsante Filtra -->
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary-modern btn-xs">
+            <i class="fas fa-search me-1"></i>Filtra
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABELLA FATTURAZIONI -->
+  <div class="panel">
+    <div class="panel-header">
+      <h4>
+        <i class="fas fa-list me-2"></i>
+        <span>Elenco Fatturazioni</span>
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table-modern">
+          <thead>
+            <tr>
+              <th>Fatturazione&nbsp;ID</th>
+              <th>Cliente</th>
+              <th>Data&nbsp;Appuntamento</th>
+              <th>Servizio</th>
+              <th>Importo (€)</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <[lista_fatturazioni]>
+            <!--
+              Esempio riga generata dal controller:
+              <tr>
+                <td>12</td>
+                <td>Giulia Bianchi</td>
+                <td>2025-06-05 10:00</td>
+                <td>Fisioterapia Ortopedica</td>
+                <td>85.00</td>
+                <td>
+                  <a href="index.php?page=fatturazioni&action=delete&id=12"
+                     class="btn btn-outline-modern btn-xs text-danger"
+                     onclick="return confirm('Eliminare questa fatturazione?');">
+                    <i class="fas fa-trash-alt me-1"></i>Elimina
+                  </a>
+                </td>
+              </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </section>
