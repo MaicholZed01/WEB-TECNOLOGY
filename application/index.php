@@ -43,7 +43,10 @@ require __DIR__ . '/private/fissa_appuntamento.php';
 require __DIR__ . '/private/aggiungi_appuntamento.php';
 require __DIR__ . '/private/registrazione.php';
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 // 4. Definizione delle pagine
 $publicPages  = ['index', 'avvisi', 'chisiamo', 'contatti', 'dettagli_fisioterapista', 'carriere',

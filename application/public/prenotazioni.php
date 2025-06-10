@@ -20,7 +20,6 @@ function handlePrenotazioneForm(&$showForm, &$bodyHtml, &$message) {
     // selezioni correnti (da POST o GET)
     $sel_servizio = (int)($_REQUEST['servizio_id'] ?? 0);
     $sel_data     = trim($_REQUEST['data'] ?? '');
-    $sel_fascia   = (int)($_REQUEST['fascia_id'] ?? 0);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // campi obbligatori
@@ -36,14 +35,14 @@ function handlePrenotazioneForm(&$showForm, &$bodyHtml, &$message) {
             // facoltativi
             $data_nascita = $db->real_escape_string($_POST['data_nascita'] ?? '');
             $sesso        = $db->real_escape_string($_POST['sesso'] ?? '');
-            $data_pref    = $db->real_escape_string($_POST['data'] ?? '');
-            $fascia_id    = (int)($_POST['fascia_id'] ?? 0) ?: 'NULL';
+            $data_pref = $db->real_escape_string($_POST['data'] ?? '');
+            $orario    = $db->real_escape_string($_POST['orario'] ?? '');
             $note         = $db->real_escape_string($_POST['note'] ?? '');
 
             // INSERT nella tabella richieste
             $sql = "
                 INSERT INTO richieste
-                  (nome,cognome,email,telefono,data_nascita,sesso,servizio_id,data_preferita,fascia_id,note,creato_il)
+                  (nome,cognome,email,telefono,data_nascita,sesso,servizio_id,data_preferita,orario_preferito,note,creato_il)
                 VALUES (
                   '{$db->real_escape_string($nome)}',
                   '{$db->real_escape_string($cognome)}',
@@ -53,7 +52,7 @@ function handlePrenotazioneForm(&$showForm, &$bodyHtml, &$message) {
                   " . ($sesso        ? "'$sesso'"        : "NULL") . ",
                   $servizio,
                   " . ($data_pref    ? "'$data_pref'"    : "NULL") . ",
-                  $fascia_id,
+                  " . ($orario    ? "'$orario'"    : "NULL") . ",
                   '{$note}',
                   NOW()
                 )
@@ -63,7 +62,7 @@ function handlePrenotazioneForm(&$showForm, &$bodyHtml, &$message) {
                 // reset selezioni
                 $_POST = [];
                 $sel_servizio = $sel_data = '';
-                $sel_fascia = 0;
+                $sel_orario = '';
             } else {
                 $message = "<div class='alert alert-danger'>Errore nel salvataggio: {$db->error}</div>";
             }
@@ -75,7 +74,7 @@ function handlePrenotazioneForm(&$showForm, &$bodyHtml, &$message) {
 
     // popola servizi
     $servizi = Servizi::listAll();
-    $htmlServizi = '';
+    $htmlServizi = '<option value="">-- Seleziona un servizio --</option>';
     foreach ($servizi as $s) {
         $sel = ($sel_servizio == $s['servizio_id']) ? 'selected' : '';
         $htmlServizi .= "<option value=\"{$s['servizio_id']}\" $sel>"

@@ -12,8 +12,11 @@ function handleRichieste(&$show, &$bodyHtml, &$flash) {
     $show = true;
     $db = Db::getConnection();
 
+    $action = $_GET['action'] ?? '';   // ← evita il Notice
+
+
     // 1) DELETE
-    if ($_GET['action'] === 'delete' && isset($_GET['id'])) {
+    if ($action === 'delete' && isset($_GET['id'])) {
         $id = (int)$_GET['id'];
         $db->query("DELETE FROM richieste WHERE richiesta_id=$id");
         header('Location: index.php?page=richieste');
@@ -47,25 +50,24 @@ function handleRichieste(&$show, &$bodyHtml, &$flash) {
     
     // 3) LISTA RICHIESTE (escludo quelle già fissate in appuntamenti)
     $sql = "
-      SELECT
-        r.richiesta_id,
-        r.creato_il,
-        r.nome,
-        r.cognome,
-        r.email,
-        r.telefono,
-        s.nome AS servizio,
-        r.data_preferita,
-        CONCAT(fd.inizio,' – ',fd.fine) AS fascia
-      FROM richieste r
-      LEFT JOIN appuntamenti ap
-        ON r.richiesta_id = ap.richiesta_id
-      LEFT JOIN servizi s
-        ON r.servizio_id    = s.servizio_id
-      LEFT JOIN fasce_disponibilita fd
-        ON r.fascia_id      = fd.fascia_id
-      WHERE ap.richiesta_id IS NULL
-      " 
+            SELECT
+              r.richiesta_id,
+              r.creato_il,
+              r.nome,
+              r.cognome,
+              r.email,
+              r.telefono,
+              s.nome AS servizio,
+              r.data_preferita,
+              r.orario_preferito
+            FROM richieste r
+            LEFT JOIN appuntamenti a   -- alias coerente
+                  ON a.richiesta_id = r.richiesta_id
+            LEFT JOIN servizi s
+                  ON s.servizio_id  = r.servizio_id
+            WHERE a.richiesta_id IS NULL
+          "
+
       // se ci sono filtri, li appendo qui dopo l’IS NULL
       . ( $where
           ? ' AND ' . substr($where, strlen('WHERE ')) 
@@ -73,31 +75,34 @@ function handleRichieste(&$show, &$bodyHtml, &$flash) {
       . "
       ORDER BY r.creato_il DESC
     ";
-
     $res = $db->query($sql);
-    $tbl = '';
-    while ($row = $res->fetch_assoc()) {
-        $tbl .= "<tr>
-          <td>{$row['creato_il']}</td>
-          <td>{$row['nome']}</td>
-          <td>{$row['cognome']}</td>
-          <td>{$row['email']}</td>
-          <td>{$row['telefono']}</td>
-          <td>{$row['servizio']}</td>
-          <td>{$row['data_preferita']}</td>
-          <td>{$row['fascia']}</td>
-          <td>
-            <a href='index.php?page=fissa_appuntamento&richiesta_id={$row['richiesta_id']}'
-               class='btn btn-outline-modern btn-xs text-success'>
-              <i class='fas fa-plus'></i> Aggiungi
-            </a>
-            <a href='index.php?page=richieste&action=delete&id={$row['richiesta_id']}'
-               class='btn btn-outline-modern btn-xs text-danger'
-               onclick='return confirm(\"Eliminare questa richiesta?\");'>
-              <i class='fas fa-trash-alt'></i> Elimina
-            </a>
-          </td>
-        </tr>";
+    if (!$res) {
+        die('Errore SQL richieste: ' . $db->error . '<br><pre>'.$sql.'</pre>');
+    } else {
+        $tbl = '';
+        while ($row = $res->fetch_assoc()) {
+            $tbl .= "<tr>
+              <td>{$row['creato_il']}</td>
+              <td>{$row['nome']}</td>
+              <td>{$row['cognome']}</td>
+              <td>{$row['email']}</td>
+              <td>{$row['telefono']}</td>
+              <td>{$row['servizio']}</td>
+              <td>{$row['data_preferita']}</td>
+              <td>{$row['orario_preferito']}</td>
+              <td>
+                <a href='index.php?page=fissa_appuntamento&richiesta_id={$row['richiesta_id']}'
+                  class='btn btn-outline-modern btn-xs text-success'>
+                  <i class='fas fa-plus'></i> Aggiungi
+                </a>
+                <a href='index.php?page=richieste&action=delete&id={$row['richiesta_id']}'
+                  class='btn btn-outline-modern btn-xs text-danger'
+                  onclick='return confirm(\"Eliminare questa richiesta?\");'>
+                  <i class='fas fa-trash-alt'></i> Elimina
+                </a>
+              </td>
+            </tr>";
+        }
     }
 
     // 4) SELECT SERVIZI per filtro
