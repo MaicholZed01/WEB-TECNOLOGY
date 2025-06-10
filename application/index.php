@@ -43,9 +43,9 @@ require __DIR__ . '/private/fissa_appuntamento.php';
 require __DIR__ . '/private/aggiungi_appuntamento.php';
 require __DIR__ . '/private/registrazione.php';
 
-if (session_status() === PHP_SESSION_NONE) {
+/*if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
+}*/
 
 
 // 4. Definizione delle pagine

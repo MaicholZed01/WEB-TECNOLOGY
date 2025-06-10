@@ -56,38 +56,42 @@ function handleAvvisi(bool &$showAvvisi, string &$bodyHtmlAvvisi): void {
 
             $linkCard = "index.php?page=news-detail&id={$id}";
 
+            // costruzione url immagine news
+            $img_avviso = '/tec-web/application/dtml/2098_health/images/news-image' . $id % 4 . '.jpg';
+
+
             // Card markup con altezza uniforme
             $htmlCards .= <<<HTML
-<div class="col-md-4 col-sm-6 mb-4 d-flex">
-  <div class="news-thumb shadow-sm d-flex flex-column h-100" style="border-radius:.5rem; overflow:hidden;">
-    <a href="{$linkCard}" class="d-block" style="flex-shrink:0;">
-      <img src="/tec-web/application/dtml/2098_health/images/News1.png"
-           class="img-fluid" alt="{$titolo}" style="width:100%; height:180px; object-fit:cover;">
-    </a>
-    <div class="news-info p-3 d-flex flex-column flex-grow-1">
-      <span class="text-muted small mb-1">{$data_form}</span>
-      <h5 class="mb-2" style="min-height:3em;"><a href="{$linkCard}" class="text-dark">{$titolo}</a></h5>
-      <p class="flex-grow-1 overflow-hidden" style="min-height:4em;">{$anteprima}</p>
-      <div class="author d-flex align-items-center mt-3" style="flex-shrink:0;">
-        <img src="{$authorImg}" class="rounded-circle me-2" style="width:40px; height:40px; object-fit:cover;" alt="Autore">
-        <div class="author-info">
-          <h6 class="mb-0">{$authorName}</h6>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-HTML;
-        }
-        if ($res->num_rows === 0) {
-            $htmlCards = '<div class="col-12"><div class="alert alert-info">'
-                       . 'Al momento non ci sono avvisi o novità';
-        }
-    }
+            <div class="col-md-4 col-sm-6 mb-4 d-flex">
+              <div class="news-thumb shadow-sm d-flex flex-column h-100" style="border-radius:.5rem; overflow:hidden;">
+                <a href="{$linkCard}" class="d-block" style="flex-shrink:0;">
+                  <img src="{$img_avviso}"
+                      class="img-fluid" alt="{$titolo}" style="width:100%; height:180px; object-fit:cover;">
+                </a>
+                <div class="news-info p-3 d-flex flex-column flex-grow-1">
+                  <span class="text-muted small mb-1">{$data_form}</span>
+                  <h5 class="mb-2" style="min-height:3em;"><a href="{$linkCard}" class="text-dark">{$titolo}</a></h5>
+                  <p class="flex-grow-1 overflow-hidden" style="min-height:4em;">{$anteprima}</p>
+                  <div class="author d-flex align-items-center mt-3" style="flex-shrink:0;">
+                    <img src="{$authorImg}" class="rounded-circle me-2" style="width:40px; height:40px; object-fit:cover;" alt="Autore">
+                    <div class="author-info">
+                      <h6 class="mb-0">{$authorName}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            HTML;
+          }
+          if ($res->num_rows === 0) {
+              $htmlCards = '<div class="col-12"><div class="alert alert-info">'
+                        . 'Al momento non ci sono avvisi o novità';
+          }
+      }
 
-    // Iniezione template
-    $tpl = new Template('dtml/2098_health/avvisi');
-    $tpl->setContent('lista_avvisi', $htmlCards);
-    $bodyHtmlAvvisi = $tpl->get();
+      // Iniezione template
+      $tpl = new Template('dtml/2098_health/avvisi');
+      $tpl->setContent('lista_avvisi', $htmlCards);
+      $bodyHtmlAvvisi = $tpl->get();
 }
 ?>

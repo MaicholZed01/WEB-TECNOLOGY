@@ -22,7 +22,51 @@ function handleAppuntamenti(bool &$showApp, string &$bodyHtmlApp): void {
     $db = Db::getConnection();
     $db->set_charset('utf8');
 
-    // … (gestione DELETE e UPDATE STATO invariata) …
+    // 4) UPDATE Stato e DELETE Appuntamento
+    $action = $_GET['action'] ?? '';
+    if ($action === 'updateStato' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Aggiorna stato appuntamento
+        $appId = (int) ($_POST['appuntamento_id'] ?? 0);
+        $stato = trim($_POST['stato'] ?? '');
+        if ($appId > 0 && in_array($stato, ['Completato', 'Prenotato'])) {
+            $res = $db->query("UPDATE appuntamenti SET stato='$stato' WHERE appuntamento_id=$appId AND fisioterapista_id=$fisioId");
+            if (!$res) {
+                $_SESSION['app_error'] = $db->error;
+            }        
+        } else {
+            $_SESSION['app_error'] = 'ID appuntamento o stato non valido';
+        }
+        header('Location: index.php?page=appuntamenti');
+        exit;
+    } elseif ($action === 'delete') {
+        // Elimina appuntamento
+        $appId = (int) ($_GET['id'] ?? 0);
+        if ($appId > 0) {
+            // Recupera l'id della richiesta associata
+            $result = $db->query("SELECT richiesta_id FROM appuntamenti WHERE appuntamento_id=$appId AND fisioterapista_id=$fisioId");
+            if ($result && $row = $result->fetch_assoc()) {
+                $richiestaId = (int)$row['richiesta_id'];
+                // Elimina l'appuntamento
+                $res = $db->query("DELETE FROM appuntamenti WHERE appuntamento_id=$appId AND fisioterapista_id=$fisioId");
+                if ($res && $db->affected_rows > 0) {
+                    // Elimina la richiesta associata
+                    $res2 = $db->query("DELETE FROM richieste WHERE richiesta_id=$richiestaId");
+                    if (!$res2) {
+                        $_SESSION['app_error'] = $db->error;
+                    }
+                } else {
+                    $_SESSION['app_error'] = 'Eliminazione appuntamento fallita';
+                }
+            } else {
+                $_SESSION['app_error'] = 'Appuntamento non trovato';
+            }
+
+        } else {
+            $_SESSION['app_error'] = 'ID appuntamento non valido';
+        }
+        header('Location: index.php?page=appuntamenti');
+        exit;
+    }
 
     // 5) Filtri GET
     $di          = trim($_GET['data_inizio']   ?? '');

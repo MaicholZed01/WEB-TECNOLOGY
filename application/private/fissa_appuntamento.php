@@ -170,10 +170,9 @@ function handleFissaAppuntamento(bool &$show, string &$bodyHtml): void {
     $srv = $db->query("SELECT nome FROM servizi WHERE servizio_id={$rq['servizio_id']}");
     $servizioNome = ($srv && $srv->num_rows === 1) ? $srv->fetch_assoc()['nome'] : '';
     $tpl->setContent('richiesta_servizio', htmlspecialchars($servizioNome, ENT_QUOTES));
-    // data preferita e fascia
+    // data preferita e orario preferito
     $tpl->setContent('richiesta_data_preferita', htmlspecialchars($rq['data_preferita'], ENT_QUOTES));
-    $fas = $db->query("SELECT CONCAT(inizio,' – ',fine) AS fascia FROM fasce_disponibilita WHERE fascia_id={$rq['fascia_id']}");
-    $tpl->setContent('richiesta_fascia', htmlspecialchars($fas && $fas->num_rows === 1 ? $fas->fetch_assoc()['fascia'] : '', ENT_QUOTES));
+    $tpl->setContent('richiesta_orario_preferito', htmlspecialchars($rq['orario_preferito'], ENT_QUOTES));
     // hidden e dropdown
     $tpl->setContent('richiesta_id',   $reqId);
     $tpl->setContent('lista_sale',     $optSala);

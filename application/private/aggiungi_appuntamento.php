@@ -75,9 +75,9 @@ function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
             // 5a) INSERT in richieste
             $sqlReq = "INSERT INTO richieste
                 (nome, cognome, email, telefono, data_nascita, sesso,
-                 servizio_id, data_preferita, fascia_id, note)
+                 servizio_id, data_preferita, orario_preferito, note)
              VALUES
-                ('{$n}','{$c}','{$e}','{$t}',{$dn},{$s},{$sid},'{$dat}',NULL,'{$note}')";
+                ('{$n}','{$c}','{$e}','{$t}',{$dn},{$s},{$sid},'{$dat}','{$ora}','{$note}')";
             if (! $db->query($sqlReq)) {
                 $_SESSION['aggiungi_error'] = 'Errore SQL insert richiesta: '.htmlspecialchars($db->error, ENT_QUOTES);
                 header('Location: index.php?page=aggiungi_appuntamento');
@@ -102,7 +102,7 @@ function handleAggiungiAppuntamento(bool &$show, string &$bodyHtml): void {
                 </div>';
                 $sqlDel = "DELETE FROM richieste WHERE richiesta_id = $newReqId";
                 $db->query($sqlDel);
-                header('Location: index.php?page=aggiungi_appuntamento');
+                header('Location: index.php?page=appuntamenti');
                 exit;
             }
             // 5c) Inserimento in appuntamenti

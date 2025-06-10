@@ -110,9 +110,12 @@ function handleNewsDetail(bool &$showDetail, string &$bodyHtmlDetail): void {
         }
     }
 
+    // costruzione url immagine news
+    $img_avviso = '/tec-web/application/dtml/2098_health/images/news-image' . $id % 4 . '.jpg';
+
     // 5) Carico il template ‘news-detail.html’ e sostituisco i placeholder
     $tpl = new Template('dtml/2098_health/news-detail');
-    $tpl->setContent('img_avviso',            ''); // se in futuro c’è campo immagine, inserirlo qui
+    $tpl->setContent('img_avviso',            $img_avviso);
     $tpl->setContent('titolo_avviso',         $titolo_avviso);
     $tpl->setContent('data_avviso',           $data_avviso);
     $tpl->setContent('autore_nome',           $autore_nome);
